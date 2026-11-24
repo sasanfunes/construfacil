@@ -107,3 +107,79 @@ test.describe("seguridad", () => {
     expect(first).not.toBe(second);
   });
 });
+
+test.describe("proxy", () => {
+  // Rutas que el enrutador de idiomas limpiaría hasta /portal: se rechazan antes.
+  for (const path of ["/por%09tal", "/en/por%0Atal", "/en/portal%20", "/en/%09/portal", "/%zz"]) {
+    test(`rechaza la ruta malformada ${path}`, async ({ request }) => {
+      const response = await request.get(path, { maxRedirects: 0 });
+      expect(response.status()).toBe(400);
+    });
+  }
+
+  test("una ruta privada con punto también recibe la CSP con nonce", async ({ request }) => {
+    const response = await request.get("/portal/contrato.pdf");
+    expect(response.headers()["content-security-policy"]).toMatch(/'nonce-[^']+' 'strict-dynamic'/);
+    expect(response.headers()["cache-control"]).toContain("no-store");
+  });
+
+  test("una ruta inexistente del área privada muestra el 404 sin violar la CSP", async ({ page }) => {
+    const cspViolations: string[] = [];
+    page.on("console", (message) => {
+      if (/Content Security Policy/i.test(message.text())) cspViolations.push(message.text());
+    });
+
+    // Aquí Next responde 200 porque ya empezó a enviar la página cuando descubre que no existe
+    // (comportamiento documentado del streaming). Lo que importa: se ve el 404, no se indexa
+    // y la CSP estricta sigue en pie.
+    const response = await page.goto("/portal/esta-pagina-no-existe");
+    expect(response?.headers()["content-security-policy"]).toContain("'strict-dynamic'");
+    expect(response?.headers()["cache-control"]).toContain("no-store");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("No encontramos esta página");
+    await expect(page.locator('meta[name="robots"]').first()).toHaveAttribute("content", /noindex/);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test("una /api que no existe responde 404 sin pasar por la app", async ({ request }) => {
+    for (const path of ["/api", "/api/lo-que-sea", "/api/users.json"]) {
+      const response = await request.get(path);
+      expect(response.status(), path).toBe(404);
+      expect(await response.text(), path).toBe("");
+    }
+  });
+
+  test("las rutas desconocidas con punto o que empiezan por 'api' van al 404 traducido", async ({ page }) => {
+    page.removeAllListeners("console");
+    for (const path of ["/archivo-inexistente.x", "/apidos"]) {
+      const response = await page.goto(path);
+      expect(response?.status(), path).toBe(404);
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText("No encontramos esta página");
+    }
+  });
+
+  test("ignora una CSP enviada por el navegador: no puede colar su propio nonce", async ({ request }) => {
+    const forged = "QVRBQ0FOVEU";
+    const response = await request.get(`/ruta-sin-cache-${Date.now()}`, {
+      headers: { "Content-Security-Policy": `script-src 'nonce-${forged}'`, "x-nonce": forged },
+    });
+    expect(await response.text()).not.toContain(forged);
+
+    const portal = await request.get("/portal", {
+      headers: { "Content-Security-Policy": `script-src 'nonce-${forged}'`, "x-nonce": forged },
+    });
+    expect(await portal.text()).not.toContain(forged);
+    expect(portal.headers()["content-security-policy"]).not.toContain(forged);
+  });
+
+  test("no arma enlaces con un Host falsificado", async ({ request }) => {
+    const response = await request.get("/", { headers: { "X-Forwarded-Host": "evil.example" } });
+    expect(response.headers()["link"] ?? "").not.toContain("evil.example");
+    expect(await response.text()).not.toContain("evil.example");
+  });
+
+  test("el ícono del sitio se sirve tal cual", async ({ request }) => {
+    const response = await request.get("/icon.svg");
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toContain("image/svg+xml");
+  });
+});

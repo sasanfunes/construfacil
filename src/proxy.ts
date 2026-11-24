@@ -1,22 +1,69 @@
 import createMiddleware from "next-intl/middleware";
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 import { routing } from "@/i18n/routing";
 import { buildCsp, generateNonce } from "@/lib/security/csp";
 import { isHttpsSite } from "@/lib/security/headers";
-import { isPrivatePath } from "@/lib/security/private-paths";
+import { isPrivatePath, isSuspiciousPath } from "@/lib/security/private-paths";
 
 const handleI18n = createMiddleware(routing);
 
 /**
- * Corre antes de cada página (en Next 16 reemplaza a `middleware.ts`).
- * 1. Resuelve el idioma y la ruta traducida.
- * 2. En rutas privadas genera un nonce y aplica la CSP estricta.
- * La sesión de Supabase se refrescará aquí a partir de la Fase 2.
+ * Archivos de metadatos que Next sirve en la raíz. Lista exacta a propósito: cualquier
+ * otra ruta pasa por el enrutador de idiomas. Las imágenes del sitio se importan desde el
+ * código (salen bajo `/_next/static`) o vienen de Supabase Storage; no se usa `/public`.
+ */
+const PASSTHROUGH_FILES: ReadonlySet<string> = new Set([
+  "/icon.svg",
+  "/favicon.ico",
+  "/robots.txt",
+  "/sitemap.xml",
+  "/manifest.webmanifest",
+]);
+
+/** Rutas de API que existen. Cualquier otra `/api/*` responde 404 sin llegar a la app. */
+const API_ROUTES: ReadonlySet<string> = new Set<string>([
+  // Fase 3: "/api/webhooks/stripe"
+]);
+
+/** Cabeceras que solo puede poner este proxy. Si vienen del navegador, se descartan. */
+const PROXY_OWNED_HEADERS = ["content-security-policy", "content-security-policy-report-only", "x-nonce"];
+
+function bare(status: 400 | 404) {
+  return new NextResponse(null, { status, headers: { "Cache-Control": "no-store" } });
+}
+
+/**
+ * Corre antes de cada petición (en Next 16 reemplaza a `middleware.ts`).
+ * 1. Rechaza rutas malformadas.
+ * 2. Resuelve el idioma y la ruta traducida.
+ * 3. En rutas privadas genera un nonce y aplica la CSP estricta.
+ *
+ * No es la barrera de acceso: cada página y cada acción privada comprueba la sesión por
+ * su cuenta. La sesión de Supabase se refrescará aquí a partir de la Fase 2.
  */
 export function proxy(request: NextRequest) {
-  if (!isPrivatePath(request.nextUrl.pathname, routing.locales)) {
-    return handleI18n(request);
+  const { pathname } = request.nextUrl;
+
+  if (isSuspiciousPath(pathname)) return bare(400);
+  if (PASSTHROUGH_FILES.has(pathname)) return NextResponse.next();
+  if (pathname === "/api" || pathname.startsWith("/api/")) {
+    return API_ROUTES.has(pathname) ? NextResponse.next() : bare(404);
+  }
+  // En Vercel estas rutas las atiende la plataforma (analítica). Fuera de Vercel no existen.
+  if (pathname.startsWith("/_vercel/")) return process.env.VERCEL ? NextResponse.next() : bare(404);
+
+  // Next toma el nonce de la CSP que llega en la petición: nunca se acepta la del navegador.
+  for (const header of PROXY_OWNED_HEADERS) request.headers.delete(header);
+
+  if (!isPrivatePath(pathname, routing.locales)) {
+    const response = handleI18n(request);
+    // Segunda comprobación sobre lo que de verdad se va a servir, por si el enrutador de
+    // idiomas reescribe la petición hacia una ruta privada.
+    const rewrite = response.headers.get("x-middleware-rewrite");
+    if (!rewrite || !isPrivatePath(new URL(rewrite, request.url).pathname, routing.locales)) {
+      return response;
+    }
   }
 
   const nonce = generateNonce();
@@ -27,7 +74,6 @@ export function proxy(request: NextRequest) {
     upgradeInsecureRequests: isHttpsSite(process.env.NEXT_PUBLIC_SITE_URL),
   });
 
-  // Next.js lee el nonce de la CSP que llega en la petición y lo pone en sus scripts.
   request.headers.set("x-nonce", nonce);
   request.headers.set("Content-Security-Policy", csp);
 
@@ -38,6 +84,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Todo menos API, archivos internos de Next y archivos con extensión.
-  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
+  // Todo pasa por aquí salvo los archivos internos de Next. No se excluyen las rutas con
+  // punto: una ruta privada como `/portal/contrato.pdf` también debe recibir la CSP estricta.
+  matcher: ["/((?!_next/|__nextjs).*)"],
 };

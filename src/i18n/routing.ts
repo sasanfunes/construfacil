@@ -14,6 +14,9 @@ export const routing = defineRouting({
   // El idioma lo elige la persona con el selector. No redirigimos según el idioma del
   // navegador: muchos celulares en EE. UU. están en inglés aunque su dueño prefiera español.
   localeDetection: false,
+  // next-intl armaría las cabeceras hreflang con el Host de la petición, que un atacante
+  // puede falsificar frente a un CDN. Los hreflang se emiten desde los metadatos (Fase 1).
+  alternateLinks: false,
   pathnames: {
     "/": "/",
     "/portal": "/portal",
