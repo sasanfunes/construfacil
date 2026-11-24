@@ -49,6 +49,14 @@ Se propusieron en `docs/plan-fase-0.md` y siguen vigentes mientras el dueño no 
 
 **Las acciones del equipo usan su propia sesión, no el service role.** Así `auth.uid()` queda en la bitácora. El service role se reserva para operaciones del sistema.
 
+**No hay cliente de Supabase en el navegador.** La cookie de sesión es `HttpOnly` para que un script inyectado no pueda robarla. Todo acceso a datos pasa por el servidor. Si más adelante se quiere chat en tiempo real, se revisa.
+
+**Todo nace cerrado en la base.** La primera migración revoca los permisos por defecto de Supabase. Cada tabla abre solo lo necesario, por columna cuando hay columnas internas. Por eso las consultas deben nombrar sus columnas.
+
+**El proxy atiende todas las peticiones.** No se excluyen las rutas con punto, como hace la configuración habitual de next-intl, porque dejaba rutas privadas sin CSP estricta y permitía llenar la caché con URLs inexistentes. A cambio, no se usan archivos sueltos en `/public` y las rutas de API se declaran en el proxy.
+
+**Tipo de cambio corregible sin editar.** No hay una sola tasa por fecha: una tasa mal registrada se corrige agregando otra, y vale la más reciente.
+
 **El 404 se completa en el navegador.** Con Cache Components, una ruta desconocida responde 404 con un documento mínimo y el contenido traducido se carga con JavaScript. Funciona y no se indexa, pero sin JavaScript la página queda en blanco. Se revisa en la Fase 4.
 
 **El sitio no se indexa hasta el lanzamiento.** `NEXT_PUBLIC_ALLOW_INDEXING=false` agrega `noindex` a todo, porque el sitio muestra datos de ejemplo.

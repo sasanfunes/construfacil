@@ -33,7 +33,9 @@ Esta versión no es la que conoces. Antes de usar una API de Next, lee su guía 
 - **Nada de `new Date()`, `Date.now()`, `Math.random()` ni `crypto.randomUUID()` durante el prerender**: rompe el build. Va dentro de `"use cache"`, después de `await connection()`, o en un componente de cliente.
 - **`src/proxy.ts`** reemplaza a `middleware.ts`.
 - El idioma se lee con `next/root-params` (lo hace `src/i18n/request.ts`). No se usa `setRequestLocale`.
-- **Rutas privadas** (`portal`, `admin`, cuenta): su layout exporta `instant = false` y la página hace `await connection()`. Así no se cachean y reciben la CSP con nonce. Toda ruta privada nueva se agrega a `src/lib/security/private-paths.ts`.
+- **Rutas privadas** (`portal`, `admin`, cuenta, cotización guardada, checkout): su layout exporta `instant = false` y la página hace `await connection()`. Así no se cachean y reciben la CSP con nonce. Toda ruta privada nueva se agrega a `PRIVATE_SEGMENTS` en `src/lib/security/private-paths.ts`, en todos los idiomas; un test falla si una carpeta de `src/app/[locale]` queda sin clasificar. Las páginas públicas viven dentro de `src/app/[locale]/(public)/`.
+- **El proxy atiende todas las peticiones** salvo `/_next/`. Consecuencias: una ruta de API nueva se agrega a `API_ROUTES` en `src/proxy.ts` (si no, responde 404), y **no se usan archivos sueltos en `/public`**: las imágenes se importan desde el código o vienen de Supabase Storage. Los archivos de metadatos de la raíz (`robots.txt`, `sitemap.xml`…) están en `PASSTHROUGH_FILES`.
+- El proxy no es la barrera de acceso: cada página y cada acción privada comprueba la sesión y el rol.
 - `params` y `searchParams` son promesas. Los tipos `PageProps<"/ruta">` y `LayoutProps<"/ruta">` son globales y los genera `next typegen`.
 
 ## Idiomas (next-intl)
@@ -63,14 +65,17 @@ Esta versión no es la que conoces. Antes de usar una API de Next, lee su guía 
 
 ## Seguridad (no negociable)
 
-- **RLS en todas las tablas**, con `GRANT` explícitos por tabla y por columna. Cada tabla nueva llega con sus tests en `supabase/tests/`. `rls-coverage.test.ts` falla si una tabla queda sin RLS o sin políticas.
+- **RLS en todas las tablas**, con `GRANT` explícitos por tabla y por columna. Todo objeto nuevo de `public` nace cerrado para `anon` y `authenticated`. No se exponen por la API columnas internas (`created_by`, `updated_by`, ids de Stripe). Cada tabla nueva llega con sus tests en `supabase/tests/`. `rls-coverage.test.ts` falla si una tabla queda sin RLS o sin políticas, y lleva la lista exacta de permisos de tabla completa: si cambia, que sea a propósito.
+- Las vistas de `public` se crean con `security_invoker = true`.
 - **Permisos en el servidor, siempre.** Ocultar un botón no es seguridad.
-- **Tres clientes de Supabase** (`src/lib/supabase/`):
+- **Las consultas nombran sus columnas.** Varias tablas dan permiso de lectura por columna, así que `select("*")` es rechazado por la base.
+- **No hay cliente de Supabase en el navegador.** La cookie de sesión es `HttpOnly`; todo acceso a datos pasa por el servidor.
+- **Tres clientes de Supabase** (`src/lib/supabase/`), todos de servidor:
   - `createSupabaseServerClient()`: con la sesión de la persona. Es el cliente por defecto, también para acciones del equipo, porque así `auth.uid()` queda en la auditoría.
   - `createSupabaseAnonClient()`: sin sesión, para datos públicos en páginas cacheadas.
   - `createSupabaseAdminClient()`: service role, se salta el RLS. Solo para operaciones del sistema (lead de un formulario público, webhook de Stripe, rate limiting, auditoría), después de validar con Zod y comprobar permisos.
 - **Zod** en cada formulario y en cada Server Action o Route Handler. El mismo esquema valida en cliente y servidor.
-- **Rate limiting** al inicio de toda acción pública: `enforceRateLimit()` de `src/lib/security/rate-limit.ts`.
+- **Rate limiting** al inicio de toda acción pública: `enforceRateLimit(acción, getRequestIdentifier(await headers()))` de `src/lib/security/rate-limit.ts`. No cubre los endpoints de Supabase Auth, que se protegen en Supabase.
 - **Auditoría**: las tablas sensibles llevan el trigger `private.audit_row_change()`. Lo que un trigger no ve se registra con `logAudit()`.
 - **Dinero**: montos en centavos de USD, enteros. Los precios se calculan en el servidor desde la base; del cliente solo llegan identificadores.
 - **Secretos**: solo en `src/lib/env.server.ts` y módulos con `import "server-only"`. Nunca con prefijo `NEXT_PUBLIC_`.

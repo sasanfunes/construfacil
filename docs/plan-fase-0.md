@@ -88,7 +88,7 @@ construfacil/
     │       └── *.test.ts
     ├── i18n/                      routing.ts, request.ts, navigation.ts
     ├── lib/
-    │   ├── supabase/              server.ts, browser.ts, admin.ts (solo servidor), database.types.ts
+    │   ├── supabase/              server.ts, admin.ts (todos de servidor), database.types.ts
     │   ├── auth/                  requireUser, requireRole, requireProjectAccess
     │   ├── security/              rate-limit, audit, cabeceras/CSP
     │   ├── money/                 centavos USD, conversión a lempiras, formato
@@ -310,7 +310,7 @@ El número de identidad de quien recibe es un dato sensible: se guarda cifrado, 
 Cómo se cumple:
 
 - **RLS.** Funciones de permisos en un esquema `private` que la API no expone (`is_staff()`, `has_role()`, `is_project_member()`, `manages_project()`). Los tests se conectan a Postgres como cliente A, cliente B, familiar, cada rol del equipo y visitante, y comprueban tabla por tabla que nadie ve lo ajeno.
-- **Llaves.** El cliente con service role vive en `lib/supabase/admin.ts`, marcado `server-only`, y una regla de ESLint prohíbe importarlo desde componentes de cliente. `env.ts` separa variables públicas de privadas y falla el build si falta alguna.
+- **Llaves.** El cliente con service role vive en `lib/supabase/admin.ts`, marcado `server-only`: importarlo desde un componente de cliente hace fallar el build. `env.ts` separa variables públicas de privadas y falla el build si falta alguna.
 - **Dinero.** Los montos se calculan en el servidor a partir de la base. El cliente solo manda identificadores. El webhook verifica la firma con el cuerpo crudo y es idempotente.
 - **Formularios públicos.** Zod en el servidor, rate limiting por IP y por correo, campo trampa y tiempo mínimo de llenado contra bots.
 - **Auditoría.** Triggers en la base para cambios de precio, de estado de pago y de estado de obra (no se pueden saltar desde el código), más registro explícito de subida, descarga y borrado de documentos.
@@ -410,7 +410,7 @@ Es una función pura con tests. Usa las mismas etapas y porcentajes que el cotiz
 
 1. Proyecto Next.js 16 con TypeScript estricto, Tailwind 4, shadcn/ui y la paleta y tipografía que elijas.
 2. next-intl con español e inglés, rutas traducidas y selector de idioma.
-3. Supabase: clientes de servidor y navegador, `env.ts`, primera migración (roles, permisos, perfiles, auditoría, rate limiting, geografía, tipo de cambio) y datos de los 18 departamentos.
+3. Supabase: clientes de servidor, `env.ts`, primera migración (roles, permisos, perfiles, auditoría, rate limiting, geografía, tipo de cambio) y datos de los 18 departamentos.
 4. Base de seguridad: cabeceras, rate limiting, auditoría, `.env.example`.
 5. Herramientas: ESLint, Prettier, Vitest, Playwright, tests de RLS y CI en GitHub Actions.
 6. `README.md` y `CLAUDE.md`.
