@@ -34,10 +34,16 @@ if (!parsed.success) {
 
 export const publicEnv = parsed.data;
 
-/** En producción Supabase es obligatorio. En desarrollo el sitio público arranca sin él. */
+/** En producción nada se deja a los valores por defecto. En desarrollo el sitio público arranca sin Supabase. */
 const isProductionDeploy = process.env.VERCEL_ENV === "production";
-if (isProductionDeploy && (!publicEnv.NEXT_PUBLIC_SUPABASE_URL || !publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY)) {
-  throw new Error("Faltan NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY en producción.");
+if (isProductionDeploy) {
+  if (!publicEnv.NEXT_PUBLIC_SUPABASE_URL || !publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    throw new Error("Faltan NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY en producción.");
+  }
+  // Sin esto la CSP no forzaría https y los enlaces canónicos apuntarían a localhost.
+  if (!process.env.NEXT_PUBLIC_SITE_URL?.startsWith("https://")) {
+    throw new Error("NEXT_PUBLIC_SITE_URL debe ser la URL https del sitio en producción.");
+  }
 }
 
 export function getSupabasePublicConfig() {

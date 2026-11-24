@@ -18,6 +18,14 @@ export async function createSupabaseServerClient() {
   const { url, anonKey } = getSupabasePublicConfig();
 
   return createServerClient<Database>(url, anonKey, {
+    // La sesión solo la lee el servidor: JavaScript del navegador no puede tocar la cookie.
+    // Por eso no existe un cliente de Supabase para el navegador (ver docs/decisiones.md).
+    cookieOptions: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    },
     cookies: {
       getAll: () => cookieStore.getAll(),
       setAll: (cookiesToSet) => {

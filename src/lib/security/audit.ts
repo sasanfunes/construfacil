@@ -26,7 +26,9 @@ export type AuditEvent = {
  * Esta función es para lo que un trigger no ve: descargas de documentos, intentos
  * rechazados, acciones que vienen de Stripe.
  *
- * Si no se puede registrar, lanza un error: una acción sensible sin rastro no debe completarse.
+ * Si no se puede registrar, lanza un error. Ojo: esto es una petición aparte, no forma parte
+ * de la transacción de la acción. Donde el rastro tiene que ser atómico con el cambio (pagos,
+ * documentos), la acción y su registro van juntos en una función SQL.
  */
 export async function logAudit(event: AuditEvent): Promise<void> {
   const supabase = createSupabaseAdminClient();
