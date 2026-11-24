@@ -2,6 +2,8 @@ name: CI
 
 on:
   push:
+  # Los PR desde forks no disparan `push` en este repo.
+  pull_request:
   workflow_dispatch:
 
 concurrency:
