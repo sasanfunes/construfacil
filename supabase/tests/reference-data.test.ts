@@ -69,6 +69,14 @@ describe("datos de referencia", () => {
       ).toBe(DENIED);
       expect(await errorCode(user(admin), "delete from public.departments where id = 18")).toBe(DENIED);
     });
+
+    it("rechaza nombres desproporcionados", async () => {
+      expect(
+        await errorCode(user(admin), "update public.departments set name = $1 where id = 18", [
+          "x".repeat(5000),
+        ]),
+      ).toBe("23514");
+    });
   });
 
   describe("tipo de cambio", () => {
@@ -78,13 +86,13 @@ describe("datos de referencia", () => {
 
     it("solo admin agrega una tasa, a su nombre, y queda en la bitácora", async () => {
       const insert =
-        "insert into public.exchange_rates (usd_to_hnl, effective_date, source, created_by) values (26.75, $1, 'BCH', $2)";
-      expect(await errorCode(user(cliente), insert, ["2026-12-01", cliente])).toBe(DENIED);
-      expect(await errorCode(user(ventas), insert, ["2026-12-01", ventas])).toBe(DENIED);
+        "insert into public.exchange_rates (usd_to_hnl, effective_date, source, created_by) values (26.75, current_date, 'BCH', $1)";
+      expect(await errorCode(user(cliente), insert, [cliente])).toBe(DENIED);
+      expect(await errorCode(user(ventas), insert, [ventas])).toBe(DENIED);
       // Un admin no puede registrar la tasa a nombre de otra persona.
-      expect(await errorCode(user(admin), insert, ["2026-12-01", cliente])).toBe(DENIED);
+      expect(await errorCode(user(admin), insert, [cliente])).toBe(DENIED);
 
-      expect(await rowCount(user(admin), insert, ["2026-12-01", admin], true)).toBe(1);
+      expect(await rowCount(user(admin), insert, [admin], true)).toBe(1);
 
       const audit = await sql(
         "select actor_id, action, after_data ->> 'usd_to_hnl' as rate from public.audit_log where entity_type = 'exchange_rates' order by id desc limit 1",
@@ -101,10 +109,42 @@ describe("datos de referencia", () => {
       expect(
         await errorCode(
           user(admin),
-          "insert into public.exchange_rates (usd_to_hnl, effective_date, source, created_by) values (0, '2027-01-01', 'x', $1)",
+          "insert into public.exchange_rates (usd_to_hnl, effective_date, source, created_by) values (0, current_date, 'x', $1)",
           [admin],
         ),
       ).toBe("23514");
+      expect(
+        await errorCode(
+          user(admin),
+          "insert into public.exchange_rates (usd_to_hnl, effective_date, source, created_by) values (999.9, current_date, 'x', $1)",
+          [admin],
+        ),
+      ).toBe("23514");
+    });
+
+    it("solo acepta fechas recientes: ni de hace años ni del futuro lejano", async () => {
+      const insert =
+        "insert into public.exchange_rates (usd_to_hnl, effective_date, source, created_by) values (26.8, $2, 'BCH', $1)";
+      expect(await errorCode(user(admin), insert, [admin, "1990-01-01"])).toBe(DENIED);
+      expect(await errorCode(user(admin), insert, [admin, "9999-12-31"])).toBe(DENIED);
+    });
+
+    it("una tasa mal registrada se corrige agregando otra para la misma fecha", async () => {
+      const insert =
+        "insert into public.exchange_rates (usd_to_hnl, effective_date, source, created_by) values ($2, current_date, 'BCH corregida', $1)";
+      expect(await rowCount(user(admin), insert, [admin, 26.9], true)).toBe(1);
+      const current = await as(anon, (db) =>
+        db.query<{ usd_to_hnl: string }>(
+          "select usd_to_hnl from public.exchange_rates order by effective_date desc, created_at desc limit 1",
+        ),
+      );
+      expect(current.rows[0]?.usd_to_hnl).toBe("26.9000");
+    });
+
+    it("no expone por la API quién registró cada tasa", async () => {
+      for (const actor of [anon, user(cliente), user(admin)]) {
+        expect(await errorCode(actor, "select created_by from public.exchange_rates")).toBe(DENIED);
+      }
     });
   });
 
@@ -142,6 +182,38 @@ describe("datos de referencia", () => {
         "select actor_id, before_data ->> 'value' as before, after_data ->> 'value' as after from public.audit_log where entity_type = 'app_settings' and entity_id = 'payments.initial_payment_percent' order by id desc limit 1",
       );
       expect(audit.rows[0]).toEqual({ actor_id: admin, before: "20", after: "25" });
+
+      const stamped = await sql(
+        "select updated_by from public.app_settings where key = 'payments.initial_payment_percent'",
+      );
+      expect(stamped.rows[0]?.updated_by).toBe(admin);
+    });
+
+    it("un admin no puede atribuir el cambio a otra persona", async () => {
+      expect(
+        await errorCode(
+          user(admin),
+          "update public.app_settings set updated_by = $1 where key = 'payments.initial_payment_percent'",
+          [cliente],
+        ),
+      ).toBe(DENIED);
+    });
+
+    it("rechaza valores enormes", async () => {
+      const huge = JSON.stringify("x".repeat(50_000));
+      expect(
+        await errorCode(
+          user(admin),
+          "update public.app_settings set value = $1::jsonb where key = 'payments.initial_payment_percent'",
+          [huge],
+        ),
+      ).toBe("23514");
+    });
+
+    it("no expone por la API quién hizo el último cambio, ni la descripción a visitantes", async () => {
+      expect(await errorCode(anon, "select updated_by from public.app_settings")).toBe(DENIED);
+      expect(await errorCode(user(admin), "select updated_by from public.app_settings")).toBe(DENIED);
+      expect(await errorCode(anon, "select description from public.app_settings")).toBe(DENIED);
     });
   });
 });

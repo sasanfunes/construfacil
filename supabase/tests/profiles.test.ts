@@ -72,6 +72,22 @@ describe("perfiles", () => {
     expect(await errorCode(user(ana), "delete from public.profiles where id = $1", [ana])).toBe(DENIED);
   });
 
+  it("nadie lee el id de Stripe por la API, ni el propio; y `select *` es rechazado", async () => {
+    for (const actor of [ana, ventas, admin]) {
+      expect(await errorCode(user(actor), "select stripe_customer_id from public.profiles")).toBe(DENIED);
+      expect(await errorCode(user(actor), "select * from public.profiles")).toBe(DENIED);
+    }
+  });
+
+  it("ventas ve a los clientes pero no los datos de sus compañeros de equipo", async () => {
+    expect(
+      await rowCount(user(ventas), "select 1 from public.profiles where id = any($1)", [[admin, gerente]]),
+    ).toBe(0);
+    expect(
+      await rowCount(user(admin), "select 1 from public.profiles where id = any($1)", [[ventas, gerente]]),
+    ).toBe(2);
+  });
+
   it("ventas y admin ven a todos los clientes", async () => {
     for (const staff of [ventas, admin]) {
       expect(

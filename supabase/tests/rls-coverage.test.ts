@@ -42,29 +42,107 @@ describe("cobertura de seguridad de la base", () => {
     expect(rows).toEqual([]);
   });
 
-  it("las funciones SECURITY DEFINER fijan search_path", async () => {
+  it("las funciones SECURITY DEFINER fijan search_path vacío", async () => {
     const { rows } = await sql<{ name: string }>(`
       select n.nspname || '.' || p.proname as name
       from pg_proc p
       join pg_namespace n on n.oid = p.pronamespace
       where n.nspname in ('public', 'private')
         and p.prosecdef
-        and not exists (select from unnest(coalesce(p.proconfig, '{}')) cfg where cfg like 'search_path=%')
+        and not exists (
+          select from unnest(coalesce(p.proconfig, '{}')) cfg where cfg in ('search_path=', 'search_path=""')
+        )
       order by 1
     `);
     expect(rows.map((row) => row.name)).toEqual([]);
   });
 
-  it("ninguna función de private o public la puede ejecutar PUBLIC salvo las de solo lectura de permisos", async () => {
+  it("visitantes y usuarios no tienen ningún permiso sobre las secuencias", async () => {
     const { rows } = await sql<{ name: string }>(`
-      select n.nspname || '.' || p.proname as name
-      from pg_proc p
-      join pg_namespace n on n.oid = p.pronamespace
-      where n.nspname = 'public'
-        and has_function_privilege('anon', p.oid, 'execute')
+      select r.role || ' -> ' || c.relname as name
+      from pg_class c
+      join pg_namespace n on n.oid = c.relnamespace
+      cross join unnest(array['anon', 'authenticated']) as r(role)
+      where n.nspname = 'public' and c.relkind = 'S'
+        and (
+          has_sequence_privilege(r.role, c.oid, 'USAGE')
+          or has_sequence_privilege(r.role, c.oid, 'SELECT')
+          or has_sequence_privilege(r.role, c.oid, 'UPDATE')
+        )
       order by 1
     `);
-    // Hoy no hay ninguna función pública que un visitante deba poder llamar.
     expect(rows.map((row) => row.name)).toEqual([]);
+  });
+
+  it("toda vista de public respeta el RLS de quien consulta (security_invoker)", async () => {
+    const { rows } = await sql<{ name: string }>(`
+      select c.relname as name
+      from pg_class c
+      join pg_namespace n on n.oid = c.relnamespace
+      where n.nspname = 'public' and c.relkind in ('v', 'm')
+        and not coalesce(c.reloptions, '{}') @> array['security_invoker=true']
+      order by 1
+    `);
+    expect(rows.map((row) => row.name)).toEqual([]);
+  });
+
+  it("una tabla nueva nace cerrada para visitantes y usuarios", async () => {
+    const { rows } = await sql<{ defaclobjtype: string; grantee: string }>(`
+      select d.defaclobjtype, a.grantee::regrole::text as grantee
+      from pg_default_acl d
+      join pg_namespace n on n.oid = d.defaclnamespace
+      cross join lateral aclexplode(d.defaclacl) a
+      where n.nspname = 'public' and a.grantee::regrole::text in ('anon', 'authenticated')
+    `);
+    expect(rows).toEqual([]);
+  });
+
+  it("los permisos de tabla completa de un usuario con sesión son exactamente estos", async () => {
+    // Todo lo demás se concede por columna. Si esta lista cambia, que sea a propósito.
+    const { rows } = await sql<{ grant: string }>(`
+      select table_name || ':' || privilege_type as grant
+      from information_schema.role_table_grants
+      where table_schema = 'public' and grantee = 'authenticated'
+      order by 1
+    `);
+    expect(rows.map((row) => row.grant)).toEqual([
+      "app_settings:DELETE",
+      "audit_log:SELECT",
+      "departments:SELECT",
+      "municipalities:SELECT",
+    ]);
+  });
+
+  it("ninguna función expuesta por la API la puede ejecutar un visitante o un usuario", async () => {
+    const { rows } = await sql<{ name: string }>(`
+      select r.role || ' -> ' || p.proname as name
+      from pg_proc p
+      join pg_namespace n on n.oid = p.pronamespace
+      cross join unnest(array['anon', 'authenticated']) as r(role)
+      where n.nspname = 'public'
+        and has_function_privilege(r.role, p.oid, 'execute')
+      order by 1
+    `);
+    // Hoy no hay ninguna función que deba llamarse desde fuera del servidor.
+    expect(rows.map((row) => row.name)).toEqual([]);
+  });
+
+  it("del esquema private, visitantes y usuarios solo ejecutan las funciones de permisos", async () => {
+    const { rows } = await sql<{ name: string }>(`
+      select distinct p.proname as name
+      from pg_proc p
+      join pg_namespace n on n.oid = p.pronamespace
+      cross join unnest(array['anon', 'authenticated']) as r(role)
+      where n.nspname = 'private'
+        and has_function_privilege(r.role, p.oid, 'execute')
+      order by 1
+    `);
+    expect(rows.map((row) => row.name)).toEqual([
+      "current_user_role",
+      "has_role",
+      "is_admin",
+      "is_staff",
+      "user_is_staff",
+    ]);
   });
 });

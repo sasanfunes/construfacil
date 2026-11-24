@@ -44,13 +44,40 @@ describe("bitácora de auditoría", () => {
     }
   });
 
+  it("el servidor no puede elegir la fecha ni el id de un registro (no puede antedatar)", async () => {
+    expect(
+      await errorCode(
+        service,
+        "insert into public.audit_log (action, entity_type, occurred_at) values ('x', 'y', '2020-01-01')",
+      ),
+    ).toBe(DENIED);
+    expect(
+      await errorCode(
+        service,
+        "insert into public.audit_log (id, action, entity_type) overriding system value values (1, 'x', 'y')",
+      ),
+    ).toBe(DENIED);
+  });
+
+  it("los permisos de editar, borrar y vaciar están revocados, además del trigger", async () => {
+    const { rows } = await sql<{ role: string; privilege: string }>(`
+      select r.role, p.privilege
+      from unnest(array['anon', 'authenticated', 'service_role']) as r(role),
+           unnest(array['UPDATE', 'DELETE', 'TRUNCATE']) as p(privilege)
+      where has_table_privilege(r.role, 'public.audit_log', p.privilege)
+    `);
+    expect(rows).toEqual([]);
+  });
+
   it("el servidor puede insertar pero no editar, borrar ni vaciar", async () => {
     expect(await errorCode(service, "update public.audit_log set action = 'editado'")).toBe(DENIED);
     expect(await errorCode(service, "delete from public.audit_log")).toBe(DENIED);
     expect(await errorCode(service, "truncate public.audit_log")).toBe(DENIED);
   });
 
-  it("ni el dueño de la tabla puede editar o borrar: un trigger lo impide", async () => {
+  // Un superusuario siempre puede desactivar triggers a propósito; contra eso la defensa es
+  // enviar la bitácora a un destino externo (pendiente de la Fase 4). Esto cubre el accidente.
+  it("un trigger impide editar o borrar incluso al dueño de la tabla", async () => {
     await expect(sql("update public.audit_log set action = 'editado'")).rejects.toMatchObject({
       code: DENIED,
     });

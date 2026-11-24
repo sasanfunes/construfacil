@@ -1,9 +1,9 @@
 -- Datos de ejemplo para desarrollo. No se cargan en producción.
 -- Todo lo que aparece aquí es un EJEMPLO y debe reemplazarse por datos reales antes del lanzamiento.
 
-insert into public.exchange_rates (usd_to_hnl, effective_date, source, is_example) values
-  (26.5000, date '2026-11-01', 'Valor de ejemplo. Reemplazar por la tasa de referencia del Banco Central de Honduras.', true)
-on conflict (effective_date) do nothing;
+insert into public.exchange_rates (usd_to_hnl, effective_date, source, is_example)
+select 26.5000, date '2026-11-01', 'Valor de ejemplo. Reemplazar por la tasa de referencia del Banco Central de Honduras.', true
+where not exists (select 1 from public.exchange_rates);
 
 insert into public.app_settings (key, value, is_public, description) values
   ('payments.initial_payment_percent', '20'::jsonb, true,

@@ -9,7 +9,7 @@ create table public.departments (
   -- Código oficial del departamento (01 a 18). Es el mismo con el que empieza el DNI.
   id smallint primary key check (id between 1 and 18),
   iso_code text not null unique check (iso_code ~ '^HN-[A-Z]{2}$'),
-  name text not null unique,
+  name text not null unique check (char_length(name) between 2 and 60),
   -- Activo = operamos ahí: sale en filtros, cotizador y zonas de envío.
   is_active boolean not null default false,
   latitude numeric(8, 5) not null check (latitude between 12.9 and 17.5),
@@ -42,17 +42,22 @@ for each row execute function private.set_updated_at();
 
 -- -------------------------------------------------------------------------------------
 -- Tipo de cambio de referencia USD -> lempira. El precio oficial siempre es en USD.
--- Se conserva el historial: un cambio es una fila nueva, nunca una edición.
+-- Se conserva el historial: un cambio es una fila nueva, nunca una edición. Si una tasa se
+-- registró mal, se corrige agregando otra para la misma fecha: vale la más reciente.
 -- -------------------------------------------------------------------------------------
 create table public.exchange_rates (
   id uuid primary key default gen_random_uuid(),
-  usd_to_hnl numeric(10, 4) not null check (usd_to_hnl > 1 and usd_to_hnl < 1000),
-  effective_date date not null unique,
+  -- Banda de cordura: el lempira ronda los 26 por dólar. Fuera de esto es un error de dedo.
+  usd_to_hnl numeric(10, 4) not null check (usd_to_hnl between 10 and 100),
+  effective_date date not null,
   source text not null check (char_length(source) between 1 and 200),
   is_example boolean not null default false,
   created_by uuid references public.profiles (id) on delete set null,
   created_at timestamptz not null default now()
 );
+
+-- La tasa vigente es la primera de este orden.
+create index exchange_rates_current_idx on public.exchange_rates (effective_date desc, created_at desc);
 
 create trigger exchange_rates_audit
 after insert or update or delete on public.exchange_rates
@@ -63,7 +68,7 @@ for each row execute function private.audit_row_change('id');
 -- -------------------------------------------------------------------------------------
 create table public.app_settings (
   key text primary key check (key ~ '^[a-z][a-z0-9_.]{1,60}$'),
-  value jsonb not null,
+  value jsonb not null check (pg_column_size(value) <= 8192),
   is_public boolean not null default false,
   description text check (char_length(description) <= 300),
   updated_by uuid references public.profiles (id) on delete set null,
@@ -73,6 +78,22 @@ create table public.app_settings (
 create trigger app_settings_set_updated_at
 before update on public.app_settings
 for each row execute function private.set_updated_at();
+
+-- Quién cambió el ajuste lo pone la base, no quien hace la petición.
+create function private.stamp_updated_by()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  new.updated_by := coalesce((select auth.uid()), new.updated_by);
+  return new;
+end;
+$$;
+
+create trigger app_settings_stamp_updated_by
+before insert or update on public.app_settings
+for each row execute function private.stamp_updated_by();
 
 create trigger app_settings_audit
 after insert or update or delete on public.app_settings
@@ -121,9 +142,13 @@ with check ((select private.is_admin()));
 -- exchange_rates: cualquiera lee, solo admin agrega, nadie edita ni borra -------------
 alter table public.exchange_rates enable row level security;
 revoke all on table public.exchange_rates from anon, authenticated;
-grant select on table public.exchange_rates to anon, authenticated;
+-- `created_by` no se expone por la API: quién registró cada tasa se consulta en audit_log.
+grant select (id, usd_to_hnl, effective_date, source, is_example, created_at)
+  on table public.exchange_rates to anon, authenticated;
 grant insert (usd_to_hnl, effective_date, source, created_by) on table public.exchange_rates to authenticated;
-grant all on table public.exchange_rates to service_role;
+-- Ni el servidor edita o borra el historial.
+revoke all on table public.exchange_rates from service_role;
+grant select, insert on table public.exchange_rates to service_role;
 
 create policy "exchange_rates_select_all"
 on public.exchange_rates for select to anon, authenticated
@@ -131,14 +156,24 @@ using (true);
 
 create policy "exchange_rates_insert_admin"
 on public.exchange_rates for insert to authenticated
-with check ((select private.is_admin()) and created_by = (select auth.uid()));
+with check (
+  (select private.is_admin())
+  and created_by = (select auth.uid())
+  -- Solo tasas recientes: nada de fechas de hace años ni del futuro lejano.
+  and effective_date between current_date - 7 and current_date + 1
+);
 
 -- app_settings: los públicos los lee cualquiera; el resto solo el equipo; escribe admin
 alter table public.app_settings enable row level security;
 revoke all on table public.app_settings from anon, authenticated;
-grant select on table public.app_settings to anon, authenticated;
-grant insert, update, delete on table public.app_settings to authenticated;
-grant all on table public.app_settings to service_role;
+-- Por columna: `updated_by` no se expone ni se puede escribir a mano.
+grant select (key, value, is_public, updated_at) on table public.app_settings to anon;
+grant select (key, value, is_public, description, updated_at) on table public.app_settings to authenticated;
+grant insert (key, value, is_public, description) on table public.app_settings to authenticated;
+grant update (value, is_public, description) on table public.app_settings to authenticated;
+grant delete on table public.app_settings to authenticated;
+revoke all on table public.app_settings from service_role;
+grant select, insert, update, delete on table public.app_settings to service_role;
 
 create policy "app_settings_select_public_or_staff"
 on public.app_settings for select to anon, authenticated

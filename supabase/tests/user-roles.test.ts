@@ -117,6 +117,12 @@ describe("roles", () => {
     expect(await roleOf(admin)).toBe("admin");
   });
 
+  it("no se expone por la API quién asignó cada rol", async () => {
+    for (const actor of [ana, admin]) {
+      expect(await errorCode(user(actor), "select assigned_by from public.user_roles")).toBe(DENIED);
+    }
+  });
+
   it("un admin no puede falsificar quién asignó el rol", async () => {
     expect(
       await errorCode(user(admin), "update public.user_roles set assigned_by = $2 where user_id = $1", [

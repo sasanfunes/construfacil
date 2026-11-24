@@ -9,6 +9,14 @@
 --   4. Las funciones de permisos viven en el esquema `private`, que la API no expone.
 -- =====================================================================================
 
+-- Supabase abre por defecto toda tabla, secuencia y función nueva de `public` a los roles
+-- anon y authenticated. Lo cerramos aquí: desde este punto todo nace cerrado y solo se
+-- abre con un GRANT explícito. Tampoco PUBLIC puede ejecutar funciones nuevas.
+alter default privileges in schema public revoke all on tables from anon, authenticated;
+alter default privileges in schema public revoke all on sequences from anon, authenticated;
+alter default privileges in schema public revoke all on functions from anon, authenticated;
+alter default privileges revoke execute on functions from public;
+
 create schema if not exists private;
 revoke all on schema private from public;
 grant usage on schema private to anon, authenticated, service_role;
@@ -121,6 +129,24 @@ set search_path = ''
 as $$
   select private.has_role('admin');
 $$;
+
+-- ¿La persona indicada es del equipo? Lo usa la política de perfiles para que ventas
+-- vea a los clientes pero no los datos de sus compañeros.
+create function private.user_is_staff(target uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (
+    select 1 from public.user_roles ur
+    where ur.user_id = target and ur.role in ('ventas', 'gerente_proyecto', 'logistica', 'admin')
+  );
+$$;
+
+revoke execute on function private.user_is_staff(uuid) from public;
+grant execute on function private.user_is_staff(uuid) to authenticated, service_role;
 
 revoke execute on function private.current_user_role() from public;
 revoke execute on function private.has_role(public.user_role[]) from public;
@@ -286,6 +312,9 @@ create table public.rate_limits (
 
 comment on table public.rate_limits is 'Contadores de intentos. El bucket es acción + huella anonimizada; nunca una IP en claro.';
 
+-- Para que la limpieza de ventanas viejas no recorra toda la tabla.
+create index rate_limits_window_start_idx on public.rate_limits (window_start);
+
 create function public.check_rate_limit(p_bucket text, p_limit integer, p_window_seconds integer)
 returns table (allowed boolean, remaining integer, reset_at timestamptz)
 language plpgsql
@@ -332,15 +361,23 @@ grant execute on function public.check_rate_limit(text, integer, integer) to ser
 -- profiles ---------------------------------------------------------------------------
 alter table public.profiles enable row level security;
 revoke all on table public.profiles from anon, authenticated;
-grant select on table public.profiles to authenticated;
--- Solo estas columnas son editables por la persona. `stripe_customer_id` lo escribe el servidor.
+-- Permisos por columna: `stripe_customer_id` no se puede leer ni escribir por la API.
+-- Consecuencia: las consultas deben nombrar sus columnas; `select *` es rechazado.
+grant select (id, full_name, phone, country, us_state, preferred_locale, notification_prefs, created_at, updated_at)
+  on table public.profiles to authenticated;
+-- Solo estas columnas son editables por la persona.
 grant update (full_name, phone, country, us_state, preferred_locale, notification_prefs)
   on table public.profiles to authenticated;
 grant all on table public.profiles to service_role;
 
+-- Cada quien ve su perfil. Admin ve todos. Ventas ve clientes y familiares, no al equipo.
 create policy "profiles_select_own_or_sales_admin"
 on public.profiles for select to authenticated
-using (id = (select auth.uid()) or (select private.has_role('ventas', 'admin')));
+using (
+  id = (select auth.uid())
+  or (select private.is_admin())
+  or ((select private.has_role('ventas')) and not private.user_is_staff(id))
+);
 
 create policy "profiles_update_own"
 on public.profiles for update to authenticated
@@ -350,9 +387,12 @@ with check (id = (select auth.uid()));
 -- user_roles -------------------------------------------------------------------------
 alter table public.user_roles enable row level security;
 revoke all on table public.user_roles from anon, authenticated;
-grant select on table public.user_roles to authenticated;
+-- `assigned_by` no se expone por la API: quién asignó cada rol se consulta en audit_log.
+grant select (user_id, role, assigned_at) on table public.user_roles to authenticated;
 grant update (role) on table public.user_roles to authenticated;
-grant all on table public.user_roles to service_role;
+-- Sin TRUNCATE: vaciar la tabla no pasaría por el trigger de auditoría.
+revoke all on table public.user_roles from service_role;
+grant select, insert, update, delete on table public.user_roles to service_role;
 
 create policy "user_roles_select_own_or_admin"
 on public.user_roles for select to authenticated
@@ -369,7 +409,10 @@ with check ((select private.is_admin()) and user_id <> (select auth.uid()));
 alter table public.audit_log enable row level security;
 revoke all on table public.audit_log from anon, authenticated, service_role;
 grant select on table public.audit_log to authenticated;
-grant select, insert on table public.audit_log to service_role;
+-- El servidor inserta, pero no elige ni el id ni la fecha: no puede antedatar un registro.
+grant select on table public.audit_log to service_role;
+grant insert (actor_id, actor_role, action, entity_type, entity_id, before_data, after_data, metadata, ip_hash, user_agent)
+  on table public.audit_log to service_role;
 
 create policy "audit_log_select_admin"
 on public.audit_log for select to authenticated
