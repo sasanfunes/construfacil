@@ -12,8 +12,17 @@ const PRIVATE_SEGMENTS = new Set([
   "auth",
 ]);
 
+function safeDecode(pathname: string): string {
+  try {
+    return decodeURIComponent(pathname);
+  } catch {
+    return pathname;
+  }
+}
+
 export function isPrivatePath(pathname: string, locales: readonly string[]): boolean {
-  const segments = pathname.split("/").filter(Boolean);
+  // Se decodifica primero: `/%70ortal` llega a la misma página que `/portal`.
+  const segments = safeDecode(pathname).split("/").filter(Boolean);
   const first = segments[0];
   if (first === undefined) return false;
   const section = locales.includes(first) ? segments[1] : first;

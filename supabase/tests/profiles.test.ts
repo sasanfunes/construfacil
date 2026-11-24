@@ -94,3 +94,30 @@ describe("perfiles", () => {
     ).toBe(0);
   });
 });
+
+describe("perfiles: límites de datos", () => {
+  it("rechaza preferencias de notificación enormes o que no sean un objeto", async () => {
+    const id = await createUser("cliente");
+    const big = JSON.stringify({ relleno: "x".repeat(5000) });
+    expect(
+      await errorCode(user(id), "update public.profiles set notification_prefs = $2 where id = $1", [
+        id,
+        big,
+      ]),
+    ).toBe("23514");
+    expect(
+      await errorCode(
+        user(id),
+        "update public.profiles set notification_prefs = '[1,2,3]'::jsonb where id = $1",
+        [id],
+      ),
+    ).toBe("23514");
+    expect(
+      await rowCount(
+        user(id),
+        `update public.profiles set notification_prefs = '{"email": false}'::jsonb where id = $1`,
+        [id],
+      ),
+    ).toBe(1);
+  });
+});

@@ -20,6 +20,15 @@ describe("isPrivatePath", () => {
     (path) => expect(isPrivatePath(path, locales)).toBe(true),
   );
 
+  it.each(["/%70ortal", "/en/%61dmin", "/portal%2Fproyectos"])(
+    "%s es privada aunque venga codificada",
+    (path) => expect(isPrivatePath(path, locales)).toBe(true),
+  );
+
+  it("no falla con una ruta mal codificada", () => {
+    expect(isPrivatePath("/%E0%A4%A", locales)).toBe(false);
+  });
+
   it.each([
     "/",
     "/en",

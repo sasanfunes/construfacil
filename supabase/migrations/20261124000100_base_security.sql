@@ -49,7 +49,8 @@ create table public.profiles (
   country text not null default 'US' check (country ~ '^[A-Z]{2}$'),
   us_state text check (us_state ~ '^[A-Z]{2}$'),
   preferred_locale text not null default 'es' check (preferred_locale in ('es', 'en')),
-  notification_prefs jsonb not null default '{"email": true}'::jsonb,
+  notification_prefs jsonb not null default '{"email": true}'::jsonb
+    check (jsonb_typeof(notification_prefs) = 'object' and pg_column_size(notification_prefs) <= 1024),
   stripe_customer_id text unique,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
