@@ -1,0 +1,33 @@
+{
+  "brand": "ConstruFácil",
+  "skipToContent": "Skip to content",
+  "header": {
+    "homeLabel": "ConstruFácil, go to home page"
+  },
+  "localeSwitcher": {
+    "label": "Language",
+    "es": "Español",
+    "en": "English",
+    "esShort": "ES",
+    "enShort": "EN"
+  },
+  "whatsapp": {
+    "label": "Message us on WhatsApp",
+    "defaultMessage": "Hi, I'd like information about building or buying my home in Honduras."
+  },
+  "footer": {
+    "tagline": "Your home in Honduras, built from the United States.",
+    "rights": "© {year} ConstruFácil. All rights reserved.",
+    "underConstruction": "Site under construction. Prices and models shown are examples."
+  },
+  "notFound": {
+    "title": "We can't find this page",
+    "description": "The link may be mistyped, or the page may no longer exist.",
+    "cta": "Back to home"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "description": "We couldn't load this page. Try again; if it keeps failing, message us on WhatsApp.",
+    "retry": "Try again"
+  }
+}

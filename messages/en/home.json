@@ -1,0 +1,28 @@
+{
+  "hero": {
+    "title": "Your home in Honduras, built from the United States",
+    "subtitle": "See every update with photos and pay in stages.",
+    "cta": "Chat on WhatsApp",
+    "trust": "You pay for each stage when you see the progress"
+  },
+  "paths": {
+    "title": "Four ways to build your future",
+    "soon": "Coming soon",
+    "readyHome": {
+      "title": "Ready home",
+      "description": "Buy a finished home, one under construction, or a presale."
+    },
+    "build": {
+      "title": "Build on my land",
+      "description": "Design, construction, and materials on the land you already own."
+    },
+    "land": {
+      "title": "Buy land",
+      "description": "Lots with a clear title, ready to build on."
+    },
+    "materials": {
+      "title": "Materials for my build",
+      "description": "Buy from the United States and get delivery at your site in Honduras."
+    }
+  }
+}

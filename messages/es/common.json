@@ -1,0 +1,33 @@
+{
+  "brand": "ConstruFácil",
+  "skipToContent": "Saltar al contenido",
+  "header": {
+    "homeLabel": "ConstruFácil, ir al inicio"
+  },
+  "localeSwitcher": {
+    "label": "Idioma",
+    "es": "Español",
+    "en": "English",
+    "esShort": "ES",
+    "enShort": "EN"
+  },
+  "whatsapp": {
+    "label": "Escribirnos por WhatsApp",
+    "defaultMessage": "Hola, quiero información para construir o comprar mi casa en Honduras."
+  },
+  "footer": {
+    "tagline": "Tu casa en Honduras, construida desde Estados Unidos.",
+    "rights": "© {year} ConstruFácil. Todos los derechos reservados.",
+    "underConstruction": "Sitio en construcción. Los precios y modelos que veas son ejemplos."
+  },
+  "notFound": {
+    "title": "No encontramos esta página",
+    "description": "Puede que el enlace esté mal escrito o que la página ya no exista.",
+    "cta": "Volver al inicio"
+  },
+  "error": {
+    "title": "Algo salió mal",
+    "description": "No pudimos cargar esta página. Inténtalo de nuevo; si sigue fallando, escríbenos por WhatsApp.",
+    "retry": "Intentar de nuevo"
+  }
+}

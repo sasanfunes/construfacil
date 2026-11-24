@@ -1,0 +1,28 @@
+{
+  "hero": {
+    "title": "Tu casa en Honduras, construida desde Estados Unidos",
+    "subtitle": "Ve cada avance con fotos y paga por etapas.",
+    "cta": "Hablar por WhatsApp",
+    "trust": "Pagas cada etapa cuando ves el avance"
+  },
+  "paths": {
+    "title": "Cuatro caminos hacia tu patrimonio",
+    "soon": "Pronto",
+    "readyHome": {
+      "title": "Casa lista",
+      "description": "Compra una casa terminada, en construcción o en preventa."
+    },
+    "build": {
+      "title": "Construir en mi terreno",
+      "description": "Diseño, construcción y materiales sobre el terreno que ya tienes."
+    },
+    "land": {
+      "title": "Comprar terreno",
+      "description": "Terrenos con escritura en regla, listos para construir."
+    },
+    "materials": {
+      "title": "Materiales para mi obra",
+      "description": "Compra desde Estados Unidos y recibe en tu obra en Honduras."
+    }
+  }
+}
