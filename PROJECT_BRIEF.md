@@ -159,15 +159,15 @@ Es lo que más distingue al producto. El migrante debe sentir que "está ahí" a
 
 ## 11. Datos del negocio
 
-| Dato | Valor | Estado |
-| --- | --- | --- |
-| Nombre de la marca | ConstruFácil (en URLs, correos y código: `construfacil`) | Definido |
-| Dominio | — | Pendiente |
-| WhatsApp de ventas | — | Pendiente |
-| Departamentos al inicio | Cortés, Francisco Morazán, Atlántida y Comayagua | Definido (24 nov 2026) |
-| Constructora o socios en Honduras | — | Pendiente |
-| Modelo de pagos | Por etapas contra avance: pago inicial y luego un pago por etapa. Sin intereses ni saldos en custodia. | Definido (24 nov 2026) |
-| Entidad legal y país de facturación | — | Pendiente |
+| Dato                                | Valor                                                                                                  | Estado                 |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------ | ---------------------- |
+| Nombre de la marca                  | ConstruFácil (en URLs, correos y código: `construfacil`)                                               | Definido               |
+| Dominio                             | —                                                                                                      | Pendiente              |
+| WhatsApp de ventas                  | —                                                                                                      | Pendiente              |
+| Departamentos al inicio             | Cortés, Francisco Morazán, Atlántida y Comayagua                                                       | Definido (24 nov 2026) |
+| Constructora o socios en Honduras   | —                                                                                                      | Pendiente              |
+| Modelo de pagos                     | Por etapas contra avance: pago inicial y luego un pago por etapa. Sin intereses ni saldos en custodia. | Definido (24 nov 2026) |
+| Entidad legal y país de facturación | —                                                                                                      | Pendiente              |
 
 Otras decisiones tomadas el 24 nov 2026:
 

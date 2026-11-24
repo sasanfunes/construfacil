@@ -6,12 +6,12 @@ Este documento propone la arquitectura, el modelo de datos y las rutas. Las tres
 
 ## 1. Decisiones ya tomadas
 
-| Tema | Decisión |
-| --- | --- |
-| Modelo de pagos | Por etapas contra avance: pago inicial y luego un pago por etapa. Sin intereses y sin guardar saldos del cliente. |
-| Cobertura inicial | Cortés, Francisco Morazán, Atlántida y Comayagua. Los 18 departamentos existen en la base; estos cuatro salen activos. |
-| Videollamada (MVP) | Solicitud simple: día y franja horaria, se guarda en la base y ventas confirma por WhatsApp. |
-| Supabase | Aún no hay proyecto en la nube. Migraciones SQL + datos de ejemplo + tests de RLS contra Postgres local. |
+| Tema               | Decisión                                                                                                               |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| Modelo de pagos    | Por etapas contra avance: pago inicial y luego un pago por etapa. Sin intereses y sin guardar saldos del cliente.      |
+| Cobertura inicial  | Cortés, Francisco Morazán, Atlántida y Comayagua. Los 18 departamentos existen en la base; estos cuatro salen activos. |
+| Videollamada (MVP) | Solicitud simple: día y franja horaria, se guarda en la base y ventas confirma por WhatsApp.                           |
+| Supabase           | Aún no hay proyecto en la nube. Migraciones SQL + datos de ejemplo + tests de RLS contra Postgres local.               |
 
 ## 2. Supuestos que estoy tomando
 
@@ -32,20 +32,20 @@ Dime si alguno no va; si no dices nada, sigo con ellos.
 
 ## 3. Stack y versiones
 
-| Pieza | Elección |
-| --- | --- |
-| Framework | Next.js 16 (App Router, React 19), TypeScript estricto con `noUncheckedIndexedAccess` |
-| UI | Tailwind CSS 4, shadcn/ui, lucide-react |
-| Datos | Supabase: `@supabase/supabase-js` + `@supabase/ssr`, migraciones SQL versionadas, tipos generados |
-| Validación | Zod 4. El mismo esquema valida el formulario y la Server Action |
-| Formularios | react-hook-form con el resolver de Zod |
-| Idiomas | next-intl 4 |
-| Pagos | Stripe (Fase 3). Desde ya: tabla de pagos, cliente de Stripe solo en servidor y ruta del webhook reservada |
-| Correos | Resend + React Email |
-| Mapas | Leaflet + OpenStreetMap, cargado solo en el cliente y solo cuando el usuario abre el mapa |
-| Tests | Vitest (lógica y RLS), Playwright (flujos críticos) |
-| CI | GitHub Actions: lint, type-check, tests, RLS, build |
-| Despliegue | Vercel |
+| Pieza       | Elección                                                                                                   |
+| ----------- | ---------------------------------------------------------------------------------------------------------- |
+| Framework   | Next.js 16 (App Router, React 19), TypeScript estricto con `noUncheckedIndexedAccess`                      |
+| UI          | Tailwind CSS 4, shadcn/ui, lucide-react                                                                    |
+| Datos       | Supabase: `@supabase/supabase-js` + `@supabase/ssr`, migraciones SQL versionadas, tipos generados          |
+| Validación  | Zod 4. El mismo esquema valida el formulario y la Server Action                                            |
+| Formularios | react-hook-form con el resolver de Zod                                                                     |
+| Idiomas     | next-intl 4                                                                                                |
+| Pagos       | Stripe (Fase 3). Desde ya: tabla de pagos, cliente de Stripe solo en servidor y ruta del webhook reservada |
+| Correos     | Resend + React Email                                                                                       |
+| Mapas       | Leaflet + OpenStreetMap, cargado solo en el cliente y solo cuando el usuario abre el mapa                  |
+| Tests       | Vitest (lógica y RLS), Playwright (flujos críticos)                                                        |
+| CI          | GitHub Actions: lint, type-check, tests, RLS, build                                                        |
+| Despliegue  | Vercel                                                                                                     |
 
 ## 4. Estructura de carpetas
 
@@ -122,15 +122,15 @@ erDiagram
   profiles ||--o{ audit_log : "actor"
 ```
 
-| Tabla | Para qué |
-| --- | --- |
-| `profiles` | Datos mínimos de la persona: nombre, teléfono, estado de EE. UU., idioma, preferencias de notificación, `stripe_customer_id`. |
-| `user_roles` | Rol global. Tabla aparte para que nadie pueda subirse de rol editando su propio perfil. Solo `admin` escribe. |
-| `project_members` | Quién puede ver cada proyecto y cómo: `owner` o `familiar_autorizado`, con `can_view_payments`, `can_view_documents` y `can_confirm_deliveries`. |
-| `project_invitations` | Invitación por correo con token de un solo uso (se guarda el hash), vencimiento y revocación. |
-| `notifications` | Avisos dentro del portal y registro de qué se envió por correo. |
-| `audit_log` | Bitácora de solo inserción: quién, qué, antes, después, IP. Nadie puede editar ni borrar; solo `admin` lee. |
-| `rate_limits` | Contadores del rate limiting. Sin acceso desde el cliente. |
+| Tabla                 | Para qué                                                                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `profiles`            | Datos mínimos de la persona: nombre, teléfono, estado de EE. UU., idioma, preferencias de notificación, `stripe_customer_id`.                    |
+| `user_roles`          | Rol global. Tabla aparte para que nadie pueda subirse de rol editando su propio perfil. Solo `admin` escribe.                                    |
+| `project_members`     | Quién puede ver cada proyecto y cómo: `owner` o `familiar_autorizado`, con `can_view_payments`, `can_view_documents` y `can_confirm_deliveries`. |
+| `project_invitations` | Invitación por correo con token de un solo uso (se guarda el hash), vencimiento y revocación.                                                    |
+| `notifications`       | Avisos dentro del portal y registro de qué se envió por correo.                                                                                  |
+| `audit_log`           | Bitácora de solo inserción: quién, qué, antes, después, IP. Nadie puede editar ni borrar; solo `admin` lee.                                      |
+| `rate_limits`         | Contadores del rate limiting. Sin acceso desde el cliente.                                                                                       |
 
 El acceso a un proyecto siempre se decide por `project_members`, nunca solo por el rol global. Así una misma persona puede ser cliente de su obra y familiar autorizado en la de su hermano.
 
@@ -149,16 +149,16 @@ erDiagram
   lots ||--o{ listing_documents : "documentos legales"
 ```
 
-| Tabla | Campos clave |
-| --- | --- |
-| `departments`, `municipalities` | Los 18 departamentos y sus municipios, `is_active`, coordenadas para el mapa. |
-| `homes` | Casas listas. Estado de obra (`ready`, `under_construction`, `presale`), estado de publicación (`draft`, `published`, `reserved`, `sold`), precio, cuartos, baños, m² de construcción y de terreno, ubicación, video o tour, fecha de entrega estimada. |
-| `lots` | Terrenos. Precio, área, agua, luz, acceso, alcantarillado, estado legal (`titled_clear`, `in_process`…), topografía. |
-| `house_models` | Diseños base del cotizador: m², cuartos, baños, niveles, terreno mínimo, semanas de obra, precio base. |
-| `catalog_media` | Imágenes, planos y videos de casas, terrenos, modelos y productos. `is_example` marca las de ejemplo. |
-| `listing_documents` | Documentos legales disponibles de una casa o terreno (escritura, constancia de libertad de gravamen…). |
-| `exchange_rates` | Tipo de cambio USD → L con fecha y autor. Se conserva el historial. |
-| `app_settings` | WhatsApp, datos legales de la empresa, porcentaje de pago inicial y otros ajustes. |
+| Tabla                           | Campos clave                                                                                                                                                                                                                                            |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `departments`, `municipalities` | Los 18 departamentos y sus municipios, `is_active`, coordenadas para el mapa.                                                                                                                                                                           |
+| `homes`                         | Casas listas. Estado de obra (`ready`, `under_construction`, `presale`), estado de publicación (`draft`, `published`, `reserved`, `sold`), precio, cuartos, baños, m² de construcción y de terreno, ubicación, video o tour, fecha de entrega estimada. |
+| `lots`                          | Terrenos. Precio, área, agua, luz, acceso, alcantarillado, estado legal (`titled_clear`, `in_process`…), topografía.                                                                                                                                    |
+| `house_models`                  | Diseños base del cotizador: m², cuartos, baños, niveles, terreno mínimo, semanas de obra, precio base.                                                                                                                                                  |
+| `catalog_media`                 | Imágenes, planos y videos de casas, terrenos, modelos y productos. `is_example` marca las de ejemplo.                                                                                                                                                   |
+| `listing_documents`             | Documentos legales disponibles de una casa o terreno (escritura, constancia de libertad de gravamen…).                                                                                                                                                  |
+| `exchange_rates`                | Tipo de cambio USD → L con fecha y autor. Se conserva el historial.                                                                                                                                                                                     |
+| `app_settings`                  | WhatsApp, datos legales de la empresa, porcentaje de pago inicial y otros ajustes.                                                                                                                                                                      |
 
 ### 5.3 Cotizador y leads
 
@@ -178,18 +178,18 @@ erDiagram
   profiles |o--o{ leads : "responsable"
 ```
 
-| Tabla | Para qué |
-| --- | --- |
-| `finish_levels` | Básico, estándar, premium: multiplicador y precio por m² para diseños personalizados. |
-| `model_finish_prices` | Precio exacto de un modelo con un acabado, cuando no basta el multiplicador. |
-| `region_price_factors` | Factor de costo por departamento (flete, mano de obra). |
-| `quote_extras` | Muro perimetral, cisterna, paneles solares… con precio fijo, por m² o por metro lineal. |
-| `stage_templates` | Etapas estándar (trámites, cimentación, paredes, techo, instalaciones, acabados, entrega) con su porcentaje del costo, del pago y su duración típica. Sirven para el desglose de la cotización y para crear las etapas de un proyecto. |
-| `quotes`, `quote_items` | Cotización emitida: entradas del wizard, total, desglose y plan de pagos copiados tal como se calcularon, token privado del enlace, vigencia. |
-| `leads` | Todo contacto entrante (cotización, contacto, apartado, videollamada). Estado `new`, `contacted`, `negotiating`, `won`, `lost` y responsable. |
-| `lead_notes` | Notas del equipo de ventas. |
-| `video_call_requests` | Día, franja horaria y zona horaria que pidió el cliente; estado y quién confirmó. |
-| `funnel_events` | Eventos anónimos, sin datos personales (wizard iniciado, paso alcanzado, completado), para medir la conversión del cotizador. |
+| Tabla                   | Para qué                                                                                                                                                                                                                               |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `finish_levels`         | Básico, estándar, premium: multiplicador y precio por m² para diseños personalizados.                                                                                                                                                  |
+| `model_finish_prices`   | Precio exacto de un modelo con un acabado, cuando no basta el multiplicador.                                                                                                                                                           |
+| `region_price_factors`  | Factor de costo por departamento (flete, mano de obra).                                                                                                                                                                                |
+| `quote_extras`          | Muro perimetral, cisterna, paneles solares… con precio fijo, por m² o por metro lineal.                                                                                                                                                |
+| `stage_templates`       | Etapas estándar (trámites, cimentación, paredes, techo, instalaciones, acabados, entrega) con su porcentaje del costo, del pago y su duración típica. Sirven para el desglose de la cotización y para crear las etapas de un proyecto. |
+| `quotes`, `quote_items` | Cotización emitida: entradas del wizard, total, desglose y plan de pagos copiados tal como se calcularon, token privado del enlace, vigencia.                                                                                          |
+| `leads`                 | Todo contacto entrante (cotización, contacto, apartado, videollamada). Estado `new`, `contacted`, `negotiating`, `won`, `lost` y responsable.                                                                                          |
+| `lead_notes`            | Notas del equipo de ventas.                                                                                                                                                                                                            |
+| `video_call_requests`   | Día, franja horaria y zona horaria que pidió el cliente; estado y quién confirmó.                                                                                                                                                      |
+| `funnel_events`         | Eventos anónimos, sin datos personales (wizard iniciado, paso alcanzado, completado), para medir la conversión del cotizador.                                                                                                          |
 
 **Fórmula del cotizador** (función pura, en el servidor):
 
@@ -223,18 +223,18 @@ erDiagram
   lots |o--o{ reservations : "aparta"
 ```
 
-| Tabla | Para qué |
-| --- | --- |
-| `projects` | La obra o la compra. Código legible (`CF-2026-0001`), cliente, gerente asignado, tipo (`build`, `home_purchase`, `lot_purchase`), estado, total del contrato, fechas planeadas y reales, ubicación. |
-| `project_stages` | Etapas con peso, porcentaje de avance, estado y fechas planeadas contra reales. De aquí sale la línea de tiempo y el cronograma. |
-| `project_updates` | Bitácora: título, texto, fecha de lo que se muestra, etapa. |
-| `project_update_media` | Fotos y videos fechados de cada avance (bucket privado). |
-| `project_update_comments` | Comentarios del cliente y del gerente sobre un avance. |
-| `project_documents` | Contrato, planos, presupuesto, facturas, escritura, permisos (bucket privado, URL firmada). Borrado lógico y auditado. |
-| `project_messages`, `project_message_reads` | Hilo con el gerente y control de leídos. |
-| `payments` | Un renglón por pago esperado o recibido: concepto (`initial`, `stage`, `reservation`, `order`), monto, vencimiento, estado, método, ids de Stripe, recibo. Un pago de etapa se habilita cuando el gerente marca la etapa anterior como terminada y publica el avance. |
-| `reservations` | Apartado de casa o terreno: monto, vigencia y estado. |
-| `stripe_events` | Eventos de webhook ya procesados, para no aplicar dos veces el mismo pago. |
+| Tabla                                       | Para qué                                                                                                                                                                                                                                                              |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `projects`                                  | La obra o la compra. Código legible (`CF-2026-0001`), cliente, gerente asignado, tipo (`build`, `home_purchase`, `lot_purchase`), estado, total del contrato, fechas planeadas y reales, ubicación.                                                                   |
+| `project_stages`                            | Etapas con peso, porcentaje de avance, estado y fechas planeadas contra reales. De aquí sale la línea de tiempo y el cronograma.                                                                                                                                      |
+| `project_updates`                           | Bitácora: título, texto, fecha de lo que se muestra, etapa.                                                                                                                                                                                                           |
+| `project_update_media`                      | Fotos y videos fechados de cada avance (bucket privado).                                                                                                                                                                                                              |
+| `project_update_comments`                   | Comentarios del cliente y del gerente sobre un avance.                                                                                                                                                                                                                |
+| `project_documents`                         | Contrato, planos, presupuesto, facturas, escritura, permisos (bucket privado, URL firmada). Borrado lógico y auditado.                                                                                                                                                |
+| `project_messages`, `project_message_reads` | Hilo con el gerente y control de leídos.                                                                                                                                                                                                                              |
+| `payments`                                  | Un renglón por pago esperado o recibido: concepto (`initial`, `stage`, `reservation`, `order`), monto, vencimiento, estado, método, ids de Stripe, recibo. Un pago de etapa se habilita cuando el gerente marca la etapa anterior como terminada y publica el avance. |
+| `reservations`                              | Apartado de casa o terreno: monto, vigencia y estado.                                                                                                                                                                                                                 |
+| `stripe_events`                             | Eventos de webhook ya procesados, para no aplicar dos veces el mismo pago.                                                                                                                                                                                            |
 
 El estado de un pago solo cambia desde el webhook de Stripe o desde una acción de `admin` (transferencias fuera de Stripe), y siempre deja rastro en `audit_log`.
 
@@ -255,14 +255,14 @@ erDiagram
   orders ||--o{ payments : "pago"
 ```
 
-| Tabla | Para qué |
-| --- | --- |
-| `product_categories`, `products` | Catálogo con SKU, unidad (bolsa, unidad, lance, m³), precio y disponibilidad. |
-| `bundles`, `bundle_items` | Paquetes por etapa (cimentación, techo, obra gris). |
-| `delivery_zones` | Cobertura y costo de envío por departamento o municipio, con días estimados. |
-| `orders`, `order_items` | Pedido con precios copiados, dirección en Honduras, persona que recibe y responsable de logística. |
-| `order_events` | Línea de tiempo del pedido. |
-| `delivery_proofs` | Foto, nombre de quien recibió, fecha y quién confirmó (el familiar autorizado puede hacerlo). |
+| Tabla                            | Para qué                                                                                           |
+| -------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `product_categories`, `products` | Catálogo con SKU, unidad (bolsa, unidad, lance, m³), precio y disponibilidad.                      |
+| `bundles`, `bundle_items`        | Paquetes por etapa (cimentación, techo, obra gris).                                                |
+| `delivery_zones`                 | Cobertura y costo de envío por departamento o municipio, con días estimados.                       |
+| `orders`, `order_items`          | Pedido con precios copiados, dirección en Honduras, persona que recibe y responsable de logística. |
+| `order_events`                   | Línea de tiempo del pedido.                                                                        |
+| `delivery_proofs`                | Foto, nombre de quien recibió, fecha y quién confirmó (el familiar autorizado puede hacerlo).      |
 
 El número de identidad de quien recibe es un dato sensible: se guarda cifrado, solo lo ven el dueño del pedido y logística, y se borra pasado un plazo después de la entrega.
 
@@ -272,40 +272,40 @@ El número de identidad de quien recibe es un dato sensible: se guarda cifrado, 
 
 ### 5.7 Archivos (Storage)
 
-| Bucket | Acceso | Contenido |
-| --- | --- | --- |
-| `catalog` | Público | Fotos de casas, terrenos, modelos y productos. |
-| `content` | Público | Portadas del blog, fotos del equipo. |
-| `project-media` | Privado | Fotos y videos de la bitácora. |
-| `documents` | Privado | Contratos, escrituras, identificaciones. URL firmada de corta duración, generada en el servidor tras verificar permiso, y registrada en auditoría. |
-| `delivery-proofs` | Privado | Evidencias de entrega. |
+| Bucket            | Acceso  | Contenido                                                                                                                                          |
+| ----------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `catalog`         | Público | Fotos de casas, terrenos, modelos y productos.                                                                                                     |
+| `content`         | Público | Portadas del blog, fotos del equipo.                                                                                                               |
+| `project-media`   | Privado | Fotos y videos de la bitácora.                                                                                                                     |
+| `documents`       | Privado | Contratos, escrituras, identificaciones. URL firmada de corta duración, generada en el servidor tras verificar permiso, y registrada en auditoría. |
+| `delivery-proofs` | Privado | Evidencias de entrega.                                                                                                                             |
 
 ### 5.8 Qué se crea en cada fase
 
-| Fase | Migraciones |
-| --- | --- |
-| 0 | Roles y funciones de permisos, `profiles`, `user_roles`, `audit_log`, `rate_limits`, geografía, `exchange_rates`, `app_settings` |
-| 1 | Catálogo, cotizador, leads, videollamadas, `funnel_events`, contenido |
-| 2 | Proyectos, miembros, invitaciones, bitácora, documentos, mensajes, notificaciones |
-| 3 | `payments`, `reservations`, `stripe_events`, tienda y pedidos |
+| Fase | Migraciones                                                                                                                      |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------- |
+| 0    | Roles y funciones de permisos, `profiles`, `user_roles`, `audit_log`, `rate_limits`, geografía, `exchange_rates`, `app_settings` |
+| 1    | Catálogo, cotizador, leads, videollamadas, `funnel_events`, contenido                                                            |
+| 2    | Proyectos, miembros, invitaciones, bitácora, documentos, mensajes, notificaciones                                                |
+| 3    | `payments`, `reservations`, `stripe_events`, tienda y pedidos                                                                    |
 
 ## 6. Seguridad
 
 **Quién puede qué** (se aplica en RLS y otra vez en cada Server Action):
 
-| Recurso | Visitante | Cliente | Familiar | Ventas | Gerente | Logística | Admin |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Catálogo publicado | Leer | Leer | Leer | Leer | Leer | Leer | Todo |
-| Reglas de precio | — | — | — | Leer | — | — | Todo |
-| Leads y videollamadas | — | — | — | Todo | — | — | Todo |
-| Cotizaciones | — | Las suyas | — | Todo | Las de sus proyectos | — | Todo |
-| Proyectos, etapas, avances | — | Los suyos | El invitado | Leer | Los asignados | — | Todo |
-| Documentos del proyecto | — | Los suyos | Si se lo permiten | — | Los asignados | — | Todo |
-| Pagos | — | Los suyos | Si se lo permiten | Leer | Leer los asignados | — | Todo |
-| Mensajes del proyecto | — | Los suyos | Leer | — | Los asignados | — | Todo |
-| Pedidos y entregas | — | Los suyos | Confirmar entrega | — | — | Todo | Todo |
-| Usuarios y roles | — | Su perfil | Su perfil | — | — | — | Todo |
-| Bitácora de auditoría | — | — | — | — | — | — | Leer |
+| Recurso                    | Visitante | Cliente   | Familiar          | Ventas | Gerente              | Logística | Admin |
+| -------------------------- | --------- | --------- | ----------------- | ------ | -------------------- | --------- | ----- |
+| Catálogo publicado         | Leer      | Leer      | Leer              | Leer   | Leer                 | Leer      | Todo  |
+| Reglas de precio           | —         | —         | —                 | Leer   | —                    | —         | Todo  |
+| Leads y videollamadas      | —         | —         | —                 | Todo   | —                    | —         | Todo  |
+| Cotizaciones               | —         | Las suyas | —                 | Todo   | Las de sus proyectos | —         | Todo  |
+| Proyectos, etapas, avances | —         | Los suyos | El invitado       | Leer   | Los asignados        | —         | Todo  |
+| Documentos del proyecto    | —         | Los suyos | Si se lo permiten | —      | Los asignados        | —         | Todo  |
+| Pagos                      | —         | Los suyos | Si se lo permiten | Leer   | Leer los asignados   | —         | Todo  |
+| Mensajes del proyecto      | —         | Los suyos | Leer              | —      | Los asignados        | —         | Todo  |
+| Pedidos y entregas         | —         | Los suyos | Confirmar entrega | —      | —                    | Todo      | Todo  |
+| Usuarios y roles           | —         | Su perfil | Su perfil         | —      | —                    | —         | Todo  |
+| Bitácora de auditoría      | —         | —         | —                 | —      | —                    | —         | Leer  |
 
 Cómo se cumple:
 
@@ -321,30 +321,30 @@ Cómo se cumple:
 
 ### Sitio público
 
-| Español | English | Página |
-| --- | --- | --- |
-| `/` | `/en` | Inicio |
-| `/casas` | `/en/homes` | Catálogo de casas (lista y `?vista=mapa`) |
-| `/casas/[slug]` | `/en/homes/[slug]` | Ficha de casa |
-| `/terrenos` | `/en/land` | Catálogo de terrenos |
-| `/terrenos/[slug]` | `/en/land/[slug]` | Ficha de terreno |
-| `/construir` | `/en/build` | Construir en mi terreno y catálogo de modelos |
-| `/construir/modelos/[slug]` | `/en/build/models/[slug]` | Ficha de modelo |
-| `/construir/cotizador` | `/en/build/quote` | Cotizador paso a paso |
-| `/cotizacion/[token]` | `/en/quote/[token]` | Cotización guardada (enlace privado) |
-| `/calculadora` | `/en/calculator` | De remesa a patrimonio (también va en Inicio) |
-| `/materiales` | `/en/materials` | Tienda (Fase 3; antes, página "próximamente" con WhatsApp) |
-| `/materiales/[categoria]` | `/en/materials/[category]` | Categoría |
-| `/materiales/producto/[slug]` | `/en/materials/product/[slug]` | Producto |
-| `/materiales/paquetes/[slug]` | `/en/materials/bundles/[slug]` | Paquete por etapa |
-| `/carrito`, `/checkout` | `/en/cart`, `/en/checkout` | Carrito y pago |
-| `/como-funciona` | `/en/how-it-works` | Proceso, pagos por etapas, legal |
-| `/por-que-confiar` | `/en/why-trust-us` | Empresa, equipo, garantías |
-| `/preguntas-frecuentes` | `/en/faq` | Preguntas frecuentes |
-| `/guias`, `/guias/[slug]` | `/en/guides`, `/en/guides/[slug]` | Guías y blog |
-| `/contacto` | `/en/contact` | Contacto y horarios |
-| `/agendar` | `/en/schedule` | Pedir videollamada |
-| `/legal/terminos`, `/privacidad`, `/reembolsos`, `/pagos` | `/en/legal/terms`, `/privacy`, `/refunds`, `/payments` | Páginas legales |
+| Español                                                   | English                                                | Página                                                     |
+| --------------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------- |
+| `/`                                                       | `/en`                                                  | Inicio                                                     |
+| `/casas`                                                  | `/en/homes`                                            | Catálogo de casas (lista y `?vista=mapa`)                  |
+| `/casas/[slug]`                                           | `/en/homes/[slug]`                                     | Ficha de casa                                              |
+| `/terrenos`                                               | `/en/land`                                             | Catálogo de terrenos                                       |
+| `/terrenos/[slug]`                                        | `/en/land/[slug]`                                      | Ficha de terreno                                           |
+| `/construir`                                              | `/en/build`                                            | Construir en mi terreno y catálogo de modelos              |
+| `/construir/modelos/[slug]`                               | `/en/build/models/[slug]`                              | Ficha de modelo                                            |
+| `/construir/cotizador`                                    | `/en/build/quote`                                      | Cotizador paso a paso                                      |
+| `/cotizacion/[token]`                                     | `/en/quote/[token]`                                    | Cotización guardada (enlace privado)                       |
+| `/calculadora`                                            | `/en/calculator`                                       | De remesa a patrimonio (también va en Inicio)              |
+| `/materiales`                                             | `/en/materials`                                        | Tienda (Fase 3; antes, página "próximamente" con WhatsApp) |
+| `/materiales/[categoria]`                                 | `/en/materials/[category]`                             | Categoría                                                  |
+| `/materiales/producto/[slug]`                             | `/en/materials/product/[slug]`                         | Producto                                                   |
+| `/materiales/paquetes/[slug]`                             | `/en/materials/bundles/[slug]`                         | Paquete por etapa                                          |
+| `/carrito`, `/checkout`                                   | `/en/cart`, `/en/checkout`                             | Carrito y pago                                             |
+| `/como-funciona`                                          | `/en/how-it-works`                                     | Proceso, pagos por etapas, legal                           |
+| `/por-que-confiar`                                        | `/en/why-trust-us`                                     | Empresa, equipo, garantías                                 |
+| `/preguntas-frecuentes`                                   | `/en/faq`                                              | Preguntas frecuentes                                       |
+| `/guias`, `/guias/[slug]`                                 | `/en/guides`, `/en/guides/[slug]`                      | Guías y blog                                               |
+| `/contacto`                                               | `/en/contact`                                          | Contacto y horarios                                        |
+| `/agendar`                                                | `/en/schedule`                                         | Pedir videollamada                                         |
+| `/legal/terminos`, `/privacidad`, `/reembolsos`, `/pagos` | `/en/legal/terms`, `/privacy`, `/refunds`, `/payments` | Páginas legales                                            |
 
 ### Cuenta
 
@@ -352,19 +352,19 @@ Cómo se cumple:
 
 ### Portal del cliente
 
-| Ruta | Página |
-| --- | --- |
-| `/portal` | Mi panel. La primera tarjeta es el último avance con fotos: un toque y lo ves. |
-| `/portal/proyectos/[id]` | Mi proyecto: línea de tiempo y resumen |
-| `/portal/proyectos/[id]/avances` | Bitácora de avances |
-| `/portal/proyectos/[id]/cronograma` | Estimado contra real |
-| `/portal/proyectos/[id]/pagos` | Pagados, pendientes y próximos |
-| `/portal/proyectos/[id]/documentos` | Documentos |
-| `/portal/proyectos/[id]/mensajes` | Mensajes con el gerente |
-| `/portal/proyectos/[id]/familia` | Invitar y administrar familiares |
-| `/portal/cotizaciones`, `/[id]` | Mis cotizaciones |
-| `/portal/pedidos`, `/[id]` | Mis pedidos y evidencias de entrega |
-| `/portal/perfil` | Datos, idioma, notificaciones, métodos de pago |
+| Ruta                                | Página                                                                         |
+| ----------------------------------- | ------------------------------------------------------------------------------ |
+| `/portal`                           | Mi panel. La primera tarjeta es el último avance con fotos: un toque y lo ves. |
+| `/portal/proyectos/[id]`            | Mi proyecto: línea de tiempo y resumen                                         |
+| `/portal/proyectos/[id]/avances`    | Bitácora de avances                                                            |
+| `/portal/proyectos/[id]/cronograma` | Estimado contra real                                                           |
+| `/portal/proyectos/[id]/pagos`      | Pagados, pendientes y próximos                                                 |
+| `/portal/proyectos/[id]/documentos` | Documentos                                                                     |
+| `/portal/proyectos/[id]/mensajes`   | Mensajes con el gerente                                                        |
+| `/portal/proyectos/[id]/familia`    | Invitar y administrar familiares                                               |
+| `/portal/cotizaciones`, `/[id]`     | Mis cotizaciones                                                               |
+| `/portal/pedidos`, `/[id]`          | Mis pedidos y evidencias de entrega                                            |
+| `/portal/perfil`                    | Datos, idioma, notificaciones, métodos de pago                                 |
 
 ### Panel de administración
 
@@ -387,14 +387,14 @@ Es una función pura con tests. Usa las mismas etapas y porcentajes que el cotiz
 
 ## 9. Pruebas y CI
 
-| Qué | Con qué |
-| --- | --- |
-| Precios del cotizador, calculadora, dinero y tipo de cambio | Vitest |
-| Esquemas Zod y permisos de Server Actions | Vitest |
-| RLS, tabla por tabla y rol por rol | Vitest contra Postgres real con las migraciones aplicadas |
-| Cotizador, contacto, registro, portal, checkout | Playwright en viewport de celular |
-| Accesibilidad de páginas públicas | axe dentro de Playwright |
-| Rendimiento | Lighthouse móvil al cerrar cada fase |
+| Qué                                                         | Con qué                                                   |
+| ----------------------------------------------------------- | --------------------------------------------------------- |
+| Precios del cotizador, calculadora, dinero y tipo de cambio | Vitest                                                    |
+| Esquemas Zod y permisos de Server Actions                   | Vitest                                                    |
+| RLS, tabla por tabla y rol por rol                          | Vitest contra Postgres real con las migraciones aplicadas |
+| Cotizador, contacto, registro, portal, checkout             | Playwright en viewport de celular                         |
+| Accesibilidad de páginas públicas                           | axe dentro de Playwright                                  |
+| Rendimiento                                                 | Lighthouse móvil al cerrar cada fase                      |
 
 ## 10. Riesgos y temas que quiero que veas
 
