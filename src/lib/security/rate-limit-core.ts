@@ -1,8 +1,13 @@
 import { createHash } from "node:crypto";
+import { isIP } from "node:net";
 
 /**
  * Parte pura del rate limiting (sin base de datos), para poder probarla.
  * La regla de cada acción vive aquí para que los límites se revisen en un solo lugar.
+ *
+ * Alcance: esto protege los formularios y acciones de NUESTRO servidor. Los endpoints de
+ * Supabase Auth son públicos y se protegen aparte, con sus propios límites y CAPTCHA
+ * (ver docs/seguridad.md).
  */
 
 export type RateLimitRule = { limit: number; windowSeconds: number };
@@ -36,18 +41,55 @@ export function buildBucket(action: string, identifier: string, salt: string): s
   return `${action}:${fingerprint.slice(0, 40)}`;
 }
 
-/** IP del cliente según las cabeceras que pone Vercel. Fuera de Vercel hay que revisar esta lista. */
-export function getClientIp(headers: Headers): string {
+/**
+ * Deja la IP lista para contar. Una conexión IPv6 dispone de un bloque /64 entero
+ * (millones de direcciones), así que se cuenta por bloque y no por dirección.
+ * Devuelve `null` si el texto no es una IP.
+ */
+export function normalizeIp(raw: string): string | null {
+  let ip = raw.trim().toLowerCase();
+  if (ip.startsWith("[")) ip = ip.slice(1, ip.indexOf("]") === -1 ? undefined : ip.indexOf("]"));
+  const zone = ip.indexOf("%");
+  if (zone !== -1) ip = ip.slice(0, zone);
+
+  const mapped = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/.exec(ip);
+  if (mapped?.[1]) ip = mapped[1];
+
+  const version = isIP(ip);
+  if (version === 4) return ip;
+  if (version !== 6) return null;
+
+  const [head = "", tail] = ip.split("::");
+  const headParts = head ? head.split(":") : [];
+  const tailParts = tail ? tail.split(":") : [];
+  const groups =
+    tail === undefined
+      ? headParts
+      : [
+          ...headParts,
+          ...Array<string>(Math.max(8 - headParts.length - tailParts.length, 0)).fill("0"),
+          ...tailParts,
+        ];
+  const prefix = groups.slice(0, 4).map((group) => group.replace(/^0+(?=.)/, ""));
+  return `${prefix.join(":")}::/64`;
+}
+
+/**
+ * IP del cliente según las cabeceras que pone Vercel (que las sobrescribe: el navegador
+ * no puede falsificarlas). Fuera de Vercel hay que revisar esta lista.
+ * Devuelve `null` si no hay una IP válida; quien llama decide qué hacer.
+ */
+export function getClientIp(headers: Headers): string | null {
   const candidates = [
     headers.get("x-vercel-forwarded-for"),
     headers.get("x-real-ip"),
     headers.get("x-forwarded-for")?.split(",")[0],
   ];
   for (const candidate of candidates) {
-    const ip = candidate?.trim();
+    const ip = candidate ? normalizeIp(candidate) : null;
     if (ip) return ip;
   }
-  return "unknown";
+  return null;
 }
 
 /** Contador en memoria. Solo para tests y desarrollo: en Vercel cada instancia tendría el suyo. */

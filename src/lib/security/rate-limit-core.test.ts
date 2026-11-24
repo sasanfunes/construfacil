@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildBucket, getClientIp, MemoryRateLimitStore, RATE_LIMITS } from "./rate-limit-core";
+import { buildBucket, getClientIp, MemoryRateLimitStore, normalizeIp, RATE_LIMITS } from "./rate-limit-core";
 
 describe("buildBucket", () => {
   const salt = "sal-de-prueba-con-mas-de-treinta-y-dos-caracteres";
@@ -31,7 +31,36 @@ describe("getClientIp", () => {
       getClientIp(new Headers({ "x-vercel-forwarded-for": "9.9.9.9", "x-forwarded-for": "1.1.1.1" })),
     ).toBe("9.9.9.9");
     expect(getClientIp(new Headers({ "x-forwarded-for": "1.1.1.1, 2.2.2.2" }))).toBe("1.1.1.1");
-    expect(getClientIp(new Headers())).toBe("unknown");
+  });
+
+  it("devuelve null si no hay IP o si la cabecera trae basura", () => {
+    expect(getClientIp(new Headers())).toBeNull();
+    expect(getClientIp(new Headers({ "x-forwarded-for": "no-soy-una-ip" }))).toBeNull();
+    expect(getClientIp(new Headers({ "x-real-ip": "999.1.1.1" }))).toBeNull();
+  });
+});
+
+describe("normalizeIp", () => {
+  it("deja las IPv4 como están", () => {
+    expect(normalizeIp(" 203.0.113.7 ")).toBe("203.0.113.7");
+    expect(normalizeIp("::ffff:203.0.113.7")).toBe("203.0.113.7");
+  });
+
+  it("agrupa las IPv6 por bloque /64: una misma conexión no tiene millones de contadores", () => {
+    const a = normalizeIp("2001:db8:abcd:12:1111:2222:3333:4444");
+    const b = normalizeIp("2001:0db8:abcd:0012:ffff:ffff:ffff:ffff");
+    expect(a).toBe("2001:db8:abcd:12::/64");
+    expect(b).toBe(a);
+    expect(normalizeIp("2001:db8:abcd:13::1")).not.toBe(a);
+    expect(normalizeIp("[2001:db8::1]")).toBe("2001:db8:0:0::/64");
+    expect(normalizeIp("fe80::1%eth0")).toBe("fe80:0:0:0::/64");
+    expect(normalizeIp("::1")).toBe("0:0:0:0::/64");
+  });
+
+  it("rechaza lo que no es una IP", () => {
+    expect(normalizeIp("")).toBeNull();
+    expect(normalizeIp("localhost")).toBeNull();
+    expect(normalizeIp("1.2.3")).toBeNull();
   });
 });
 
