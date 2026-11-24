@@ -1,8 +1,8 @@
 # Plan de la Fase 0 — ConstruFácil
 
-**Estado:** propuesta, pendiente de aprobación · **Fecha:** 24 nov 2026
+**Estado:** aprobado y montado (Fase 0 terminada) · **Fecha:** 24 nov 2026
 
-Este documento propone la arquitectura, el modelo de datos y las rutas. Las tres opciones de paleta y tipografía se ven mejor con colores reales: están en la página de diseño enlazada desde el chat. Nada de esto está implementado todavía; el setup del repo empieza cuando lo apruebes.
+Este documento define la arquitectura, el modelo de datos y las rutas. El estilo elegido es la opción B con la paleta B1 "Teja" (ver `docs/decisiones.md` y `src/app/globals.css`). La base de la sección 11 ya está montada; las tablas de las fases 1 a 3 se crean en su fase.
 
 ## 1. Decisiones ya tomadas
 
@@ -406,7 +406,7 @@ Es una función pura con tests. Usa las mismas etapas y porcentajes que el cotiz
 6. **CSP estricta y rendimiento.** La CSP más estricta (con nonce) obliga a generar cada página en el momento y eso baja el Lighthouse. Plan: CSP con nonce en portal, admin y cuenta; en las páginas públicas estáticas, CSP basada en hashes. Lo valido en el setup.
 7. **Datos del negocio pendientes.** Dominio, WhatsApp de ventas, constructora y entidad legal. No bloquean: van como variables de entorno y ajustes con valores de ejemplo.
 
-## 11. Qué haré al aprobar (resto de la Fase 0)
+## 11. Montaje de la Fase 0 (hecho)
 
 1. Proyecto Next.js 16 con TypeScript estricto, Tailwind 4, shadcn/ui y la paleta y tipografía que elijas.
 2. next-intl con español e inglés, rutas traducidas y selector de idioma.
