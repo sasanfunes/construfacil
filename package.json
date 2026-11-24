@@ -12,7 +12,7 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:rls": "vitest run --config vitest.rls.config.ts",
+    "test:rls": "vitest run --config vitest.rls.config.mts",
     "test:e2e": "playwright test",
     "db:test": "bash scripts/test-db.sh",
     "check": "pnpm lint && pnpm typecheck && pnpm test"

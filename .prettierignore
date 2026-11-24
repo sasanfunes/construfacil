@@ -7,3 +7,4 @@ supabase/.temp
 src/lib/supabase/database.types.ts
 next-env.d.ts
 AGENTS.md
+supabase/config.jsonc
