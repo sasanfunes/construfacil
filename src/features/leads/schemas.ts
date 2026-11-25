@@ -34,11 +34,12 @@ const emptyToUndefined = (value: unknown) =>
   typeof value === "string" && value.trim() === "" ? undefined : value;
 
 /**
- * Letras (con tildes y diéresis), espacios, apóstrofo, punto y guion. El primer nombre va en el
- * saludo de los correos: sin esta regla, alguien podría escribir una URL como "nombre" y usar
- * nuestros correos de confirmación para mandar enlaces a la dirección de otra persona.
+ * Letras del alfabeto latino (con tildes y diéresis), espacios, apóstrofo, guion y punto solo al
+ * final de una inicial ("María J. López"). El primer nombre va en el saludo de los correos: sin
+ * esta regla, alguien podría escribir un dominio ("micuenta-banco.com") o letras de otro alfabeto
+ * que imitan un punto, y usar nuestros correos para mandar enlaces a la dirección de otra persona.
  */
-const NAME_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M}'’. -]*$/u;
+const NAME_PATTERN = /^\p{Script=Latin}(?:[\p{Script=Latin}\p{M}'’ -]|\.(?!\p{L}))*$/u;
 
 export const fullNameSchema = z
   .string({ error: "required" })

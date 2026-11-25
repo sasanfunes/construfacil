@@ -244,7 +244,7 @@
     },
     "errors": {
       "nameRequired": "Ponle un nombre a tu proyecto.",
-      "projectNameInvalid": "Usa solo letras, números y espacios en el nombre.",
+      "projectNameInvalid": "Usa solo letras, espacios y hasta 4 números en el nombre.",
       "chooseLand": "Elige una opción.",
       "chooseDepartment": "Elige el departamento.",
       "chooseLot": "Elige un terreno.",

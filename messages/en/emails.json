@@ -64,7 +64,7 @@
   "project": {
     "subject": "Your ConstruFácil project {code}",
     "preview": "Estimated total: {total}. Here is the link to your project.",
-    "intro": "We saved your project “{name}”. Open your dashboard anytime with this private link:",
+    "intro": "We saved your project. Open your dashboard anytime with this private link:",
     "cta": "See my project",
     "total": "Design, permits and construction",
     "lot": "Lot (paid separately)",

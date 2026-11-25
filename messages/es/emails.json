@@ -64,7 +64,7 @@
   "project": {
     "subject": "Tu proyecto {code} en ConstruFácil",
     "preview": "Total estimado: {total}. Aquí está el enlace a tu proyecto.",
-    "intro": "Guardamos tu proyecto “{name}”. Entra a tu panel cuando quieras con este enlace privado:",
+    "intro": "Guardamos tu proyecto. Entra a tu panel cuando quieras con este enlace privado:",
     "cta": "Ver mi proyecto",
     "total": "Diseño, trámites y obra",
     "lot": "Terreno (se paga aparte)",

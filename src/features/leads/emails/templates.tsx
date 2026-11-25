@@ -62,7 +62,6 @@ export function ClientConfirmationEmail({
 
 export type ProjectSummary = {
   code: string;
-  name: string;
   url: string;
   totalText: string;
   lotText: string | null;
@@ -99,7 +98,9 @@ export function ClientProjectEmail({
       notice={showExampleNotice ? t("exampleNotice") : undefined}
     >
       <P>{t("greeting", { name: firstName })}</P>
-      <P>{t("project.intro", { name: project.name })}</P>
+      {/* Sin el nombre del proyecto: lo escribió quien llenó el formulario y este correo
+          puede llegar a una dirección que nadie ha verificado. */}
+      <P>{t("project.intro")}</P>
       <ButtonLink href={project.url}>{t("project.cta")}</ButtonLink>
       <H>{project.code}</H>
       <Rows rows={rows} />

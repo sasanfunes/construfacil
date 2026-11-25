@@ -244,7 +244,7 @@
     },
     "errors": {
       "nameRequired": "Give your project a name.",
-      "projectNameInvalid": "Use only letters, numbers and spaces in the name.",
+      "projectNameInvalid": "Use only letters, spaces and up to 4 numbers in the name.",
       "chooseLand": "Choose an option.",
       "chooseDepartment": "Choose the department.",
       "chooseLot": "Choose a lot.",

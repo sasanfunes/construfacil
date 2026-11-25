@@ -7,6 +7,7 @@ const NAMES: Array<[string, ReturnType<typeof projectNameError>]> = [
   ["Casa de mamá en Choloma", null],
   ["  Casa   nueva  ", null],
   ["Ñandú #2 (lote 4)", null],
+  ["Casa 2026", null],
   ["A", "nameTooShort"],
   ["   ", "nameTooShort"],
   ["x".repeat(81), "nameTooLong"],
@@ -14,6 +15,10 @@ const NAMES: Array<[string, ReturnType<typeof projectNameError>]> = [
   ["https://ejemplo", "projectNameInvalid"],
   ["mi@correo", "projectNameInvalid"],
   ["-casa", "projectNameInvalid"],
+  ["Casa, llame al (504) 9999-9999", "projectNameInvalid"],
+  ["Lote 12345", "projectNameInvalid"],
+  ["miBanco\ua4f8com", "projectNameInvalid"],
+  ["Дом", "projectNameInvalid"],
 ];
 
 describe("nombre del proyecto", () => {

@@ -52,7 +52,14 @@ describe("contactInfoSchema", () => {
   });
 
   it("acepta nombres con tildes, apóstrofos y guiones, y rechaza URLs, correos y números", () => {
-    for (const fullName of ["José Ñúñez", "María-José O'Connor", "Ana  María   López", "Zoë D’Arcy"]) {
+    for (const fullName of [
+      "José Ñúñez",
+      "María-José O'Connor",
+      "Ana  María   López",
+      "Zoë D’Arcy",
+      "María J. López",
+      "Juan Pérez Jr.",
+    ]) {
       expect(contactInfoSchema.safeParse({ ...valid, fullName }).success, fullName).toBe(true);
     }
     expect(contactInfoSchema.parse({ ...valid, fullName: "Ana  María   López" }).fullName).toBe(
@@ -64,6 +71,10 @@ describe("contactInfoSchema", () => {
       "Juan 2",
       "<b>Ana</b>",
       "\u202eAna",
+      "micuenta-banco.com López",
+      "Ana banco.hn",
+      "miBanco\ua4f8com Pérez",
+      "Анна Pérez",
     ]) {
       const result = contactInfoSchema.safeParse({ ...valid, fullName });
       expect(result.success, fullName).toBe(false);

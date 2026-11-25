@@ -31,6 +31,9 @@ export type UpdateSelectionsResult =
   | { status: "success"; estimate: ProjectEstimate }
   | { status: "error"; error: "validation" | "rate_limited" | "not_editable" | "unavailable" | "server" };
 
+/** Contador por proyecto: la huella del token, nunca el token. */
+const projectRateLimitKey = (tokenHash: string) => `project:${tokenHash}`;
+
 export type ProjectRequestResult =
   { status: "success" } | { status: "error"; error: "validation" | "rate_limited" | "not_found" | "server" };
 
@@ -38,6 +41,8 @@ export type ProjectRequestResult =
 function resolvedInput(input: ProjectInput, estimate: ProjectEstimate): ProjectInput {
   return {
     ...input,
+    // El terreno elegido en el catálogo solo cuenta si de verdad lo compra con nosotros.
+    lotId: input.landStatus === "buying_from_us" ? input.lotId : null,
     ...estimate.location,
     houseModelId: estimate.design.houseModelId,
     areaM2: estimate.design.areaM2,
@@ -81,6 +86,7 @@ export async function saveProject(payload: unknown): Promise<SaveProjectResult> 
     throw error;
   }
 
+  const stored = resolvedInput(input, estimate);
   const token = newToken();
   let code: string;
   try {
@@ -94,14 +100,14 @@ export async function saveProject(payload: unknown): Promise<SaveProjectResult> 
         usState: contact.usState ?? null,
         message: null,
         homeId: null,
-        lotId: input.landStatus === "buying_from_us" ? input.lotId : null,
+        lotId: stored.lotId,
         houseModelId: estimate.design.houseModelId,
       },
       {
         tokenHash: hashToken(token),
         name,
         locale,
-        input: resolvedInput(input, estimate),
+        input: stored,
         estimate,
         usdToHnl: catalog.exchangeRate.usdToHnl,
       },
@@ -115,7 +121,7 @@ export async function saveProject(payload: unknown): Promise<SaveProjectResult> 
   const model = estimate.design.houseModelId
     ? catalog.models.find((m) => m.id === estimate.design.houseModelId)
     : undefined;
-  const lot = input.lotId ? catalog.lots.find((l) => l.id === input.lotId) : undefined;
+  const lot = stored.lotId ? catalog.lots.find((l) => l.id === stored.lotId) : undefined;
 
   await Promise.all([
     notifyTeam({
@@ -138,7 +144,6 @@ export async function saveProject(payload: unknown): Promise<SaveProjectResult> 
       firstName: contact.fullName.split(/\s+/)[0] ?? contact.fullName,
       project: {
         code,
-        name,
         url: new URL(path, siteConfig.url).toString(),
         totalText: formatUsd(estimate.totalUsdCents, locale),
         lotText: estimate.lotPriceUsdCents ? formatUsd(estimate.lotPriceUsdCents, locale) : null,
@@ -169,6 +174,8 @@ export async function updateProjectSelections(payload: unknown): Promise<UpdateS
   const parsed = updateSelectionsSchema.safeParse(payload);
   if (!parsed.success) return { status: "error", error: "validation" };
   const tokenHash = hashToken(parsed.data.token);
+  const perProject = await enforceRateLimit("projectUpdatePerProject", projectRateLimitKey(tokenHash));
+  if (!perProject.allowed) return { status: "error", error: "rate_limited" };
 
   const store = getProjectStore();
   const project = await store.findByTokenHash(tokenHash);
@@ -177,9 +184,13 @@ export async function updateProjectSelections(payload: unknown): Promise<UpdateS
   const catalog = await getCatalog();
   let estimate: ProjectEstimate;
   try {
+    // El terreno y el diseño quedan como se guardaron: solo cambian los materiales (con los
+    // precios de hoy). Así el panel y lo que ve el equipo no se separan, y el cliente puede
+    // seguir cambiando materiales aunque su terreno ya esté apartado.
     estimate = estimateProject(
       { ...project.input, optionIds: parsed.data.optionIds },
       projectRulesFrom(catalog),
+      { lotPriceUsdCents: project.estimate.lotPriceUsdCents },
     );
   } catch (error) {
     if (error instanceof ProjectInputError) return { status: "error", error: "unavailable" };
@@ -209,6 +220,8 @@ export async function requestProjectHelp(payload: unknown): Promise<ProjectReque
   if (!parsed.success) return { status: "error", error: "validation" };
   const { token, kind, message, locale } = parsed.data;
   const tokenHash = hashToken(token);
+  const perProject = await enforceRateLimit("projectRequestPerProject", projectRateLimitKey(tokenHash));
+  if (!perProject.allowed) return { status: "error", error: "rate_limited" };
 
   const store = getProjectStore();
   const project = await store.findByTokenHash(tokenHash);

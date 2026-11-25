@@ -216,6 +216,53 @@ describe("estimateProject", () => {
   });
 });
 
+describe("recalcular un proyecto guardado", () => {
+  const lot = SAMPLE_CATALOG.lots.find((l) => l.id === CHOLOMA_LOT)!;
+  const saved = estimateProject({ ...base, landStatus: "buying_from_us", lotId: CHOLOMA_LOT }, rules);
+  const storedInput: ProjectInput = {
+    ...base,
+    landStatus: "buying_from_us",
+    lotId: CHOLOMA_LOT,
+    ...saved.location,
+    areaM2: saved.design.areaM2,
+  };
+
+  it("conserva el terreno apartado y su precio, aunque hoy ya no esté publicado o cambie de precio", () => {
+    const today = {
+      ...rules,
+      lots: rules.lots.map((l) =>
+        l.id === CHOLOMA_LOT ? { ...l, listingStatus: "reserved" as const, priceUsdCents: 1 } : l,
+      ),
+    };
+    expect(() => estimateProject(storedInput, today)).toThrow(ProjectInputError);
+    const result = estimateProject(storedInput, today, { lotPriceUsdCents: lot.priceUsdCents });
+    expect(result.lotPriceUsdCents).toBe(lot.priceUsdCents);
+    expect(result.totalUsdCents).toBe(saved.totalUsdCents);
+  });
+
+  it("conserva el diseño guardado aunque el modelo cambie o se retire del catálogo", () => {
+    const today = {
+      ...rules,
+      models: rules.models.map((m) => (m.id === COPAN ? { ...m, areaM2: 200, isActive: false } : m)),
+    };
+    const result = estimateProject(storedInput, today, { lotPriceUsdCents: lot.priceUsdCents });
+    expect(result.design.areaM2).toBe(saved.design.areaM2);
+    expect(result.totalUsdCents).toBe(saved.totalUsdCents);
+  });
+
+  it("los materiales sí se calculan con los precios de hoy", () => {
+    const walls = optionId("walls", "concrete_block");
+    const today = {
+      ...rules,
+      options: rules.options.map((o) =>
+        o.id === walls ? { ...o, unitPriceUsdCents: o.unitPriceUsdCents + 1_000 } : o,
+      ),
+    };
+    const result = estimateProject(storedInput, today, { lotPriceUsdCents: lot.priceUsdCents });
+    expect(result.totalUsdCents).toBeGreaterThan(saved.totalUsdCents);
+  });
+});
+
 describe("selección de opciones", () => {
   it("las categorías de la etapa cambian con las plantas", () => {
     expect(userCategoriesOf("grey_work", 1)).toEqual(["walls"]);

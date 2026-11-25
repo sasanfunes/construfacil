@@ -24,8 +24,12 @@ export const RATE_LIMITS = {
   project: { limit: 10, windowSeconds: 60 * 60 },
   /** Cambios de materiales desde el panel del proyecto (cada cambio recalcula y guarda). */
   projectUpdate: { limit: 120, windowSeconds: 60 * 60 },
+  /** Lo mismo, por proyecto: quien tenga el enlace no lo puede reescribir sin parar desde varias IP. */
+  projectUpdatePerProject: { limit: 200, windowSeconds: 24 * 60 * 60 },
   /** Solicitudes desde el panel: servicios, pruebas de avance, soporte. */
   projectRequest: { limit: 10, windowSeconds: 60 * 60 },
+  /** Lo mismo, por proyecto: cada solicitud manda un correo al equipo. */
+  projectRequestPerProject: { limit: 5, windowSeconds: 24 * 60 * 60 },
   /** Eventos anónimos del embudo del cotizador. */
   funnel: { limit: 300, windowSeconds: 60 * 60 },
   /**

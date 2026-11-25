@@ -158,6 +158,27 @@ function resolveDesign(input: ProjectInput, rules: ProjectRules): ResolvedDesign
   return { source: input.designSource, houseModelId: null, areaM2, floors, bedrooms, bathrooms };
 }
 
+function storedLocation(input: ProjectInput, stored: StoredProjectFacts) {
+  return {
+    departmentId: input.departmentId,
+    municipalityId: input.municipalityId,
+    landAreaM2: input.landAreaM2,
+    lotPriceUsdCents: input.landStatus === "buying_from_us" ? stored.lotPriceUsdCents : null,
+  };
+}
+
+function storedDesign(input: ProjectInput): ResolvedDesign {
+  if (input.areaM2 === null) throw new ProjectInputError("area_out_of_range");
+  return {
+    source: input.designSource,
+    houseModelId: input.designSource === "catalog" ? input.houseModelId : null,
+    areaM2: input.areaM2,
+    floors: input.floors,
+    bedrooms: input.bedrooms,
+    bathrooms: input.bathrooms,
+  };
+}
+
 function resolveLocation(input: ProjectInput, rules: ProjectRules) {
   let departmentId = input.departmentId;
   let municipalityId = input.municipalityId;
@@ -257,9 +278,20 @@ function weeksOf(option: ConstructionOption, quantity: number): number {
     : (option.weeksFactor * quantity) / 100;
 }
 
-export function estimateProject(input: ProjectInput, rules: ProjectRules): ProjectEstimate {
-  const location = resolveLocation(input, rules);
-  const design = resolveDesign(input, rules);
+/**
+ * Lo que ya quedó fijo en un proyecto guardado. Con esto, el terreno (ubicación y precio) y el
+ * diseño (área, pisos, cuartos, baños) se toman de la entrada guardada —que escribió el servidor—
+ * y no del catálogo de hoy: un terreno apartado o un modelo retirado no bloquean el panel.
+ */
+export type StoredProjectFacts = { lotPriceUsdCents: number | null };
+
+export function estimateProject(
+  input: ProjectInput,
+  rules: ProjectRules,
+  stored?: StoredProjectFacts,
+): ProjectEstimate {
+  const location = stored ? storedLocation(input, stored) : resolveLocation(input, rules);
+  const design = stored ? storedDesign(input) : resolveDesign(input, rules);
   const options = resolveOptions(input, design, rules);
   const regionFactor =
     location.departmentId === null
