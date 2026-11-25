@@ -13,12 +13,17 @@ test.describe("catálogo", () => {
     const total = await resultCount(counter.innerText());
     expect(total).toBeGreaterThan(1);
 
-    // En el celular los filtros empiezan plegados.
+    // En el celular los filtros empiezan plegados; en escritorio se abren solos al hidratar, así
+    // que un clic justo antes los cerraría. Se reintenta hasta verlos abiertos.
     const summary = page.getByText(/^Filtros/);
     const details = page.locator("details").filter({ has: summary });
-    if (!(await details.evaluate((element: HTMLDetailsElement) => element.open))) await summary.click();
+    const department = page.getByLabel("Departamento");
+    await expect(async () => {
+      if (!(await details.evaluate((element: HTMLDetailsElement) => element.open))) await summary.click();
+      await expect(department).toBeVisible({ timeout: 1_000 });
+    }).toPass();
 
-    await page.getByLabel("Departamento").selectOption({ label: "Atlántida" });
+    await department.selectOption({ label: "Atlántida" });
     await page.getByRole("button", { name: "Ver resultados" }).click();
     await expect(page).toHaveURL(/department=/);
     await expect.poll(() => resultCount(counter.innerText())).toBeLessThan(total);
