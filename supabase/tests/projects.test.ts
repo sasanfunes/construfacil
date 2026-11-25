@@ -2,17 +2,27 @@ import { createHash } from "node:crypto";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { projectRulesFrom } from "@/features/catalog/catalog";
+import { SAMPLE_CATALOG } from "@/features/catalog/sample";
+import { defaultOptionIds, estimateProject } from "@/features/projects/engine";
+import { projectPayload, selectionsPayload } from "@/features/projects/payload";
+import type { ProjectInput } from "@/features/projects/types";
+
 import { anon, as, createUser, DENIED, errorCode, rowCount, service, sql, user } from "./helpers";
 
 const COPAN = "c3000000-0000-4000-8000-000000000002";
 const CHOLOMA_LOT = "b2000000-0000-4000-8000-000000000001";
 const RESERVED_LOT = "b2000000-0000-4000-8000-000000000006";
-// Opciones del catálogo de ejemplo (src/features/catalog/sample/construction.ts).
-const option = (n: number) => `c7000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
-const CATALOG_PLANS = option(3);
-const BUILDING_PERMIT = option(4);
-const REINFORCED_CONCRETE = option(5);
-const CONCRETE_BLOCK = option(11);
+const CORTES = 5; // factor 1.0
+const FRANCISCO_MORAZAN = 8; // factor 1.04
+
+// El catálogo de ejemplo es el mismo que carga supabase/seed.sql.
+const rules = projectRulesFrom(SAMPLE_CATALOG);
+const optionOf = (category: string, key: string) =>
+  SAMPLE_CATALOG.constructionOptions.find((o) => o.category === category && o.key === key)!.id;
+const CONCRETE_BLOCK = optionOf("walls", "concrete_block");
+const POLYSTYRENE_PANEL = optionOf("walls", "polystyrene_panel");
+const REINFORCED_CONCRETE = optionOf("structure", "reinforced_concrete");
 
 const hash = (token: string) => createHash("sha256").update(token).digest("hex");
 
@@ -25,46 +35,57 @@ const lead = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
-const project = (overrides: Record<string, unknown> = {}) => ({
-  access_token_hash: hash(crypto.randomUUID()),
-  name: "Casa de mamá en Choloma",
-  locale: "es",
-  land_status: "own",
-  department_id: 5,
-  municipality_id: 2,
-  land_area_m2: 300,
-  design_source: "catalog",
-  house_model_id: COPAN,
-  area_m2: 86,
+type Payload = Record<string, unknown>;
+type Selection = Record<string, unknown>;
+
+const baseInput: ProjectInput = {
+  landStatus: "own",
+  lotId: null,
+  departmentId: CORTES,
+  municipalityId: 2,
+  landAreaM2: 300,
+  designSource: "catalog",
+  houseModelId: COPAN,
+  areaM2: null,
   floors: 1,
   bedrooms: 3,
   bathrooms: 2,
-  preliminary_usd_cents: 96_600,
-  construction_usd_cents: 3_759_600,
-  total_usd_cents: 3_856_200,
-  duration_weeks: 24,
-  breakdown: { version: 1 },
-  usd_to_hnl: 26.5,
-  ...overrides,
-});
+  optionIds: defaultOptionIds(SAMPLE_CATALOG.constructionOptions, 1),
+};
 
-const selection = (category: string, optionId: string, total = 100_000) => ({
-  category,
-  option_id: optionId,
-  quantity: 86,
-  unit_price_usd_cents: Math.round(total / 86),
-  total_usd_cents: total,
-  materials_usd_cents: Math.round(total / 2),
-});
-
-const selections = [
-  selection("design", CATALOG_PLANS, 45_000),
-  selection("permits", BUILDING_PERMIT, 51_600),
-  selection("structure", REINFORCED_CONCRETE, 645_000),
-  selection("walls", CONCRETE_BLOCK, 989_000),
+const withWalls = (wallsId: string) => [
+  ...baseInput.optionIds.filter(
+    (id) => SAMPLE_CATALOG.constructionOptions.find((o) => o.id === id)?.category !== "walls",
+  ),
+  wallsId,
 ];
 
-async function submitProject(p: Record<string, unknown>, s: unknown[] = selections) {
+/** Un proyecto con montos de verdad: los calcula el mismo motor que usa el servidor. */
+function build(overrides: Partial<ProjectInput> = {}, tokenHash = hash(crypto.randomUUID())) {
+  const input = { ...baseInput, ...overrides };
+  const estimate = estimateProject(input, rules);
+  const stored: ProjectInput = { ...input, ...estimate.location, areaM2: estimate.design.areaM2 };
+  return {
+    estimate,
+    project: projectPayload({
+      tokenHash,
+      name: "Casa de mamá en Choloma",
+      locale: "es",
+      input: stored,
+      estimate,
+      usdToHnl: 26.5,
+    }) as Payload,
+    /** Lo que manda el panel al cambiar materiales: solo montos. */
+    update: projectPayload({ input: stored, estimate, usdToHnl: 26.5 }) as Payload,
+    selections: selectionsPayload(estimate) as Selection[],
+  };
+}
+
+/** Cambia una opción de la lista (por categoría). */
+const patchSelection = (list: Selection[], category: string, patch: Selection) =>
+  list.map((s) => (s.category === category ? { ...s, ...patch } : s));
+
+async function submitProject(p: Payload, s: unknown[]) {
   return as(
     service,
     async (db) =>
@@ -85,6 +106,7 @@ describe("proyectos de construcción", () => {
   let logistica: string;
   let admin: string;
   const token = crypto.randomUUID();
+  const initial = build({}, hash(token));
   let projectId: string;
 
   beforeAll(async () => {
@@ -93,7 +115,7 @@ describe("proyectos de construcción", () => {
     gerente = await createUser("gerente_proyecto");
     logistica = await createUser("logistica");
     admin = await createUser("admin");
-    ({ project_id: projectId } = await submitProject(project({ access_token_hash: hash(token) })));
+    ({ project_id: projectId } = await submitProject(initial.project, initial.selections));
   });
 
   describe("catálogo de opciones", () => {
@@ -166,13 +188,14 @@ describe("proyectos de construcción", () => {
 
   describe("alta y cambios desde el servidor", () => {
     it("submit_project guarda lead, proyecto y selecciones juntos, con un código legible", async () => {
-      const { project_id, project_code } = await submitProject(project());
+      const created = build();
+      const { project_id, project_code } = await submitProject(created.project, created.selections);
       expect(project_code).toMatch(/^CF-P-[0-9A-F]{6}$/);
       const rows = await sql(
         "select count(*)::int as n from public.project_selections where project_id = $1",
         [project_id],
       );
-      expect(rows.rows[0]!.n).toBe(selections.length);
+      expect(rows.rows[0]!.n).toBe(created.selections.length);
       const leadRow = await sql(
         "select l.source from public.projects p join public.leads l on l.id = p.lead_id where p.id = $1",
         [project_id],
@@ -183,47 +206,130 @@ describe("proyectos de construcción", () => {
     it("si algo falla, no queda nada a medias (ni el lead)", async () => {
       const before = await sql("select count(*)::int as n from public.leads");
       await expect(
-        submitProject(project(), [...selections, selection("roof_cover", CONCRETE_BLOCK)]),
+        submitProject(initial.project, [
+          ...initial.selections,
+          { ...initial.selections[0], category: "roof_cover", option_id: CONCRETE_BLOCK },
+        ]),
       ).rejects.toThrow();
       const after = await sql("select count(*)::int as n from public.leads");
       expect(after.rows[0]!.n).toBe(before.rows[0]!.n);
     });
 
-    it("rechaza terrenos apartados, totales que no cuadran y opciones de otra categoría", async () => {
+    it("rechaza terrenos apartados o con otro precio, modelos alterados y opciones de otra categoría", async () => {
+      const buying = build({ landStatus: "buying_from_us", lotId: CHOLOMA_LOT });
+      await expect(
+        submitProject({ ...buying.project, lot_id: RESERVED_LOT }, buying.selections),
+      ).rejects.toThrow(/Terreno no disponible/);
       await expect(
         submitProject(
-          project({ land_status: "buying_from_us", lot_id: RESERVED_LOT, lot_price_usd_cents: 1 }),
+          { ...buying.project, lot_price_usd_cents: Number(buying.project.lot_price_usd_cents) - 100_000 },
+          buying.selections,
         ),
       ).rejects.toThrow(/Terreno no disponible/);
-      await expect(submitProject(project({ total_usd_cents: 1 }))).rejects.toThrow();
-      await expect(submitProject(project(), [selection("walls", REINFORCED_CONCRETE)])).rejects.toThrow(
-        /Opción no disponible/,
+      await expect(submitProject({ ...initial.project, area_m2: 40 }, initial.selections)).rejects.toThrow(
+        /Modelo no disponible/,
       );
-      // Comprar un terreno publicado sí se puede.
+      await expect(
+        submitProject({ ...initial.project, total_usd_cents: 1 }, initial.selections),
+      ).rejects.toThrow();
       await expect(
         submitProject(
-          project({ land_status: "buying_from_us", lot_id: CHOLOMA_LOT, lot_price_usd_cents: 1_280_000 }),
+          initial.project,
+          patchSelection(initial.selections, "walls", { option_id: REINFORCED_CONCRETE }),
         ),
-      ).resolves.toBeTruthy();
+      ).rejects.toThrow(/Opción no disponible/);
+      // Comprar un terreno publicado, a su precio, sí se puede.
+      await expect(submitProject(buying.project, buying.selections)).resolves.toBeTruthy();
     });
 
-    it("cambiar materiales necesita el token correcto y un borrador", async () => {
-      const update = (tokenHash: string) =>
+    it("la base rechaza montos que no cuadran con el catálogo, aunque vengan del servidor", async () => {
+      const valid = build({ optionIds: withWalls(POLYSTYRENE_PANEL) });
+      const walls = valid.selections.find((s) => s.category === "walls")!;
+      const amount = (key: string) => Number(walls[key]);
+      for (const forged of [
+        { unit_price_usd_cents: amount("unit_price_usd_cents") - 1 },
+        { quantity: Number(walls.quantity) + 1 },
+        { total_usd_cents: amount("total_usd_cents") + 50_000 },
+        { materials_usd_cents: 0 },
+      ]) {
+        await expect(
+          submitProject(valid.project, patchSelection(valid.selections, "walls", forged)),
+          JSON.stringify(forged),
+        ).rejects.toThrow(/no cuadran con el catálogo/);
+      }
+
+      // Sin una opción, las etapas ya no suman los totales.
+      await expect(
+        submitProject(
+          valid.project,
+          valid.selections.filter((s) => s.category !== "walls"),
+        ),
+      ).rejects.toThrow(/totales del proyecto no cuadran/);
+
+      // El factor del departamento cuenta: calculado para Francisco Morazán, guardado en Cortés.
+      const pricier = build({ departmentId: FRANCISCO_MORAZAN, municipalityId: null });
+      await expect(
+        submitProject({ ...pricier.project, department_id: CORTES }, pricier.selections),
+      ).rejects.toThrow(/no cuadran con el catálogo/);
+
+      // El desglose que ve el cliente dice lo mismo que las columnas.
+      const breakdown = valid.project.breakdown as { estimate: Record<string, unknown> };
+      await expect(
+        submitProject(
+          {
+            ...valid.project,
+            breakdown: { ...breakdown, estimate: { ...breakdown.estimate, totalUsdCents: 1 } },
+          },
+          valid.selections,
+        ),
+      ).rejects.toThrow(/desglose no coincide/);
+
+      await expect(submitProject(valid.project, valid.selections)).resolves.toBeTruthy();
+    });
+
+    it("cambiar materiales necesita el token correcto, un borrador y montos que cuadren", async () => {
+      const changed = build({ optionIds: withWalls(POLYSTYRENE_PANEL) });
+      const update = (tokenHash: string, payload = changed.update, list = changed.selections) =>
         as(
           service,
           async (db) =>
             (
               await db.query<{ id: string }>("select public.update_project_selections($1, $2, $3) as id", [
                 tokenHash,
-                project({ total_usd_cents: 3_900_000, construction_usd_cents: 3_803_400 }),
-                JSON.stringify(selections),
+                payload,
+                JSON.stringify(list),
               ])
             ).rows[0]!.id,
           { commit: true },
         );
       expect(await update(hash(token))).toBe(projectId);
       const row = await sql("select total_usd_cents from public.projects where id = $1", [projectId]);
-      expect(Number(row.rows[0]!.total_usd_cents)).toBe(3_900_000);
+      expect(Number(row.rows[0]!.total_usd_cents)).toBe(changed.estimate.totalUsdCents);
+      expect(changed.estimate.totalUsdCents).not.toBe(initial.estimate.totalUsdCents);
+
+      // El cambio de montos queda en la bitácora, sin el hash del enlace ni el desglose.
+      const audit = await sql(
+        `select before_data, after_data from public.audit_log
+         where entity_type = 'projects' and entity_id = $1 order by id desc limit 1`,
+        [projectId],
+      );
+      expect(audit.rows[0]!.before_data.total_usd_cents).toBe(initial.estimate.totalUsdCents);
+      expect(audit.rows[0]!.after_data.total_usd_cents).toBe(changed.estimate.totalUsdCents);
+      expect(Object.keys(audit.rows[0]!.after_data).sort()).toEqual([
+        "code",
+        "construction_usd_cents",
+        "preliminary_usd_cents",
+        "status",
+        "total_usd_cents",
+      ]);
+
+      await expect(
+        update(
+          hash(token),
+          changed.update,
+          patchSelection(changed.selections, "walls", { unit_price_usd_cents: 1 }),
+        ),
+      ).rejects.toThrow(/no cuadran con el catálogo/);
       await expect(update(hash("otro-token"))).rejects.toThrow(/no encontrado/);
 
       await sql("update public.projects set status = 'in_review' where id = $1", [projectId]);
@@ -231,6 +337,23 @@ describe("proyectos de construcción", () => {
         await expect(update(hash(token))).rejects.toThrow(/no editable/);
       } finally {
         await sql("update public.projects set status = 'draft' where id = $1", [projectId]);
+      }
+    });
+
+    it("el estado avanza en orden y cerrado es final", async () => {
+      const other = build();
+      const { project_id: id } = await submitProject(other.project, other.selections);
+      const setStatus = (status: string) =>
+        sql("update public.projects set status = $2 where id = $1", [id, status]);
+      await setStatus("in_review");
+      await setStatus("draft");
+      await setStatus("in_review");
+      await setStatus("active");
+      await expect(setStatus("draft")).rejects.toThrow(/Cambio de estado no permitido/);
+      await expect(setStatus("in_review")).rejects.toThrow(/Cambio de estado no permitido/);
+      await setStatus("closed");
+      for (const status of ["draft", "in_review", "active"]) {
+        await expect(setStatus(status)).rejects.toThrow(/Cambio de estado no permitido/);
       }
     });
 
@@ -260,7 +383,7 @@ describe("proyectos de construcción", () => {
         expect(
           await errorCode(actor, "select * from public.submit_project($1, $2, '[]'::jsonb)", [
             lead(),
-            project(),
+            initial.project,
           ]),
         ).toBe(DENIED);
         expect(
@@ -296,7 +419,7 @@ describe("proyectos de construcción", () => {
           await rowCount(user(staff), "select 1 from public.project_selections where project_id = $1", [
             projectId,
           ]),
-        ).toBe(selections.length);
+        ).toBe(initial.selections.length);
       }
     });
 
@@ -332,6 +455,7 @@ describe("proyectos de construcción", () => {
         [projectId],
       );
       expect(audit.rows[0]).toEqual({ actor_id: ventas, status: "in_review" });
+      await sql("update public.projects set status = 'draft' where id = $1", [projectId]);
     });
   });
 });

@@ -12,8 +12,8 @@ import type { AppLocale } from "@/i18n/routing";
 import { isProductionDeploy } from "@/lib/env";
 import { canWriteToSupabase } from "@/lib/env.server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import type { Json } from "@/lib/supabase/database.types";
 
+import { BREAKDOWN_VERSION, projectPayload, selectionsPayload } from "./payload";
 import type { ProjectEstimate, ProjectInput, ProjectRequestKind } from "./types";
 
 /**
@@ -69,51 +69,8 @@ export interface ProjectStore {
   ): Promise<"created" | "not_found">;
 }
 
-const BREAKDOWN_VERSION = 1;
 /** Postgres `no_data_found`: proyecto inexistente, vencido o que ya no es borrador. */
 const NO_DATA_FOUND = "P0002";
-
-function projectPayload(project: NewProject | (ProjectUpdate & { tokenHash?: string })): Json {
-  const { input, estimate, usdToHnl } = project;
-  const base = {
-    preliminary_usd_cents: estimate.preliminaryUsdCents,
-    construction_usd_cents: estimate.constructionUsdCents,
-    total_usd_cents: estimate.totalUsdCents,
-    duration_weeks: estimate.durationWeeks,
-    breakdown: { version: BREAKDOWN_VERSION, input, estimate } as unknown as Json,
-    usd_to_hnl: usdToHnl,
-  };
-  if (!("name" in project)) return base;
-  return {
-    ...base,
-    access_token_hash: project.tokenHash,
-    name: project.name,
-    locale: project.locale,
-    land_status: input.landStatus,
-    lot_id: input.lotId,
-    department_id: input.departmentId,
-    municipality_id: input.municipalityId,
-    land_area_m2: input.landAreaM2,
-    design_source: estimate.design.source,
-    house_model_id: estimate.design.houseModelId,
-    area_m2: estimate.design.areaM2,
-    floors: estimate.design.floors,
-    bedrooms: estimate.design.bedrooms,
-    bathrooms: estimate.design.bathrooms,
-    lot_price_usd_cents: estimate.lotPriceUsdCents,
-  };
-}
-
-function selectionsPayload(estimate: ProjectEstimate): Json {
-  return estimate.lines.map((line) => ({
-    category: line.category,
-    option_id: line.optionId,
-    quantity: line.quantity,
-    unit_price_usd_cents: line.unitPriceUsdCents,
-    total_usd_cents: line.totalUsdCents,
-    materials_usd_cents: line.materialsUsdCents,
-  }));
-}
 
 class SupabaseProjectStore implements ProjectStore {
   private db = createSupabaseAdminClient();

@@ -182,10 +182,78 @@ create index projects_status_created_at_idx on public.projects (status, created_
 
 create trigger projects_set_updated_at before update on public.projects
 for each row execute function private.set_updated_at();
--- Los cambios de estado (borrador → en revisión → activo → cerrado) quedan en la bitácora.
-create trigger projects_status_audit after update of status on public.projects
-for each row when (old.status is distinct from new.status)
-execute function private.audit_row_change('id');
+
+-- El estado avanza en orden: borrador → en revisión → activo → cerrado. En revisión puede volver
+-- a borrador (el equipo le devuelve el proyecto al cliente para que lo ajuste, y el enlace vuelve
+-- a poder cambiar materiales); cerrado es final.
+create function private.check_project_status_transition()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  if new.status is distinct from old.status and not (
+    (old.status = 'draft' and new.status in ('in_review', 'closed'))
+    or (old.status = 'in_review' and new.status in ('draft', 'active', 'closed'))
+    or (old.status = 'active' and new.status = 'closed')
+  ) then
+    raise exception 'Cambio de estado no permitido: % a %', old.status, new.status
+      using errcode = 'check_violation';
+  end if;
+  return new;
+end;
+$$;
+
+revoke execute on function private.check_project_status_transition() from public;
+
+create trigger projects_status_transition before update of status on public.projects
+for each row execute function private.check_project_status_transition();
+
+-- Bitácora del proyecto: cambios de estado y de montos. No copia la fila entera: ni el hash del
+-- enlace privado, ni el nombre que escribió el cliente, ni el desglose.
+create function private.audit_project_change()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_actor uuid := (select auth.uid());
+begin
+  insert into public.audit_log (actor_id, actor_role, action, entity_type, entity_id, before_data, after_data)
+  values (
+    v_actor,
+    (select ur.role from public.user_roles ur where ur.user_id = v_actor),
+    'update',
+    'projects',
+    new.id::text,
+    jsonb_build_object(
+      'code', old.code,
+      'status', old.status,
+      'preliminary_usd_cents', old.preliminary_usd_cents,
+      'construction_usd_cents', old.construction_usd_cents,
+      'total_usd_cents', old.total_usd_cents
+    ),
+    jsonb_build_object(
+      'code', new.code,
+      'status', new.status,
+      'preliminary_usd_cents', new.preliminary_usd_cents,
+      'construction_usd_cents', new.construction_usd_cents,
+      'total_usd_cents', new.total_usd_cents
+    )
+  );
+  return new;
+end;
+$$;
+
+revoke execute on function private.audit_project_change() from public;
+
+create trigger projects_audit after update on public.projects
+for each row when (
+  (old.status, old.preliminary_usd_cents, old.construction_usd_cents)
+  is distinct from (new.status, new.preliminary_usd_cents, new.construction_usd_cents)
+)
+execute function private.audit_project_change();
 
 -- Una opción por categoría, con su precio del momento.
 create table public.project_selections (
@@ -250,12 +318,24 @@ begin
     and not exists (select 1 from public.departments d where d.id = v_department and d.is_active) then
     raise exception 'Departamento no disponible' using errcode = 'check_violation';
   end if;
-  if v_model is not null
-    and not exists (select 1 from public.house_models m where m.id = v_model and m.is_active) then
+  -- Un modelo del catálogo se construye con su área, sus plantas y sus baños.
+  if v_model is not null and not exists (
+    select 1 from public.house_models m
+    where m.id = v_model
+      and m.is_active
+      and m.area_m2 = (p_project ->> 'area_m2')::numeric
+      and least(m.floors, 2) = (p_project ->> 'floors')::smallint
+      and greatest(1, ceil(m.bathrooms)) = (p_project ->> 'bathrooms')::smallint
+  ) then
     raise exception 'Modelo no disponible' using errcode = 'check_violation';
   end if;
-  if v_lot is not null
-    and not exists (select 1 from public.lots l where l.id = v_lot and l.listing_status = 'published') then
+  -- El terreno, publicado y a su precio de hoy.
+  if v_lot is not null and not exists (
+    select 1 from public.lots l
+    where l.id = v_lot
+      and l.listing_status = 'published'
+      and l.price_usd_cents = nullif(p_project ->> 'lot_price_usd_cents', '')::bigint
+  ) then
     raise exception 'Terreno no disponible' using errcode = 'check_violation';
   end if;
   if exists (
@@ -294,6 +374,78 @@ $$;
 
 revoke execute on function private.insert_project_selections(uuid, jsonb) from public;
 grant execute on function private.insert_project_selections(uuid, jsonb) to service_role;
+
+-- Defensa adicional para el dinero. El servidor calcula los montos y la base comprueba, antes de
+-- guardar, que cuadren con el catálogo:
+--   - cada opción, a su precio unitario de hoy y con la cantidad que pide el diseño del proyecto;
+--   - total de la opción = cantidad × precio × factor del departamento, redondeado a dólares (de
+--     ahí la tolerancia de un dólar), y su parte de materiales según la opción;
+--   - el trámite previo y la obra suman lo de sus opciones, y el desglose que ve el cliente dice
+--     lo mismo que las columnas que ve el equipo.
+create function private.check_project_amounts(p_project_id uuid)
+returns void
+language plpgsql
+stable
+set search_path = ''
+as $$
+declare
+  v_project public.projects%rowtype;
+  v_factor numeric;
+  v_footprint numeric;
+begin
+  select * into strict v_project from public.projects p where p.id = p_project_id;
+  v_factor := coalesce(
+    (select f.factor from public.region_price_factors f where f.department_id = v_project.department_id),
+    1
+  );
+  v_footprint := v_project.area_m2 / v_project.floors;
+
+  if exists (
+    select 1
+    from public.project_selections s
+    join public.construction_options o on o.id = s.option_id
+    where s.project_id = p_project_id
+      and (
+        s.unit_price_usd_cents <> o.unit_price_usd_cents
+        or abs(s.quantity - case o.pricing_basis
+          when 'construction_m2' then v_project.area_m2
+          when 'footprint_m2' then v_footprint
+          when 'upper_floor_m2' then v_project.area_m2 - v_footprint
+          when 'per_bathroom' then v_project.bathrooms
+          else 1
+        end) > 0.01
+        or abs(s.total_usd_cents - s.quantity * s.unit_price_usd_cents * v_factor) > 100
+        or abs(s.materials_usd_cents - s.total_usd_cents * o.materials_share_bp / 10000.0) > 100
+      )
+  ) then
+    raise exception 'Los montos de una opción no cuadran con el catálogo' using errcode = 'check_violation';
+  end if;
+
+  if v_project.preliminary_usd_cents <> (
+      select coalesce(sum(s.total_usd_cents), 0)
+      from public.project_selections s
+      join public.construction_options o on o.id = s.option_id
+      where s.project_id = p_project_id and o.stage = 'preliminary'
+    )
+    or v_project.construction_usd_cents <> (
+      select coalesce(sum(s.total_usd_cents), 0)
+      from public.project_selections s
+      join public.construction_options o on o.id = s.option_id
+      where s.project_id = p_project_id and o.stage <> 'preliminary'
+    ) then
+    raise exception 'Los totales del proyecto no cuadran con sus opciones' using errcode = 'check_violation';
+  end if;
+
+  if (v_project.breakdown -> 'estimate' ->> 'totalUsdCents')::bigint is distinct from v_project.total_usd_cents
+    or (v_project.breakdown -> 'estimate' ->> 'lotPriceUsdCents')::bigint
+      is distinct from v_project.lot_price_usd_cents then
+    raise exception 'El desglose no coincide con los totales' using errcode = 'check_violation';
+  end if;
+end;
+$$;
+
+revoke execute on function private.check_project_amounts(uuid) from public;
+grant execute on function private.check_project_amounts(uuid) to service_role;
 
 -- Lead, proyecto y selecciones en una sola transacción.
 create function public.submit_project(p_lead jsonb, p_project jsonb, p_selections jsonb)
@@ -345,6 +497,7 @@ begin
   returning id, code into v_project_id, v_code;
 
   perform private.insert_project_selections(v_project_id, p_selections);
+  perform private.check_project_amounts(v_project_id);
 
   return query select v_project_id, v_code;
 end;
@@ -383,6 +536,7 @@ begin
 
   delete from public.project_selections where project_id = v_project_id;
   perform private.insert_project_selections(v_project_id, p_selections);
+  perform private.check_project_amounts(v_project_id);
 
   return v_project_id;
 end;
