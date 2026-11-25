@@ -92,6 +92,7 @@ test.describe("seguridad", () => {
       "unsafe-inline",
     );
     expect(headers["cache-control"]).toContain("no-store");
+    expect(headers["x-robots-tag"]).toBe("noindex, nofollow");
 
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Portal del cliente");
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
