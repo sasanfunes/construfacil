@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useId, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Field, Input, Select } from "@/components/ui/field";
+import { Field, Select } from "@/components/ui/field";
 import { trackFunnelEvent } from "@/features/funnel/actions";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
@@ -12,12 +12,11 @@ import { formatUsd } from "@/lib/money";
 import { cn } from "@/lib/utils";
 
 import type { CalculatorData } from "../data";
-import { monthlyToNeverPause, planBuild, planPurchase, splitMonths } from "../engine";
+import { monthlyToNeverPause, planBuild, planPurchase } from "../engine";
+
+import { BuildPlanResult, SavingsFields, useTimeText } from "./build-plan";
 
 type Goal = "build" | "land" | "home";
-
-const MIN_MONTHLY = 50;
-const MAX_MONTHLY = 5_000;
 
 /**
  * Calculadora "De remesa a patrimonio". Funciona en el navegador con datos que el
@@ -46,12 +45,7 @@ export function RemittanceCalculator({ data, className }: { data: CalculatorData
     void trackFunnelEvent({ event: "calculator_used", step: null, sessionId, locale });
   };
 
-  const time = (months: number) => {
-    const { years, months: rest } = splitMonths(months);
-    if (years === 0) return t("time.months", { count: rest });
-    if (rest === 0) return t("time.years", { count: years });
-    return t("time.yearsMonths", { years, months: rest });
-  };
+  const time = useTimeText();
 
   const model = data.models.find((m) => m.id === modelId) ?? data.models[0];
   const savingsInput = { monthlyUsdCents: monthly * 100, initialSavingsUsdCents: savings * 100 };
@@ -68,7 +62,6 @@ export function RemittanceCalculator({ data, className }: { data: CalculatorData
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goal, model, monthly, savings, data]);
 
-  const finish = outcome.kind === "build" ? (outcome.plan?.finishMonth ?? 0) : 0;
   const noPause = useMemo(
     () =>
       goal === "build" && model
@@ -83,49 +76,19 @@ export function RemittanceCalculator({ data, className }: { data: CalculatorData
         className="flex flex-col gap-5 rounded-2xl border bg-card p-5"
         onSubmit={(e) => e.preventDefault()}
       >
-        <Field id={`${id}-monthly`} label={t("monthly")} hint={t("monthlyHint")}>
-          <Input
-            id={`${id}-monthly`}
-            type="number"
-            inputMode="numeric"
-            min={MIN_MONTHLY}
-            max={MAX_MONTHLY}
-            step={50}
-            value={monthly}
-            aria-describedby={`${id}-monthly-hint`}
-            onChange={(e) => {
-              touch();
-              setMonthly(Math.min(MAX_MONTHLY, Math.max(0, Number(e.currentTarget.value) || 0)));
-            }}
-          />
-          <input
-            type="range"
-            min={MIN_MONTHLY}
-            max={2_000}
-            step={50}
-            value={Math.min(monthly, 2_000)}
-            aria-label={t("monthly")}
-            onChange={(e) => {
-              touch();
-              setMonthly(Number(e.currentTarget.value));
-            }}
-            className="h-11 w-full accent-[var(--primary)]"
-          />
-        </Field>
-        <Field id={`${id}-savings`} label={t("savings")}>
-          <Input
-            id={`${id}-savings`}
-            type="number"
-            inputMode="numeric"
-            min={0}
-            step={500}
-            value={savings || ""}
-            onChange={(e) => {
-              touch();
-              setSavings(Math.max(0, Number(e.currentTarget.value) || 0));
-            }}
-          />
-        </Field>
+        <SavingsFields
+          id={id}
+          monthly={monthly}
+          savings={savings}
+          onMonthly={(dollars) => {
+            touch();
+            setMonthly(dollars);
+          }}
+          onSavings={(dollars) => {
+            touch();
+            setSavings(dollars);
+          }}
+        />
         <fieldset className="flex flex-col gap-2">
           <legend className="mb-2 font-bold">{t("goal")}</legend>
           {(["build", "land", "home"] as const).map((option) => (
@@ -167,54 +130,7 @@ export function RemittanceCalculator({ data, className }: { data: CalculatorData
         {outcome.kind === "build" ? (
           outcome.plan ? (
             <>
-              <p className="font-display text-2xl leading-snug font-semibold md:text-3xl">
-                {outcome.plan.startMonth === 0
-                  ? t("result.startNow")
-                  : t("result.startIn", { time: time(outcome.plan.startMonth) })}{" "}
-                {t("result.finishIn", { time: time(outcome.plan.finishMonth) })}
-              </p>
-              <p className="text-muted-foreground">
-                {outcome.plan.waitingMonths >= 1
-                  ? t("result.waiting", { time: time(Math.round(outcome.plan.waitingMonths)) })
-                  : t("result.noWaiting")}
-              </p>
-              {outcome.plan.waitingMonths >= 1 && noPause ? (
-                <p className="rounded-xl bg-accent p-3 font-bold">
-                  {t("result.noPauseWith", { amount: formatUsd(noPause, locale) })}
-                </p>
-              ) : null}
-              <div className="flex flex-col gap-3">
-                <p className="font-bold">{t("result.timelineTitle")}</p>
-                <ol className="flex flex-col gap-2">
-                  {outcome.plan.stages.map((stage) => {
-                    const left = (stage.startMonth / Math.max(finish, 1)) * 100;
-                    const width = Math.max(
-                      ((stage.endMonth - stage.startMonth) / Math.max(finish, 1)) * 100,
-                      2,
-                    );
-                    return (
-                      <li key={stage.key} className="flex flex-col gap-1">
-                        <span className="text-sm">
-                          {t("result.timelineStage", {
-                            stage: data.stageNames[stage.key] ?? stage.key,
-                            start: Math.floor(stage.startMonth) + 1,
-                            end: Math.max(Math.ceil(stage.endMonth), Math.floor(stage.startMonth) + 1),
-                          })}
-                        </span>
-                        <span
-                          className="relative block h-3 overflow-hidden rounded-full bg-muted"
-                          aria-hidden="true"
-                        >
-                          <span
-                            className="absolute inset-y-0 rounded-full bg-brand"
-                            style={{ left: `${left}%`, width: `${width}%` }}
-                          />
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </div>
+              <BuildPlanResult plan={outcome.plan} noPause={noPause} stageNames={data.stageNames} />
               {model ? (
                 <Button asChild size="lg" className="self-start">
                   <Link href={{ pathname: "/build/new", query: { model: model.slug } }}>
