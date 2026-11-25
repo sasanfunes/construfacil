@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import { CONSTRUCTION_STATUSES, type Home, type Lot } from "./types";
 

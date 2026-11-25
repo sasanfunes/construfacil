@@ -26,6 +26,10 @@ const eslintConfig = defineConfig([
               name: "next/link",
               message: "Usa `Link` de `@/i18n/navigation` para que la ruta salga traducida.",
             },
+            {
+              name: "zod",
+              message: "Importa `z` de `@/lib/zod`: ahí se configura para no chocar con la CSP.",
+            },
           ],
           patterns: [
             {
@@ -37,6 +41,10 @@ const eslintConfig = defineConfig([
         },
       ],
     },
+  },
+  {
+    files: ["src/lib/zod.ts"],
+    rules: { "no-restricted-imports": "off" },
   },
   globalIgnores([
     ".next/**",

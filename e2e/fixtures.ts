@@ -13,8 +13,8 @@ function randomTestIp(): string {
 }
 
 /**
- * - Toda prueba falla si la página escribe un error en consola. Así se detectan violaciones de
- *   CSP, errores de hidratación y recursos que no cargan.
+ * - Toda prueba falla si la página escribe un error en consola o viola la CSP. Así se detectan
+ *   errores de hidratación, recursos que no cargan y scripts bloqueados.
  * - Cada prueba llega desde una IP distinta: los formularios tienen rate limiting por IP y las
  *   pruebas corren en paralelo contra el mismo servidor.
  * - Los mosaicos de OpenStreetMap se sirven en blanco desde aquí.
@@ -32,12 +32,22 @@ export const test = base.extend<{ consoleErrors: string[]; clientIp: string }>({
     { auto: true },
   ],
   consoleErrors: [
-    async ({ page }, use) => {
+    async ({ page, browserName }, use) => {
       const errors: string[] = [];
       page.on("console", (message) => {
         if (message.type() === "error") errors.push(message.text());
       });
       page.on("pageerror", (error) => errors.push(error.message));
+      // Algunas violaciones de CSP no salen en la consola (p. ej. un `eval` dentro de try/catch);
+      // Chrome las reporta como "issues" de DevTools.
+      if (browserName === "chromium") {
+        const cdp = await page.context().newCDPSession(page);
+        cdp.on("Audits.issueAdded", ({ issue }) => {
+          const csp = issue.details.contentSecurityPolicyIssueDetails;
+          if (csp) errors.push(`CSP ${csp.violatedDirective} (${csp.contentSecurityPolicyViolationType})`);
+        });
+        await cdp.send("Audits.enable");
+      }
       await use(errors);
       expect(errors, "La página no debe registrar errores en consola").toEqual([]);
     },

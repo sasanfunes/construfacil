@@ -1,7 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import { pricingRulesFrom } from "@/features/catalog/catalog";
 import { getCatalog } from "@/features/catalog/data/load";

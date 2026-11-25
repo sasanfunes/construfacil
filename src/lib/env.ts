@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "./zod";
 
 /**
  * Variables públicas (viajan al navegador). Solo aquí se lee `process.env.NEXT_PUBLIC_*`.

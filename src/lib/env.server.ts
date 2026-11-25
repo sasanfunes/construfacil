@@ -1,6 +1,6 @@
 import "server-only";
 
-import { z } from "zod";
+import { z } from "./zod";
 
 import { isProductionDeploy, isSupabaseConfigured } from "./env";
 

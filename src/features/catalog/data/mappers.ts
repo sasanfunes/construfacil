@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import type { Department, Municipality } from "@/features/geo/data";
 import type { FinishLevel, QuoteExtra, RegionFactor, StageTemplate } from "@/features/quote/types";

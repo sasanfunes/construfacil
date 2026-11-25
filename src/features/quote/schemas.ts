@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import { CUSTOM_DESIGN_MAX_M2, CUSTOM_DESIGN_MIN_M2 } from "./engine";
 import { LAND_STATUSES } from "./types";
