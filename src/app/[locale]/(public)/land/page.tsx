@@ -58,9 +58,10 @@ async function LotsResults({ searchParams }: { searchParams: PageProps<"/[locale
     <>
       <LotFiltersForm action={base} filters={filters} geo={geo} />
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <p className="text-lg font-bold" aria-live="polite">
+        {/* Es el título de la lista: las tarjetas usan h3 y deben ir debajo de un h2. */}
+        <h2 className="font-sans text-lg leading-normal font-bold tracking-normal" aria-live="polite">
           {t("lots.count", { count: lots.length })}
-        </p>
+        </h2>
         <ViewToggle
           listHref={withParams({ view: "list" })}
           mapHref={withParams({ view: "map" })}

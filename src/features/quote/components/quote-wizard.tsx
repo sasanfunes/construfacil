@@ -54,7 +54,19 @@ type WizardState = {
   extras: Record<string, { selected: boolean; quantity: number }>;
 };
 
-function initialState(data: WizardData, preset: { lotSlug?: string; modelSlug?: string }): WizardState {
+type Preset = { lotSlug?: string; modelSlug?: string };
+
+/**
+ * Terreno o modelo que llega en la URL (`?lot=…` o `?model=…`, desde una ficha). Se lee en el
+ * navegador: así la página del cotizador es estática y carga rápido desde la caché.
+ */
+function presetFromUrl(search: string): Preset {
+  const params = new URLSearchParams(search);
+  const slug = (value: string | null) => (value && /^[a-z0-9-]{1,80}$/.test(value) ? value : undefined);
+  return { lotSlug: slug(params.get("lot")), modelSlug: slug(params.get("model")) };
+}
+
+function initialState(data: WizardData, preset: Preset): WizardState {
   const lot = preset.lotSlug ? data.rules.lots.find((l) => l.slug === preset.lotSlug) : undefined;
   const model = preset.modelSlug ? data.rules.models.find((m) => m.slug === preset.modelSlug) : undefined;
   const standard = data.rules.finishLevels.find((f) => f.key === "standard") ?? data.rules.finishLevels[0];
@@ -135,15 +147,7 @@ function sessionId(): string {
  * Cotizador paso a paso. Calcula al instante en el navegador con las mismas reglas que
  * el servidor; al guardar, el servidor vuelve a calcular todo y guarda su resultado.
  */
-export function QuoteWizard({
-  data,
-  preset,
-  whatsappHref,
-}: {
-  data: WizardData;
-  preset: { lotSlug?: string; modelSlug?: string };
-  whatsappHref: string | null;
-}) {
+export function QuoteWizard({ data, whatsappHref }: { data: WizardData; whatsappHref: string | null }) {
   const t = useTranslations("quote");
   const tf = useTranslations("forms");
   const tc = useTranslations("catalog");
@@ -151,7 +155,7 @@ export function QuoteWizard({
   const router = useRouter();
   const id = useId().replace(/:/g, "");
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const [state, setState] = useState<WizardState>(() => initialState(data, preset));
+  const [state, setState] = useState<WizardState>(() => initialState(data, {}));
   const [restored, setRestored] = useState(false);
   const [saving, startSaving] = useTransition();
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -171,15 +175,17 @@ export function QuoteWizard({
     void trackFunnelEvent({ event, step, sessionId: sessionId(), locale } satisfies FunnelEventInput);
   };
 
-  // Recupera el borrador de esta pestaña, salvo que la URL traiga un terreno o modelo.
+  // Aplica el terreno o modelo de la URL o, si no hay, recupera el borrador de esta pestaña.
   useEffect(() => {
-    /* eslint-disable react-hooks/set-state-in-effect -- sessionStorage solo existe en el navegador */
+    /* eslint-disable react-hooks/set-state-in-effect -- la URL y sessionStorage solo existen en el navegador */
     setStartedAt(Date.now());
-    if (!preset.lotSlug && !preset.modelSlug) {
+    const preset = presetFromUrl(window.location.search);
+    if (preset.lotSlug || preset.modelSlug) {
+      setState(initialState(data, preset));
+    } else {
       try {
         const saved = sessionStorage.getItem(DRAFT_KEY);
-        if (saved)
-          setState({ ...initialState(data, preset), ...(JSON.parse(saved) as Partial<WizardState>) });
+        if (saved) setState({ ...initialState(data, {}), ...(JSON.parse(saved) as Partial<WizardState>) });
       } catch {
         // Un borrador ilegible se ignora.
       }

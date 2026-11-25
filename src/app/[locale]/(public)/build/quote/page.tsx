@@ -22,7 +22,11 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default async function QuotePage({ searchParams }: PageProps<"/[locale]/build/quote">) {
+/**
+ * Página estática: el cotizador sale en el HTML prerenderizado. El terreno o modelo que llega
+ * en la URL (`?lot=`, `?model=`) lo aplica el propio cotizador en el navegador.
+ */
+export default async function QuotePage() {
   const t = await getTranslations("quote.page");
   const whatsapp = whatsappHref(t("whatsappMessage"));
   return (
@@ -39,24 +43,35 @@ export default async function QuotePage({ searchParams }: PageProps<"/[locale]/b
             ) : null}
           </p>
         </noscript>
-        <Suspense fallback={<p className="text-muted-foreground">{t("loading")}</p>}>
-          <WizardLoader searchParams={searchParams} whatsappHref={whatsapp} />
+        <Suspense fallback={<WizardSkeleton label={t("loading")} />}>
+          <WizardLoader whatsappHref={whatsapp} />
         </Suspense>
       </div>
     </>
   );
 }
 
-async function WizardLoader({
-  searchParams,
-  whatsappHref,
-}: {
-  searchParams: PageProps<"/[locale]/build/quote">["searchParams"];
-  whatsappHref: string | null;
-}) {
-  const [catalog, params, messages] = await Promise.all([getCatalog(), searchParams, getMessages()]);
-  const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value);
-  const slug = (value: string | undefined) => (value && /^[a-z0-9-]{1,80}$/.test(value) ? value : undefined);
+/**
+ * Mientras llega el cotizador se reserva su espacio (primer paso: unos 760 px en el celular y
+ * 600 px en escritorio). Si no, el pie de página salta hacia abajo al aparecer (CLS).
+ */
+function WizardSkeleton({ label }: { label: string }) {
+  return (
+    <div role="status" aria-busy="true" className="flex min-h-[47.5rem] flex-col gap-6 md:min-h-[38rem]">
+      <p className="text-sm font-bold text-muted-foreground">{label}</p>
+      <div className="h-2 rounded-full bg-muted" />
+      <div className="h-8 w-2/3 rounded-xl bg-muted" />
+      <div className="flex flex-col gap-3">
+        <div className="h-24 rounded-2xl bg-muted/70" />
+        <div className="h-24 rounded-2xl bg-muted/70" />
+        <div className="h-24 rounded-2xl bg-muted/70" />
+      </div>
+    </div>
+  );
+}
+
+async function WizardLoader({ whatsappHref }: { whatsappHref: string | null }) {
+  const [catalog, messages] = await Promise.all([getCatalog(), getMessages()]);
   return (
     <NextIntlClientProvider
       messages={{
@@ -66,11 +81,7 @@ async function WizardLoader({
         catalog: { facts: messages.catalog.facts },
       }}
     >
-      <QuoteWizard
-        data={toWizardData(catalog)}
-        preset={{ lotSlug: slug(first(params.lot)), modelSlug: slug(first(params.model)) }}
-        whatsappHref={whatsappHref}
-      />
+      <QuoteWizard data={toWizardData(catalog)} whatsappHref={whatsappHref} />
     </NextIntlClientProvider>
   );
 }
