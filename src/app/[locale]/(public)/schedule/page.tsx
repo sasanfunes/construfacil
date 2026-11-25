@@ -29,7 +29,7 @@ export default async function SchedulePage({ searchParams }: PageProps<"/[locale
   return (
     <>
       <PageIntro title={t("title")} intro={t("intro")} />
-      <div className="container-page grid gap-10 pb-16 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="container-page grid grid-cols-1 gap-10 pb-16 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <section aria-labelledby="schedule-form" className="flex min-w-0 flex-col gap-4">
           <h2 id="schedule-form" className="text-2xl">
             {t("formTitle")}

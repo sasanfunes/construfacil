@@ -106,7 +106,7 @@ export default async function HomeDetailPage({ params }: PageProps<"/[locale]/ho
         </p>
       </header>
 
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="flex min-w-0 flex-col gap-10">
           <figure className="flex flex-col gap-2">
             <HouseIllustration

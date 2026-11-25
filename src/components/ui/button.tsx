@@ -7,9 +7,11 @@ import { cn } from "@/lib/utils";
 /**
  * Botón base (patrón shadcn/ui). El tamaño mínimo es 44px de alto en todas las variantes.
  * `default` es la acción principal y usa teja: solo debe haber uno por pantalla.
+ * El texto puede pasar a dos líneas: en un celular angosto, un botón largo no debe empujar
+ * la página hacia los lados.
  */
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-full font-bold whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-full text-center font-bold transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -21,8 +23,8 @@ const buttonVariants = cva(
         link: "min-h-11 rounded-md px-0 text-brand underline underline-offset-4 hover:text-primary",
       },
       size: {
-        default: "min-h-11 px-5 text-base [&_svg]:size-5",
-        lg: "min-h-13 px-7 text-lg [&_svg]:size-5",
+        default: "min-h-11 px-5 py-2 text-base [&_svg]:size-5",
+        lg: "min-h-13 px-7 py-2.5 text-lg leading-snug [&_svg]:size-5",
         icon: "size-11 [&_svg]:size-5",
       },
     },

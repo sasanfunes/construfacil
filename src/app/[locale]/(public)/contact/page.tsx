@@ -26,7 +26,7 @@ export default async function ContactPage() {
   return (
     <>
       <PageIntro title={t("title")} intro={t("intro")} />
-      <div className="container-page grid gap-10 pb-16 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="container-page grid grid-cols-1 gap-10 pb-16 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <section aria-labelledby="form-title" className="flex min-w-0 flex-col gap-4">
           <h2 id="form-title" className="text-2xl">
             {t("formTitle")}
