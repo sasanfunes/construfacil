@@ -3,7 +3,7 @@
 import { useLocale } from "next-intl";
 import { useParams } from "next/navigation";
 
-import { Link, usePathname } from "@/i18n/navigation";
+import { getPathname, usePathname } from "@/i18n/navigation";
 import { routing, type AppLocale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
@@ -26,11 +26,13 @@ export function LocaleSwitcher({ label, names }: LocaleSwitcherProps) {
       {routing.locales.map((locale) => {
         const isCurrent = locale === current;
         return (
-          <Link
+          // Enlace normal, con recarga completa. Si fuera un <Link> de Next, el enrutador
+          // aprendería que "/en" es la ruta "/[locale]" y desde entonces creería que
+          // cualquier ruta de un segmento ("/casas") también lo es: precargas fallidas.
+          <a
             key={locale}
             // La ruta y sus parámetros vienen de la página actual, así que siempre coinciden.
-            href={{ pathname, params } as never}
-            locale={locale}
+            href={getPathname({ href: { pathname, params } as never, locale })}
             lang={locale}
             hrefLang={locale}
             aria-current={isCurrent ? "true" : undefined}
@@ -43,7 +45,7 @@ export function LocaleSwitcher({ label, names }: LocaleSwitcherProps) {
           >
             {names[locale].short}
             <span className="sr-only">{names[locale].full}</span>
-          </Link>
+          </a>
         );
       })}
     </nav>
