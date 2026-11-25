@@ -1,6 +1,7 @@
 import createMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { isPublishedSlug, type DetailKind } from "@/features/catalog/data/known-slugs";
 import { routing } from "@/i18n/routing";
 import { buildCsp, generateNonce } from "@/lib/security/csp";
 import { isHttpsSite } from "@/lib/security/headers";
@@ -29,6 +30,31 @@ const API_ROUTES: ReadonlySet<string> = new Set<string>([
 /** Cabeceras que solo puede poner este proxy. Si vienen del navegador, se descartan. */
 const PROXY_OWNED_HEADERS = ["content-security-policy", "content-security-policy-report-only", "x-nonce"];
 
+/** Fichas del catálogo (ruta interna, después de traducir): `/es/homes/<slug>`, etc. */
+const DETAIL_ROUTE = /^\/([a-z]{2})\/(homes|land|build\/models)\/([^/]+)\/?$/;
+const DETAIL_KIND: Record<string, DetailKind> = { homes: "home", land: "lot", "build/models": "model" };
+
+/**
+ * Las fichas usan ISR: Next genera y guarda una página por cada slug que alguien visita, exista
+ * o no. Un slug que no está publicado se manda a una ruta inexistente fija, que responde 404
+ * sin crear entradas nuevas en la caché.
+ */
+async function unknownDetailRewrite(request: NextRequest, response: NextResponse) {
+  const target = response.headers.get("x-middleware-rewrite");
+  const internalPath = target ? new URL(target, request.url).pathname : request.nextUrl.pathname;
+  const match = DETAIL_ROUTE.exec(internalPath);
+  if (!match) return null;
+  const [, locale, section, rawSlug] = match;
+  let slug: string;
+  try {
+    slug = decodeURIComponent(rawSlug!);
+  } catch {
+    return null;
+  }
+  if (await isPublishedSlug(DETAIL_KIND[section!]!, slug)) return null;
+  return NextResponse.rewrite(new URL(`/${locale}/ficha-no-encontrada`, request.url));
+}
+
 function bare(status: 400 | 404) {
   return new NextResponse(null, { status, headers: { "Cache-Control": "no-store" } });
 }
@@ -37,12 +63,13 @@ function bare(status: 400 | 404) {
  * Corre antes de cada petición (en Next 16 reemplaza a `middleware.ts`).
  * 1. Rechaza rutas malformadas.
  * 2. Resuelve el idioma y la ruta traducida.
- * 3. En rutas privadas genera un nonce y aplica la CSP estricta.
+ * 3. Manda las fichas del catálogo que no existen a un 404 fijo (ver `unknownDetailRewrite`).
+ * 4. En rutas privadas genera un nonce y aplica la CSP estricta, sin caché y sin indexar.
  *
  * No es la barrera de acceso: cada página y cada acción privada comprueba la sesión por
  * su cuenta. La sesión de Supabase se refrescará aquí a partir de la Fase 2.
  */
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (isSuspiciousPath(pathname)) return bare(400);
@@ -62,7 +89,7 @@ export function proxy(request: NextRequest) {
     // idiomas reescribe la petición hacia una ruta privada.
     const rewrite = response.headers.get("x-middleware-rewrite");
     if (!rewrite || !isPrivatePath(new URL(rewrite, request.url).pathname, routing.locales)) {
-      return response;
+      return (await unknownDetailRewrite(request, response)) ?? response;
     }
   }
 
@@ -80,6 +107,8 @@ export function proxy(request: NextRequest) {
   const response = handleI18n(request);
   response.headers.set("Content-Security-Policy", csp);
   response.headers.set("Cache-Control", "private, no-store");
+  // Los buscadores deben poder leer esta cabecera: por eso robots.txt no bloquea estas rutas.
+  response.headers.set("X-Robots-Tag", "noindex, nofollow");
   return response;
 }
 
