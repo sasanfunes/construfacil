@@ -33,6 +33,8 @@ function saveQuoteSchema(today: string) {
     quote: quoteInputSchema,
     contact: contactInfoSchema,
     videoCall: videoCallSchema(today).nullable(),
+    /** Sesión anónima del embudo, para contar la cotización guardada. */
+    sessionId: z.uuid().optional(),
     [HONEYPOT_FIELD]: z.unknown(),
     [STARTED_AT_FIELD]: z.unknown(),
   });
@@ -58,7 +60,7 @@ export async function saveQuote(payload: unknown): Promise<SaveQuoteResult> {
   const parsed = saveQuoteSchema(today).safeParse(payload);
   if (!parsed.success)
     return { status: "error", error: "validation", fieldErrors: fieldErrorsOf(parsed.error) };
-  const { locale, quote: input, contact, videoCall: call } = parsed.data;
+  const { locale, quote: input, contact, videoCall: call, sessionId } = parsed.data;
 
   const byEmail = await enforceRateLimit("quote", `email:${contact.email}`);
   if (!byEmail.allowed) return { status: "error", error: "rate_limited" };
@@ -137,6 +139,13 @@ export async function saveQuote(payload: unknown): Promise<SaveQuoteResult> {
       isSample: catalog.source === "sample",
     }),
   ]);
+
+  if (sessionId) {
+    // Se registra aquí y no desde el navegador: el navegador ya está cambiando de página.
+    await getLeadStore()
+      .trackFunnelEvent({ event: "quote_saved", step: 7, sessionId, locale })
+      .catch((error: unknown) => console.error(`[embudo] no se pudo registrar: ${(error as Error).message}`));
+  }
 
   return { status: "success", path };
 }

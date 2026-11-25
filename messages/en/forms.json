@@ -1,0 +1,71 @@
+{
+  "fields": {
+    "fullName": "Full name",
+    "email": "Email",
+    "phone": "Phone or WhatsApp",
+    "phoneHint": "Include the country code. E.g. +1 305 555 0123",
+    "preferredChannel": "How should we contact you?",
+    "usState": "Which US state do you live in? (optional)",
+    "usStateNone": "I'd rather not say",
+    "message": "Message",
+    "messageOptional": "Message (optional)",
+    "messagePlaceholder": "Tell us what you're looking for: area, size, budget…",
+    "wantsCall": "I also want to book a video call",
+    "callDate": "Video call date",
+    "callTimeSlot": "What time works best?",
+    "callTimezone": "Your time zone",
+    "privacy": "I accept the {link}. We only use your data to reply to you.",
+    "privacyLink": "privacy notice"
+  },
+  "channels": {
+    "whatsapp": "WhatsApp",
+    "phone": "Phone call",
+    "email": "Email"
+  },
+  "slots": {
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening"
+  },
+  "timezones": {
+    "America/New_York": "Eastern Time (New York, Florida, North Carolina)",
+    "America/Chicago": "Central Time (Texas, Illinois)",
+    "America/Denver": "Mountain Time (Colorado)",
+    "America/Phoenix": "Arizona",
+    "America/Los_Angeles": "Pacific Time (California, Washington)",
+    "America/Tegucigalpa": "Honduras time",
+    "detected": "My current time zone ({zone})"
+  },
+  "submit": {
+    "contact": "Send message",
+    "video_call": "Request video call",
+    "reservation": "I want to reserve it",
+    "listing_inquiry": "Send question",
+    "pending": "Sending…"
+  },
+  "success": {
+    "title": "Done! We got your request",
+    "body": "We'll reply within one business day. We also sent you an email with a summary.",
+    "whatsapp": "If you prefer, message us on WhatsApp now",
+    "again": "Send another request"
+  },
+  "errors": {
+    "title": "Please check the highlighted fields",
+    "required": "This field is required.",
+    "invalid": "Please check this field.",
+    "nameTooShort": "Please enter your full name.",
+    "nameTooLong": "That name is too long.",
+    "emailInvalid": "Enter a valid email, for example name@email.com.",
+    "phoneInvalid": "Enter the number with the country code, digits only.",
+    "phoneRequired": "We need your number to contact you by WhatsApp or phone.",
+    "messageTooLong": "The message is too long (2,000 characters max).",
+    "privacyRequired": "Please accept the privacy notice so we can reply to you.",
+    "dateInvalid": "Choose a date.",
+    "dateOutOfRange": "Choose a day between tomorrow and the next 60 days.",
+    "timezoneInvalid": "Choose your time zone.",
+    "rate_limited": "We received several requests in a row. Wait a few minutes or message us on WhatsApp.",
+    "unavailable": "This property is no longer available. Message us and we'll show you similar options.",
+    "server": "We couldn't send your request. Try again or message us on WhatsApp.",
+    "validation": "Please check the highlighted fields."
+  }
+}

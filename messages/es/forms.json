@@ -1,0 +1,71 @@
+{
+  "fields": {
+    "fullName": "Nombre completo",
+    "email": "Correo electrónico",
+    "phone": "Teléfono o WhatsApp",
+    "phoneHint": "Con código de país. Ej.: +1 305 555 0123",
+    "preferredChannel": "¿Cómo prefieres que te contactemos?",
+    "usState": "¿En qué estado de EE. UU. vives? (opcional)",
+    "usStateNone": "Prefiero no decir",
+    "message": "Mensaje",
+    "messageOptional": "Mensaje (opcional)",
+    "messagePlaceholder": "Cuéntanos qué buscas: zona, tamaño, presupuesto…",
+    "wantsCall": "También quiero agendar una videollamada",
+    "callDate": "Día de la videollamada",
+    "callTimeSlot": "¿A qué hora te queda mejor?",
+    "callTimezone": "Tu zona horaria",
+    "privacy": "Acepto el {link}. Usamos tus datos solo para responderte.",
+    "privacyLink": "aviso de privacidad"
+  },
+  "channels": {
+    "whatsapp": "WhatsApp",
+    "phone": "Llamada",
+    "email": "Correo"
+  },
+  "slots": {
+    "morning": "Mañana",
+    "afternoon": "Tarde",
+    "evening": "Noche"
+  },
+  "timezones": {
+    "America/New_York": "Hora del Este (Nueva York, Florida, Carolina del Norte)",
+    "America/Chicago": "Hora del Centro (Texas, Illinois)",
+    "America/Denver": "Hora de la Montaña (Colorado)",
+    "America/Phoenix": "Arizona",
+    "America/Los_Angeles": "Hora del Pacífico (California, Washington)",
+    "America/Tegucigalpa": "Hora de Honduras",
+    "detected": "Mi zona actual ({zone})"
+  },
+  "submit": {
+    "contact": "Enviar mensaje",
+    "video_call": "Pedir videollamada",
+    "reservation": "Quiero apartarla",
+    "listing_inquiry": "Enviar pregunta",
+    "pending": "Enviando…"
+  },
+  "success": {
+    "title": "¡Listo! Recibimos tu solicitud",
+    "body": "Te escribimos en menos de un día hábil. También te enviamos un correo con el resumen.",
+    "whatsapp": "Si prefieres, escríbenos ya por WhatsApp",
+    "again": "Enviar otra solicitud"
+  },
+  "errors": {
+    "title": "Revisa los campos marcados",
+    "required": "Este campo es obligatorio.",
+    "invalid": "Revisa este dato.",
+    "nameTooShort": "Escribe tu nombre completo.",
+    "nameTooLong": "El nombre es demasiado largo.",
+    "emailInvalid": "Escribe un correo válido, por ejemplo nombre@correo.com.",
+    "phoneInvalid": "Escribe el número con código de país, solo números.",
+    "phoneRequired": "Para contactarte por WhatsApp o llamada necesitamos tu número.",
+    "messageTooLong": "El mensaje es demasiado largo (máximo 2,000 caracteres).",
+    "privacyRequired": "Necesitamos que aceptes el aviso de privacidad para responderte.",
+    "dateInvalid": "Elige una fecha.",
+    "dateOutOfRange": "Elige un día entre mañana y los próximos 60 días.",
+    "timezoneInvalid": "Elige tu zona horaria.",
+    "rate_limited": "Recibimos varias solicitudes seguidas. Espera unos minutos o escríbenos por WhatsApp.",
+    "unavailable": "Esta propiedad ya no está disponible. Escríbenos y te mostramos opciones parecidas.",
+    "server": "No pudimos enviar tu solicitud. Inténtalo de nuevo o escríbenos por WhatsApp.",
+    "validation": "Revisa los campos marcados."
+  }
+}

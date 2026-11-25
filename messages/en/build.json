@@ -1,0 +1,53 @@
+{
+  "metaTitle": "Build your home on your land",
+  "metaDescription": "Design, permits, materials and construction in Honduras. You see every update in photos and pay for each stage when you see it finished.",
+  "title": "We build your home on your land",
+  "intro": "Design, permits, materials and construction. You see every update in photos and pay for each stage when you see it finished.",
+  "cta": "Get a quote for my home",
+  "calculatorLink": "How long will it take with what I send each month?",
+  "stepsTitle": "How we build",
+  "steps": {
+    "design": {
+      "title": "Design and permits",
+      "body": "We choose a model with you or design one to measure, and get the building permit."
+    },
+    "stages": {
+      "title": "Construction in stages",
+      "body": "Foundation, walls, roof, utilities and finishes. Every week we send you photos and videos."
+    },
+    "payments": {
+      "title": "You pay for what you see",
+      "body": "Each payment is made when you see the previous stage finished. You never prepay the whole build."
+    },
+    "handover": {
+      "title": "Handover",
+      "body": "We walk through the house with you or your relative and hand over the keys."
+    }
+  },
+  "modelsTitle": "Home models",
+  "modelsIntro": "Proven designs that can be adjusted. The price changes with the finish and the department.",
+  "customTitle": "Do you have your own design?",
+  "customBody": "We also build custom designs. Get a quote by square meter and we'll draw it with you.",
+  "customCta": "Get a quote for a custom design",
+  "model": {
+    "quoteCta": "Get a quote for this model",
+    "scheduleCta": "Book a video call",
+    "whatsappMessage": "Hi, I'm interested in the {model}.",
+    "factsTitle": "Key facts",
+    "area": "Built area",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "floors": "Floors",
+    "minLot": "Minimum lot",
+    "minFront": "Minimum width",
+    "minFrontValue": "{value} m",
+    "buildTime": "Build time",
+    "descriptionTitle": "About this model",
+    "planTitle": "Floor plan",
+    "pricesTitle": "Price by finish",
+    "pricesIntro": "Estimated price in {department}. In other departments it changes a little because of freight and labor.",
+    "finishCol": "Finish",
+    "priceCol": "Estimated price",
+    "pricesNote": "House only. Land and extras are added in the quote tool."
+  }
+}

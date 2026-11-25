@@ -1,8 +1,30 @@
 {
   "brand": "ConstruFácil",
   "skipToContent": "Skip to content",
+  "example": "Example",
+  "loading": "Loading…",
+  "stagePayments": "You pay for each stage when you see the progress",
   "header": {
-    "homeLabel": "ConstruFácil, go to home page"
+    "homeLabel": "ConstruFácil, go to home page",
+    "mainNav": "Main menu",
+    "menu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "nav": {
+    "homes": "Ready homes",
+    "land": "Land",
+    "build": "Build",
+    "calculator": "Calculator",
+    "materials": "Materials",
+    "howItWorks": "How it works",
+    "whyTrust": "Why trust us",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "schedule": "Book a video call"
+  },
+  "breadcrumb": {
+    "label": "Breadcrumb",
+    "home": "Home"
   },
   "localeSwitcher": {
     "label": "Language",
@@ -13,12 +35,85 @@
   },
   "whatsapp": {
     "label": "Message us on WhatsApp",
+    "cta": "Ask on WhatsApp",
     "defaultMessage": "Hi, I'd like information about building or buying my home in Honduras."
+  },
+  "price": {
+    "approxHnl": "approx. {amount}",
+    "from": "From",
+    "range": "{min} to {max}",
+    "officialNote": "The official price is in US dollars. Lempiras are a reference using the {date} exchange rate."
+  },
+  "units": {
+    "m2": "{value} m²",
+    "varas": "{value} sq varas",
+    "weeks": "{count, plural, one {# week} other {# weeks}}",
+    "months": "{count, plural, one {# month} other {# months}}",
+    "years": "{count, plural, one {# year} other {# years}}"
   },
   "footer": {
     "tagline": "Your home in Honduras, built from the United States.",
-    "rights": "© {year} ConstruFácil. All rights reserved.",
-    "underConstruction": "Site under construction. Prices and models shown are examples."
+    "explore": "Explore",
+    "company": "Company",
+    "legal": "Legal",
+    "hoursTitle": "Office hours (Honduras time)",
+    "hoursWeekdays": "Monday to Friday: {open} to {close}",
+    "hoursSaturday": "Saturday: {open} to {close}",
+    "yourTime": "Your time ({zone}): {start} to {end}, Monday to Friday",
+    "whatsapp": "WhatsApp: {number}",
+    "legalEntity": "Company legal name and registration: to be defined before launch.",
+    "underConstruction": "Site under construction. Prices, properties and testimonials shown are examples.",
+    "rights": "© {year} ConstruFácil. All rights reserved."
+  },
+  "legalLinks": {
+    "terms": "Terms and conditions",
+    "privacy": "Privacy notice",
+    "refunds": "Refund policy",
+    "payments": "Payment policy"
+  },
+  "glossary": {
+    "whatIs": "What does it mean?",
+    "close": "Got it",
+    "obraGris": {
+      "term": "obra gris (shell)",
+      "definition": "The house has its foundation, walls, columns and roof, but no finishes yet: no smooth plaster, paint, floors or fixtures."
+    },
+    "escritura": {
+      "term": "escritura (title deed)",
+      "definition": "The document signed before a notary that says who owns a property. To be valid against everyone, it must be registered with the Property Institute."
+    },
+    "poderNotarial": {
+      "term": "power of attorney",
+      "definition": "A document that authorizes someone you trust to sign for you in Honduras. You can get it from the United States at the Honduran consulate."
+    },
+    "institutoPropiedad": {
+      "term": "Property Institute",
+      "definition": "The Honduran government office where properties are registered. It shows who the owner is and whether the property has debts or liens."
+    },
+    "libertadGravamen": {
+      "term": "lien-free certificate",
+      "definition": "A certificate from the Property Institute confirming the property has no mortgages, seizures or other debts."
+    },
+    "dominioUtil": {
+      "term": "useful domain",
+      "definition": "A municipal title that gives you the right to use and build on the land. It is common in urban areas and can be converted to full ownership with a legal process."
+    },
+    "apartado": {
+      "term": "reservation deposit",
+      "definition": "A small payment so no one else buys the property while you review the documents and sign the contract. Refund terms are in the refund policy."
+    },
+    "pagoInicial": {
+      "term": "down payment",
+      "definition": "The first payment when you sign the contract. It starts the permits and the design of your home."
+    },
+    "cieloFalso": {
+      "term": "drop ceiling",
+      "definition": "An interior ceiling of drywall or PVC under the roof. It hides wires and pipes and helps keep the house cooler."
+    },
+    "varas": {
+      "term": "square varas",
+      "definition": "The unit many lots in Honduras are advertised in. One square vara is 0.70 m²; one square meter is 1.43 square varas."
+    }
   },
   "notFound": {
     "title": "We can't find this page",

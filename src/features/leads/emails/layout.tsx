@@ -33,6 +33,8 @@ export function EmailLayout({
 }) {
   return (
     <html lang={lang}>
+      {/* Es un correo, no una página de Next: aquí sí va <head>. */}
+      {/* eslint-disable-next-line @next/next/no-head-element */}
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

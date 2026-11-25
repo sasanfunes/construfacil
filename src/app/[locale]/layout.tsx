@@ -37,8 +37,9 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[lo
   if (!hasLocale(routing.locales, locale)) notFound();
 
   const t = await getTranslations("common");
-  // Al navegador solo viajan los textos que usan los componentes de cliente.
-  const { common } = await getMessages();
+  // Al navegador solo viajan los textos que usan los componentes de cliente de todo el sitio.
+  // Las páginas con componentes de cliente propios (cotizador, calculadora, mapa) agregan los suyos.
+  const { common, forms } = await getMessages();
 
   return (
     <html lang={locale} className={`${atkinson.variable} ${lexend.variable} h-full antialiased`}>
@@ -49,7 +50,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[lo
         >
           {t("skipToContent")}
         </a>
-        <NextIntlClientProvider messages={{ common }}>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider messages={{ common, forms }}>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

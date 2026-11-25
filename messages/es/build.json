@@ -1,0 +1,53 @@
+{
+  "metaTitle": "Construye tu casa en tu terreno",
+  "metaDescription": "Diseño, permisos, materiales y obra en Honduras. Ves cada avance con fotos y pagas cada etapa cuando la ves terminada.",
+  "title": "Construimos tu casa en tu terreno",
+  "intro": "Diseño, permisos, materiales y obra. Ves cada avance con fotos y pagas cada etapa cuando la ves terminada.",
+  "cta": "Cotizar mi casa",
+  "calculatorLink": "¿Cuánto tardo con lo que envío cada mes?",
+  "stepsTitle": "Así construimos",
+  "steps": {
+    "design": {
+      "title": "Diseño y permisos",
+      "body": "Elegimos contigo un modelo o diseñamos uno a la medida, y sacamos el permiso de construcción."
+    },
+    "stages": {
+      "title": "Obra por etapas",
+      "body": "Cimentación, paredes, techo, instalaciones y acabados. Cada semana te mandamos fotos y videos."
+    },
+    "payments": {
+      "title": "Pagas lo que ves",
+      "body": "Cada pago se hace cuando ves terminada la etapa anterior. Nunca pagas por adelantado toda la obra."
+    },
+    "handover": {
+      "title": "Entrega",
+      "body": "Revisamos la casa contigo o con tu familiar y te entregamos las llaves."
+    }
+  },
+  "modelsTitle": "Modelos de casa",
+  "modelsIntro": "Diseños probados que se pueden ajustar. El precio cambia según el acabado y el departamento.",
+  "customTitle": "¿Tienes tu propio diseño?",
+  "customBody": "También construimos diseños personalizados. Cotízalo por metros cuadrados y lo dibujamos contigo.",
+  "customCta": "Cotizar un diseño personalizado",
+  "model": {
+    "quoteCta": "Cotizar este modelo",
+    "scheduleCta": "Agendar videollamada",
+    "whatsappMessage": "Hola, me interesa el {model}.",
+    "factsTitle": "Lo principal",
+    "area": "Construcción",
+    "bedrooms": "Cuartos",
+    "bathrooms": "Baños",
+    "floors": "Plantas",
+    "minLot": "Terreno mínimo",
+    "minFront": "Frente mínimo",
+    "minFrontValue": "{value} m",
+    "buildTime": "Tiempo de obra",
+    "descriptionTitle": "Sobre este modelo",
+    "planTitle": "Plano",
+    "pricesTitle": "Precio según el acabado",
+    "pricesIntro": "Precio estimado en {department}. En otros departamentos cambia un poco por el flete y la mano de obra.",
+    "finishCol": "Acabado",
+    "priceCol": "Precio estimado",
+    "pricesNote": "Solo la casa. El terreno y los extras se suman en el cotizador."
+  }
+}

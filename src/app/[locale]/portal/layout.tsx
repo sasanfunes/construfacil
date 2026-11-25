@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 
 /**
  * Área privada. Estas rutas se generan en cada visita (nunca desde caché) para que
@@ -11,7 +12,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function PortalLayout({ children }: LayoutProps<"/[locale]/portal">) {
+export default async function PortalLayout({ children }: LayoutProps<"/[locale]/portal">) {
+  // Todo el árbol se genera en cada visita: un armazón prerenderizado no llevaría el nonce de la CSP.
+  await connection();
   return (
     <main id="contenido" className="flex flex-1 flex-col">
       {children}

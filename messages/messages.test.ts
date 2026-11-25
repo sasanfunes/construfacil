@@ -3,16 +3,22 @@ import { describe, expect, it } from "vitest";
 import en from "./en";
 import es from "./es";
 
-type Tree = { [key: string]: string | Tree };
+type Tree = Record<string, unknown>;
 
 function flatten(tree: Tree, prefix = ""): Record<string, string> {
-  return Object.entries(tree).reduce<Record<string, string>>((acc, [key, value]) => {
+  const result: Record<string, string> = {};
+  for (const [key, value] of Object.entries(tree)) {
     const path = prefix ? `${prefix}.${key}` : key;
-    return typeof value === "string" ? { ...acc, [path]: value } : { ...acc, ...flatten(value, path) };
-  }, {});
+    if (typeof value === "string") result[path] = value;
+    // Las listas se comparan elemento por elemento: deben tener el mismo largo en ambos idiomas.
+    else if (Array.isArray(value)) Object.assign(result, flatten(Object.fromEntries(value.entries()), path));
+    else if (value && typeof value === "object") Object.assign(result, flatten(value as Tree, path));
+  }
+  return result;
 }
 
-const placeholders = (text: string) => [...text.matchAll(/\{(\w+)/g)].map((match) => match[1]).sort();
+// Variables ICU: {name} o {count, plural, …}. No cuenta el texto de las opciones ({# casa}).
+const placeholders = (text: string) => [...text.matchAll(/\{(\w+)(?=[,}])/g)].map((match) => match[1]).sort();
 
 /** Criterio de éxito del proyecto: todo el texto está en español y en inglés. */
 describe("traducciones", () => {

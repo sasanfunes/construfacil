@@ -20,7 +20,8 @@ export type CspOptions = {
   upgradeInsecureRequests: boolean;
 };
 
-const OSM_TILES = "https://*.tile.openstreetmap.org";
+// El servidor oficial de mosaicos de OpenStreetMap (sin subdominios desde 2023).
+const OSM_TILES = "https://tile.openstreetmap.org";
 
 function supabaseSources(supabaseUrl?: string): { http: string[]; ws: string[] } {
   if (!supabaseUrl) return { http: [], ws: [] };
