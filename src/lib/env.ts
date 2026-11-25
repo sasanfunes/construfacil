@@ -54,14 +54,25 @@ export function isProductionDeploy(): boolean {
   return process.env.NODE_ENV === "production";
 }
 
+/**
+ * Cómo salir del error si el despliegue NO es la producción real. Va en cada mensaje de
+ * configuración faltante, porque quien lo lee suele estar mirando el log de Vercel.
+ */
+export const SAMPLE_MODE_HINT =
+  "Si es una vista previa con datos de ejemplo (sin Supabase ni Resend), define la variable APP_ENV=preview en ese entorno y vuelve a desplegar.";
+
 /** En producción nada se deja a los valores por defecto. En desarrollo el sitio público arranca sin Supabase. */
 if (typeof window === "undefined" && isProductionDeploy()) {
   if (!publicEnv.NEXT_PUBLIC_SUPABASE_URL || !publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    throw new Error("Faltan NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY en producción.");
+    throw new Error(
+      `Faltan NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY en producción. ${SAMPLE_MODE_HINT}`,
+    );
   }
   // Sin esto la CSP no forzaría https y los enlaces canónicos apuntarían a localhost.
   if (!process.env.NEXT_PUBLIC_SITE_URL?.startsWith("https://")) {
-    throw new Error("NEXT_PUBLIC_SITE_URL debe ser la URL https del sitio en producción.");
+    throw new Error(
+      `NEXT_PUBLIC_SITE_URL debe ser la URL https del sitio en producción. ${SAMPLE_MODE_HINT}`,
+    );
   }
 }
 

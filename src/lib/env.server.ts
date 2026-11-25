@@ -2,7 +2,7 @@ import "server-only";
 
 import { z } from "./zod";
 
-import { isProductionDeploy, isSupabaseConfigured } from "./env";
+import { isProductionDeploy, isSupabaseConfigured, SAMPLE_MODE_HINT } from "./env";
 
 /**
  * Variables secretas. `server-only` hace fallar el build si algo de esto se importa
@@ -54,7 +54,9 @@ export function getServerEnv(): ServerEnv {
   if (isProductionDeploy()) {
     const missing = REQUIRED_IN_PRODUCTION.filter((name) => !parsed.data[name]);
     if (missing.length > 0)
-      throw new Error(`Faltan variables obligatorias en producción: ${missing.join(", ")}`);
+      throw new Error(
+        `Faltan variables obligatorias en producción: ${missing.join(", ")}. ${SAMPLE_MODE_HINT}`,
+      );
   }
   cached = parsed.data;
   return cached;
