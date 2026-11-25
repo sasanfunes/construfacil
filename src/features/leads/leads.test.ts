@@ -10,7 +10,7 @@ import {
   leadRequestSchema,
   normalizePhone,
 } from "./schemas";
-import { hashQuoteToken, isWellFormedQuoteToken, newQuoteToken } from "./token";
+import { hashAccessToken, isWellFormedAccessToken, newAccessToken } from "./token";
 
 const TODAY = "2026-11-25";
 
@@ -161,16 +161,16 @@ describe("looksLikeBot", () => {
 
 describe("token de cotización", () => {
   it("es largo, aleatorio, con formato de URL, y su hash es SHA-256", () => {
-    const a = newQuoteToken();
-    const b = newQuoteToken();
+    const a = newAccessToken();
+    const b = newAccessToken();
     expect(a).not.toBe(b);
-    expect(isWellFormedQuoteToken(a)).toBe(true);
-    expect(hashQuoteToken(a)).toMatch(/^[0-9a-f]{64}$/);
-    expect(hashQuoteToken(a)).toBe(hashQuoteToken(a));
+    expect(isWellFormedAccessToken(a)).toBe(true);
+    expect(hashAccessToken(a)).toMatch(/^[0-9a-f]{64}$/);
+    expect(hashAccessToken(a)).toBe(hashAccessToken(a));
   });
 
   it("rechaza tokens mal formados antes de tocar la base", () => {
-    expect(isWellFormedQuoteToken("corto")).toBe(false);
-    expect(isWellFormedQuoteToken(`${"a".repeat(42)}/`)).toBe(false);
+    expect(isWellFormedAccessToken("corto")).toBe(false);
+    expect(isWellFormedAccessToken(`${"a".repeat(42)}/`)).toBe(false);
   });
 });

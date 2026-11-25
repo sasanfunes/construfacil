@@ -5,16 +5,16 @@ import { canWriteToSupabase } from "@/lib/env.server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { Json } from "@/lib/supabase/database.types";
 
-import type { FunnelEventInput } from "@/features/quote/schemas";
-import type { QuoteInput, QuoteResult } from "@/features/quote/types";
+import type { FunnelEventInput } from "@/features/funnel/schemas";
 
 /**
- * Dónde se guardan los leads. Con Supabase, en la base, a través de submit_lead() y
- * submit_quote() (todo o nada). Sin Supabase (solo fuera de producción), en memoria:
- * sirve para desarrollar y para las pruebas, y se pierde al reiniciar.
+ * Dónde se guardan los leads. Con Supabase, en la base, a través de submit_lead() (todo o
+ * nada). Sin Supabase (solo fuera de producción), en memoria: sirve para desarrollar y
+ * para las pruebas, y se pierde al reiniciar. Los proyectos tienen su propio almacén
+ * (src/features/projects/store.ts), que crea su lead con submit_project().
  */
 
-export type LeadSource = "quote" | "contact" | "video_call" | "reservation_request" | "listing_inquiry";
+export type LeadSource = "contact" | "video_call" | "reservation_request" | "listing_inquiry" | "project";
 
 export type NewLead = {
   source: LeadSource;
@@ -36,46 +36,19 @@ export type NewVideoCall = {
   timezone: string;
 };
 
-export type NewQuote = {
-  tokenHash: string;
-  locale: "es" | "en";
-  input: QuoteInput;
-  result: QuoteResult;
-  usdToHnl: number;
-};
-
-/** Lo que se le muestra al cliente en su enlace privado: una foto de lo que se calculó. */
-export type StoredQuote = {
-  code: string;
-  createdAt: string;
-  validUntil: string;
-  locale: "es" | "en";
-  firstName: string;
-  input: QuoteInput;
-  result: QuoteResult;
-  usdToHnl: number;
-};
-
 export interface LeadStore {
   submitLead(lead: NewLead, videoCall: NewVideoCall | null): Promise<{ leadId: string }>;
-  submitQuote(
-    lead: Omit<NewLead, "source">,
-    quote: NewQuote,
-    videoCall: NewVideoCall | null,
-  ): Promise<{ quoteCode: string }>;
-  findQuoteByTokenHash(tokenHash: string): Promise<StoredQuote | null>;
   trackFunnelEvent(event: FunnelEventInput): Promise<void>;
 }
 
-const BREAKDOWN_VERSION = 1;
-
-function firstNameOf(fullName: string): string {
+export function firstNameOf(fullName: string): string {
   return fullName.trim().split(/\s+/)[0] ?? "";
 }
 
-function leadPayload(lead: Omit<NewLead, "source"> & { source?: LeadSource }): Json {
+/** El lead tal como lo esperan submit_lead() y submit_project(). */
+export function leadPayload(lead: Omit<NewLead, "source"> & { source?: LeadSource }): Json {
   return {
-    source: lead.source ?? "quote",
+    source: lead.source ?? "contact",
     full_name: lead.fullName,
     email: lead.email,
     phone: lead.phone,
@@ -107,69 +80,6 @@ class SupabaseLeadStore implements LeadStore {
     return { leadId: data };
   }
 
-  async submitQuote(lead: Omit<NewLead, "source">, quote: NewQuote, videoCall: NewVideoCall | null) {
-    const { input, result } = quote;
-    const { data, error } = await this.db.rpc("submit_quote", {
-      p_lead: leadPayload(lead),
-      p_quote: {
-        access_token_hash: quote.tokenHash,
-        locale: quote.locale,
-        land_status: input.landStatus,
-        lot_id: input.lotId,
-        department_id: input.departmentId,
-        municipality_id: input.municipalityId,
-        land_area_m2: input.landAreaM2,
-        house_model_id: input.design.kind === "model" ? input.design.modelId : null,
-        custom_area_m2: input.design.kind === "custom" ? input.design.areaM2 : null,
-        finish_level_id: input.finishLevelId,
-        construction_usd_cents: result.constructionUsdCents,
-        extras_usd_cents: result.extrasUsdCents,
-        total_usd_cents: result.totalUsdCents,
-        lot_price_usd_cents: result.lotPriceUsdCents,
-        initial_payment_percent: result.initialPaymentPercent,
-        duration_weeks: result.durationWeeks,
-        breakdown: { version: BREAKDOWN_VERSION, input, result } as unknown as Json,
-        usd_to_hnl: quote.usdToHnl,
-      },
-      p_items: result.extras.map((line) => ({
-        extra_id: line.extraId,
-        quantity: line.quantity,
-        unit_price_usd_cents: line.unitPriceUsdCents,
-        total_usd_cents: line.totalUsdCents,
-      })),
-      p_video_call: videoCallPayload(videoCall),
-    });
-    const row = data?.[0];
-    if (error || !row) throw new Error(`No se pudo guardar la cotización (${error?.code ?? "sin datos"})`);
-    return { quoteCode: row.quote_code };
-  }
-
-  async findQuoteByTokenHash(tokenHash: string): Promise<StoredQuote | null> {
-    const { data, error } = await this.db
-      .from("quotes")
-      .select("code, created_at, valid_until, locale, breakdown, usd_to_hnl, lead_id")
-      .eq("access_token_hash", tokenHash)
-      .gt("access_expires_at", new Date().toISOString())
-      .maybeSingle();
-    if (error) throw new Error(`No se pudo leer la cotización (${error.code})`);
-    if (!data) return null;
-
-    const breakdown = data.breakdown as { version?: number; input?: QuoteInput; result?: QuoteResult } | null;
-    if (breakdown?.version !== BREAKDOWN_VERSION || !breakdown.input || !breakdown.result) return null;
-
-    const lead = await this.db.from("leads").select("full_name").eq("id", data.lead_id).maybeSingle();
-    return {
-      code: data.code,
-      createdAt: data.created_at,
-      validUntil: data.valid_until,
-      locale: data.locale === "en" ? "en" : "es",
-      firstName: firstNameOf(lead.data?.full_name ?? ""),
-      input: breakdown.input,
-      result: breakdown.result,
-      usdToHnl: Number(data.usd_to_hnl),
-    };
-  }
-
   async trackFunnelEvent(event: FunnelEventInput) {
     const { error } = await this.db
       .from("funnel_events")
@@ -180,14 +90,13 @@ class SupabaseLeadStore implements LeadStore {
 
 type MemoryState = {
   leads: Array<NewLead & { id: string; videoCall: NewVideoCall | null }>;
-  quotes: Map<string, StoredQuote>;
   funnel: FunnelEventInput[];
 };
 
 /** Tope de registros en memoria (modo ejemplo): se descartan los más viejos. */
-const MEMORY_LIMIT = 1_000;
+export const MEMORY_LIMIT = 1_000;
 
-function capArray<T>(items: T[]) {
+export function capArray<T>(items: T[]) {
   if (items.length > MEMORY_LIMIT) items.splice(0, items.length - MEMORY_LIMIT);
 }
 
@@ -196,7 +105,6 @@ class MemoryLeadStore implements LeadStore {
   private state: MemoryState = ((globalThis as { __construfacilLeads?: MemoryState }).__construfacilLeads ??=
     {
       leads: [],
-      quotes: new Map(),
       funnel: [],
     });
 
@@ -206,32 +114,6 @@ class MemoryLeadStore implements LeadStore {
     capArray(this.state.leads);
     console.info(`[leads] guardado en memoria (modo ejemplo): ${lead.source} ${id}`);
     return { leadId: id };
-  }
-
-  async submitQuote(lead: Omit<NewLead, "source">, quote: NewQuote, videoCall: NewVideoCall | null) {
-    await this.submitLead({ ...lead, source: "quote" }, videoCall);
-    const code = `CF-Q-${crypto.randomUUID().replaceAll("-", "").slice(0, 6).toUpperCase()}`;
-    const now = new Date();
-    const validUntil = new Date(now.getTime() + 30 * 24 * 3600 * 1000).toISOString().slice(0, 10);
-    this.state.quotes.set(quote.tokenHash, {
-      code,
-      createdAt: now.toISOString(),
-      validUntil,
-      locale: quote.locale,
-      firstName: firstNameOf(lead.fullName),
-      input: quote.input,
-      result: quote.result,
-      usdToHnl: quote.usdToHnl,
-    });
-    for (const oldest of this.state.quotes.keys()) {
-      if (this.state.quotes.size <= MEMORY_LIMIT) break;
-      this.state.quotes.delete(oldest);
-    }
-    return { quoteCode: code };
-  }
-
-  async findQuoteByTokenHash(tokenHash: string) {
-    return this.state.quotes.get(tokenHash) ?? null;
   }
 
   async trackFunnelEvent(event: FunnelEventInput) {

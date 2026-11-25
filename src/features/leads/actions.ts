@@ -139,7 +139,7 @@ export async function submitLeadRequest(
       listing: home ? `${home.code} — ${home.title.es}` : lot ? `${lot.code} — ${lot.title.es}` : null,
       model: model?.name.es ?? null,
       call: callSummary(videoCall, "es"),
-      quote: null,
+      project: null,
     }),
     notifyClientConfirmation({
       to: request.email,

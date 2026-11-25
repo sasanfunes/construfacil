@@ -30,26 +30,12 @@
     "callNote": "We'll confirm the exact time on WhatsApp before the call.",
     "reservationNote": "Nothing has been charged. Before you reserve, we walk you through the process and the property documents."
   },
-  "quote": {
-    "subject": "Your quote {code}",
-    "preview": "Estimated total: {total}. Here is your private link.",
-    "intro": "We saved your quote. You can see it anytime with this private link:",
-    "cta": "See my quote",
-    "total": "Estimated total for your home",
-    "lot": "Land (paid separately)",
-    "initial": "Down payment, at signing",
-    "duration": "Approximate build time",
-    "weeks": "{weeks} weeks",
-    "validUntil": "This price holds until {date}.",
-    "privateLink": "The link is personal: anyone who has it can see your quote.",
-    "estimateNote": "This is an estimate. The final price is confirmed in the contract, after we check your land."
-  },
   "team": {
     "subject": "New lead: {source}",
-    "subjectQuote": "New lead: quote {code}",
     "title": "A new lead came in",
     "source": {
-      "quote": "saved quote",
+      "project": "new project",
+      "project_request": "request from the project dashboard",
       "contact": "contact form",
       "video_call": "video call",
       "reservation_request": "wants to reserve",
@@ -66,10 +52,27 @@
       "listing": "Property",
       "model": "Model",
       "call": "Video call",
-      "quote": "Quote",
-      "total": "Estimated total"
+      "total": "Estimated total",
+      "project": "Project",
+      "request": "Request"
     },
     "none": "Not given",
-    "replyHint": "Reply within one business day. The lead is already saved with status “new”."
+    "replyHint": "Reply within one business day. The lead is already saved with status “new”.",
+    "subjectProject": "New project {code}",
+    "subjectRequest": "Request on project {code}"
+  },
+  "project": {
+    "subject": "Your ConstruFácil project {code}",
+    "preview": "Estimated total: {total}. Here is the link to your project.",
+    "intro": "We saved your project “{name}”. Open your dashboard anytime with this private link:",
+    "cta": "See my project",
+    "total": "Design, permits and construction",
+    "lot": "Lot (paid separately)",
+    "initial": "Initial payment: design and permits",
+    "duration": "Approximate time",
+    "weeks": "{weeks} weeks",
+    "nextSteps": "Someone from our team will contact you within one business day to go over your project with you.",
+    "privateLink": "This link is personal: anyone who has it can see and change your project's materials.",
+    "estimateNote": "This is an estimate with reference prices. The final price goes in the contract, after we review your lot and plans."
   }
 }

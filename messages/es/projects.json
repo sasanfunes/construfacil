@@ -1,0 +1,387 @@
+{
+  "stages": {
+    "preliminary": {
+      "name": "Diseño y trámites",
+      "description": "Planos, permiso de construcción y estudio del terreno. Se paga con el pago inicial, al firmar."
+    },
+    "foundation": {
+      "name": "Cimentación",
+      "description": "La base de tu casa: zapatas, solera y el firme de la planta baja. Aquí eliges el sistema de estructura."
+    },
+    "grey_work": {
+      "name": "Obra gris",
+      "description": "Paredes, columnas, vigas y la tubería por dentro. Al terminar, la casa queda en obra gris."
+    },
+    "roof": {
+      "name": "Techos",
+      "description": "Estructura del techo, cubierta, aislamiento contra el calor y cielo falso."
+    },
+    "finishes": {
+      "name": "Acabados",
+      "description": "Lo que se ve y se usa: pisos, puertas, ventanas, baños, cocina, pintura y luminarias."
+    }
+  },
+  "categories": {
+    "design": "Diseño",
+    "permits": "Permiso de construcción",
+    "structure": "Sistema de estructura",
+    "footing_waterproofing": "Impermeabilización de la cimentación",
+    "ground_slab": "Firme de la planta baja",
+    "walls": "Paredes",
+    "upper_slab": "Entrepiso (piso de la planta alta)",
+    "rough_installations": "Tubería eléctrica y de agua",
+    "roof_structure": "Estructura del techo",
+    "roof_cover": "Cubierta",
+    "roof_insulation": "Aislamiento térmico",
+    "ceiling": "Cielo falso",
+    "floors": "Pisos",
+    "doors": "Puertas",
+    "windows": "Ventanas",
+    "bathrooms": "Baños",
+    "kitchen": "Cocina",
+    "paint_lighting": "Pintura y luminarias"
+  },
+  "pricing": {
+    "construction_m2": "{price} por m²",
+    "footprint_m2": "{price} por m² de planta baja",
+    "upper_floor_m2": "{price} por m² de planta alta",
+    "per_bathroom": "{price} por baño",
+    "fixed": "{price}",
+    "free": "Sin costo extra"
+  },
+  "intro": {
+    "metaTitle": "Construye tu casa en Honduras",
+    "metaDescription": "Crea tu proyecto de construcción: con o sin terreno, con tus planos o con uno de nuestros diseños. Expertos te guían en cada etapa y pagas por etapa.",
+    "eyebrow": "Construir",
+    "title": "Crea tu proyecto de construcción",
+    "lead": "Un proyecto es tu casa, paso a paso: el terreno, el diseño y los materiales de cada etapa. Lo armas desde aquí y un equipo de expertos te guía de principio a fin.",
+    "cta": "Crear mi proyecto",
+    "secondary": "Ver cómo se paga",
+    "points": {
+      "free": "Crear tu proyecto es gratis y no te compromete",
+      "price": "Ves el costo de cada etapa al instante",
+      "change": "Puedes cambiar materiales cuando quieras"
+    },
+    "experts": {
+      "title": "No lo haces solo",
+      "intro": "Te acompañan personas que saben de construir en Honduras. Las conoces por videollamada antes de firmar.",
+      "items": {
+        "permits": {
+          "title": "Expertos en trámites",
+          "body": "Revisan la escritura de tu terreno y sacan el permiso de construcción en la municipalidad."
+        },
+        "architects": {
+          "title": "Arquitectos",
+          "body": "Diseñan tu casa contigo o adaptan tus planos y los de nuestro catálogo a tu terreno."
+        },
+        "engineers": {
+          "title": "Ingenieros",
+          "body": "Calculan la estructura, supervisan la obra y firman cada etapa antes de que pagues la siguiente."
+        },
+        "materials": {
+          "title": "Expertos en materiales",
+          "body": "Te explican cada opción, compran a buen precio y te muestran las facturas."
+        }
+      }
+    },
+    "stepsTitle": "Así creas tu proyecto",
+    "steps": {
+      "name": {
+        "title": "Ponle nombre",
+        "body": "Por ejemplo, “Casa de mamá en Choloma”."
+      },
+      "land": {
+        "title": "Tu terreno",
+        "body": "Si ya tienes, nos dices dónde está. Si no, eliges uno de nuestros terrenos o lo dejas para después."
+      },
+      "design": {
+        "title": "Tu diseño",
+        "body": "Usas tus planos, diseñas desde cero con un arquitecto o eliges un modelo del catálogo."
+      },
+      "materials": {
+        "title": "Tus materiales",
+        "body": "Etapa por etapa eliges el sistema y los materiales, y ves cómo cambia el costo."
+      },
+      "panel": {
+        "title": "Tu panel",
+        "body": "Guardas tu proyecto y entras a tu panel: materiales, pagos, servicios, avances y soporte."
+      }
+    },
+    "stagesTitle": "Las 4 etapas de tu obra",
+    "stagesIntro": "Antes de empezar se hacen el diseño y los trámites. Después, la obra avanza en 4 etapas. Cada etapa se paga antes de empezar, cuando ves terminada la anterior con fotos.",
+    "payTitle": "Cómo pagas",
+    "payBody": "Sin intereses ni financiamiento: pagas el diseño y los trámites al firmar, y luego cada etapa cuando ves terminada la anterior.",
+    "abonosTitle": "Abonos a tus materiales",
+    "abonosBody": "Puedes ir abonando al paquete de materiales de una etapa antes de que empiece. Cuando el paquete está pagado, compramos y llevamos los materiales a tu obra.",
+    "abonosSoon": "Los abonos en línea llegan pronto. Mientras tanto, te ayudamos por WhatsApp.",
+    "modelsTitle": "¿Sin planos? Mira nuestros diseños",
+    "modelsIntro": "Precios de referencia con los materiales recomendados. En tu proyecto los cambias.",
+    "finalTitle": "Empieza hoy, sin compromiso",
+    "finalBody": "Arma tu proyecto en pocos minutos. Una persona del equipo lo revisa contigo antes de firmar nada."
+  },
+  "wizard": {
+    "metaTitle": "Crear mi proyecto",
+    "metaDescription": "Arma tu proyecto de construcción en Honduras: terreno, diseño y materiales por etapa, con el costo al instante.",
+    "title": "Crear mi proyecto",
+    "intro": "Responde unas preguntas. Al final ves el costo de cada etapa y guardas tu proyecto.",
+    "loading": "Cargando…",
+    "noscript": "Para crear tu proyecto necesitas JavaScript. Escríbenos por WhatsApp y lo armamos contigo.",
+    "progress": "Paso {step} de {total}",
+    "progressLabel": "Avance",
+    "nav": {
+      "back": "Atrás",
+      "next": "Siguiente",
+      "review": "Ver mi proyecto",
+      "save": "Guardar mi proyecto",
+      "edit": "Cambiar algo"
+    },
+    "estimate": "Tu estimado",
+    "name": {
+      "title": "¿Cómo se llama tu proyecto?",
+      "hint": "Así lo vas a ver en tu panel. Lo puedes cambiar después.",
+      "label": "Nombre del proyecto",
+      "placeholder": "Ej.: Casa de mamá en Choloma"
+    },
+    "land": {
+      "title": "¿Ya tienes terreno?",
+      "hint": "Si no tienes, puedes comprar uno de los nuestros o seguir sin terreno por ahora.",
+      "own": {
+        "label": "Sí, ya tengo terreno",
+        "hint": "Construimos en tu terreno, en los departamentos donde trabajamos."
+      },
+      "buying_from_us": {
+        "label": "No, quiero comprar uno",
+        "hint": "Terrenos con papeles revisados. Lo compras y construimos tu casa en él."
+      },
+      "skipped": {
+        "label": "Todavía no, sigo sin terreno",
+        "hint": "Armas el proyecto ahora y eliges el terreno después."
+      }
+    },
+    "location": {
+      "titleOwn": "¿Dónde está tu terreno?",
+      "titleSkipped": "¿Dónde te gustaría construir?",
+      "hintSkipped": "Sirve para estimar el costo: el flete y la mano de obra cambian un poco según el departamento.",
+      "department": "Departamento",
+      "municipality": "Municipio",
+      "choose": "Elige…",
+      "unknown": "Todavía no sé",
+      "landArea": "Tamaño del terreno (opcional)",
+      "landAreaHint": "Si no lo sabes, déjalo en blanco.",
+      "unit": "Unidad de medida",
+      "units": {
+        "m2": "Metros cuadrados",
+        "varas": "Varas cuadradas"
+      }
+    },
+    "lot": {
+      "title": "Elige tu terreno",
+      "hint": "Todos tienen los papeles revisados. Antes de pagar te mostramos la escritura.",
+      "filter": "Departamento",
+      "all": "Todos",
+      "empty": "No hay terrenos disponibles en ese departamento. Elige otro o sigue sin terreno.",
+      "choose": "Elegir este terreno",
+      "chosen": "Elegido"
+    },
+    "plans": {
+      "title": "¿Ya tienes planos de tu casa?",
+      "hint": "Si los tienes, un ingeniero los revisa y los adapta para el permiso.",
+      "yes": {
+        "label": "Sí, tengo planos",
+        "hint": "Los subes después en tu panel. Ahora solo dinos el tamaño."
+      },
+      "no": {
+        "label": "No tengo planos",
+        "hint": "Te ayudamos con el diseño en el siguiente paso."
+      }
+    },
+    "design": {
+      "title": "¿Cómo quieres tu diseño?",
+      "hint": "Puedes diseñar desde cero con un arquitecto o elegir uno de nuestros modelos.",
+      "custom": {
+        "label": "Diseñar desde cero",
+        "hint": "Un arquitecto diseña tu casa contigo, a tu medida."
+      },
+      "catalog": {
+        "label": "Elegir un modelo del catálogo",
+        "hint": "Diseños listos, con planos completos. Más rápido y económico."
+      }
+    },
+    "details": {
+      "titlePlans": "¿Cómo es tu casa en los planos?",
+      "titleCustom": "¿Cómo te imaginas tu casa?",
+      "hint": "Una idea aproximada basta: con esto calculamos el costo de cada etapa.",
+      "area": "Metros de construcción (entre {min} y {max})",
+      "floors": "Plantas",
+      "bedrooms": "Cuartos",
+      "bathrooms": "Baños"
+    },
+    "model": {
+      "title": "Elige tu modelo",
+      "hint": "Los precios son con los materiales recomendados. Después los cambias si quieres.",
+      "choose": "Elegir este modelo",
+      "chosen": "Elegido",
+      "tooSmall": "Puede que no quepa en tu terreno"
+    },
+    "stage": {
+      "eyebrow": "Etapa {number} de 4",
+      "included": "Incluido en esta etapa",
+      "floors": "¿Cuántas plantas tendrá tu casa?",
+      "floorsLocked": "Tu diseño es de {count, plural, one {# planta} other {# plantas}}.",
+      "recommended": "Recomendado",
+      "includedItem": "{name} — {description}"
+    },
+    "summary": {
+      "title": "Tu proyecto",
+      "hint": "Revisa el costo de cada etapa. Si te parece bien, guárdalo y entra a tu panel."
+    },
+    "save": {
+      "title": "Guarda tu proyecto",
+      "hint": "Te mandamos por correo un enlace privado a tu panel. Una persona del equipo te contacta en menos de un día hábil.",
+      "accountNote": "Pronto podrás entrar con tu cuenta; tu proyecto quedará ligado a este correo.",
+      "submit": "Guardar mi proyecto",
+      "pending": "Guardando…"
+    },
+    "errors": {
+      "nameRequired": "Ponle un nombre a tu proyecto.",
+      "projectNameInvalid": "Usa solo letras, números y espacios en el nombre.",
+      "chooseLand": "Elige una opción.",
+      "chooseDepartment": "Elige el departamento.",
+      "chooseLot": "Elige un terreno.",
+      "choosePlans": "Elige una opción.",
+      "chooseDesign": "Elige una opción.",
+      "chooseModel": "Elige un modelo.",
+      "area": "Escribe los metros de construcción (entre {min} y {max}).",
+      "landArea": "Revisa el tamaño del terreno.",
+      "incomplete": "Falta información en algún paso. Regresa y revisa.",
+      "unavailable": "Algo de lo que elegiste ya no está disponible. Revisa tu terreno, tu modelo o tus materiales.",
+      "rate_limited": "Recibimos varios intentos seguidos. Espera unos minutos o escríbenos por WhatsApp.",
+      "server": "No pudimos guardar tu proyecto. Inténtalo de nuevo o escríbenos por WhatsApp.",
+      "validation": "Revisa los campos marcados."
+    }
+  },
+  "summary": {
+    "total": "Diseño, trámites y obra",
+    "lot": "Terreno (se paga aparte)",
+    "grandTotal": "Total con terreno: {amount}",
+    "duration": "Tiempo aproximado",
+    "weeks": "{count, plural, one {# semana} other {# semanas}}",
+    "months": "unos {count, plural, one {# mes} other {# meses}}",
+    "materials": "Materiales",
+    "labor": "Mano de obra",
+    "stageWeeks": "{count, plural, one {# semana} other {# semanas}}",
+    "stagesTitle": "Costo por etapa",
+    "paymentsTitle": "Cómo pagas",
+    "paymentsIntro": "Sin intereses. Pagas el diseño y los trámites al firmar y después cada etapa antes de empezar, cuando ves terminada la anterior con fotos.",
+    "paymentInitial": "Pago inicial: diseño y trámites",
+    "whenInitial": "Al firmar el contrato.",
+    "whenStage": "Cuando veas terminada la etapa anterior: {previous}.",
+    "warnings": {
+      "lot_smaller_than_model_minimum": "Tu terreno parece más pequeño de lo que este modelo necesita. Lo revisamos contigo: a veces se resuelve ajustando el diseño."
+    },
+    "designFacts": "{area} m² · {floors, plural, one {# planta} other {# plantas}} · {bedrooms, plural, one {# cuarto} other {# cuartos}} · {bathrooms, plural, one {# baño} other {# baños}}",
+    "disclaimer": "Es un estimado con precios de referencia. El precio final queda en el contrato, después de revisar tu terreno y tus planos.",
+    "durationValue": "{weeks} · {months}",
+    "materialsAmount": "Materiales: {amount}",
+    "laborAmount": "Mano de obra: {amount}"
+  },
+  "panel": {
+    "metaTitle": "Mi proyecto",
+    "greeting": "Hola, {name}",
+    "greetingNoName": "Tu proyecto",
+    "code": "Proyecto {code}",
+    "created": "Creado el {date}",
+    "status": {
+      "draft": "Borrador: lo revisamos contigo",
+      "in_review": "En revisión con el equipo",
+      "active": "En obra",
+      "closed": "Cerrado"
+    },
+    "land": {
+      "own": "Terreno propio en {place}",
+      "ownNoPlace": "Terreno propio",
+      "buying_from_us": "Compras el terreno {code}",
+      "skipped": "Sin terreno todavía"
+    },
+    "design": {
+      "own_plans": "Con tus planos",
+      "custom": "Diseño a tu medida",
+      "catalog": "Modelo {name}"
+    },
+    "actionsTitle": "Qué puedes hacer",
+    "actions": {
+      "materials": {
+        "title": "Elegir materiales",
+        "body": "Cambia el sistema o los materiales de cualquier etapa y mira el nuevo costo.",
+        "cta": "Ir a materiales"
+      },
+      "calculate": {
+        "title": "Calcular",
+        "body": "Con lo que apartas cada mes, mira cuándo empiezas y cuándo terminas.",
+        "cta": "Abrir la calculadora"
+      },
+      "contribute": {
+        "title": "Abonar a materiales",
+        "body": "Abona al paquete de materiales de una etapa antes de que empiece. Pronto en línea; hoy te ayudamos por WhatsApp.",
+        "cta": "Quiero abonar"
+      },
+      "services": {
+        "title": "Contratar servicios",
+        "body": "Topografía, estudio de suelo, diseño, supervisión o trámites."
+      },
+      "progress": {
+        "title": "Pedir prueba de avance",
+        "body": "Fotos, video o una visita de tu familia a la obra."
+      },
+      "support": {
+        "title": "Soporte",
+        "body": "¿Dudas? Escríbenos y una persona te responde."
+      },
+      "whatsapp": "Escribir por WhatsApp"
+    },
+    "materialsTitle": "Materiales por etapa",
+    "materialsIntro": "Toca una opción para cambiarla. El costo se recalcula y se guarda solo.",
+    "materialsLocked": "Tu proyecto ya está en revisión: para cambiar materiales, escríbenos.",
+    "saving": "Guardando…",
+    "saved": "Cambios guardados",
+    "saveErrors": {
+      "not_editable": "Tu proyecto ya no se puede cambiar desde aquí. Escríbenos y lo hacemos contigo.",
+      "rate_limited": "Hiciste muchos cambios seguidos. Espera unos minutos.",
+      "unavailable": "Esa opción ya no está disponible. Elige otra.",
+      "validation": "No pudimos guardar el cambio. Recarga la página.",
+      "server": "No pudimos guardar el cambio. Inténtalo de nuevo."
+    },
+    "abonos": {
+      "title": "Paquetes de materiales",
+      "intro": "Cada etapa tiene su paquete de materiales. Puedes abonarle antes de que empiece la etapa; cuando está pagado, compramos y llevamos los materiales a tu obra.",
+      "paid": "Abonado: {amount}",
+      "remaining": "Falta: {amount}",
+      "soon": "Abonos en línea: pronto"
+    },
+    "request": {
+      "title": "Pídelo aquí",
+      "kind": "¿Qué necesitas?",
+      "kinds": {
+        "service": "Contratar un servicio",
+        "progress_proof": "Una prueba de avance",
+        "support": "Ayuda o soporte"
+      },
+      "message": "Cuéntanos más (opcional)",
+      "submit": "Enviar solicitud",
+      "pending": "Enviando…",
+      "sent": "¡Listo! Recibimos tu solicitud. Te contactamos en menos de un día hábil.",
+      "errors": {
+        "rate_limited": "Recibimos varias solicitudes seguidas. Espera unos minutos o escríbenos por WhatsApp.",
+        "not_found": "No encontramos tu proyecto. Revisa tu enlace.",
+        "validation": "Revisa tu mensaje (máximo 1,000 caracteres).",
+        "server": "No pudimos enviar tu solicitud. Inténtalo de nuevo o escríbenos por WhatsApp."
+      }
+    },
+    "whatsappMessage": "Hola, tengo el proyecto {code} y quiero ayuda.",
+    "contributeMessage": "Hola, tengo el proyecto {code} y quiero abonar a mis materiales.",
+    "newProject": "Crear otro proyecto",
+    "privateNote": "Este enlace es privado. Guárdalo: quien lo tenga puede ver y cambiar los materiales de tu proyecto.",
+    "recap": "{land} · {design} · {facts}",
+    "stageHeading": "{number}. {stage}"
+  }
+}

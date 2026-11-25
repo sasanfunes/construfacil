@@ -144,3 +144,13 @@
     padding-inline: 2rem;
   }
 }
+
+/*
+ * En el celular, si la página tiene una barra fija abajo (el onboarding de Construir), el
+ * botón flotante de WhatsApp sube para no tapar sus botones.
+ */
+@media (width < 48rem) {
+  body:has([data-bottom-bar]) [data-testid="whatsapp-button"] {
+    bottom: 6rem;
+  }
+}

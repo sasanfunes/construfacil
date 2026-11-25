@@ -21,13 +21,10 @@ export const routing = defineRouting({
     "/": "/",
     "/homes": { es: "/casas", en: "/homes" },
     "/homes/[slug]": { es: "/casas/[slug]", en: "/homes/[slug]" },
-    "/land": { es: "/terrenos", en: "/land" },
-    "/land/[slug]": { es: "/terrenos/[slug]", en: "/land/[slug]" },
     "/build": { es: "/construir", en: "/build" },
+    "/build/new": { es: "/construir/nuevo", en: "/build/new" },
     "/build/models/[slug]": { es: "/construir/modelos/[slug]", en: "/build/models/[slug]" },
-    "/build/quote": { es: "/construir/cotizador", en: "/build/quote" },
     "/calculator": { es: "/calculadora", en: "/calculator" },
-    "/materials": { es: "/materiales", en: "/materials" },
     "/how-it-works": { es: "/como-funciona", en: "/how-it-works" },
     "/why-trust-us": { es: "/por-que-confiar", en: "/why-trust-us" },
     "/faq": { es: "/preguntas-frecuentes", en: "/faq" },
@@ -38,7 +35,7 @@ export const routing = defineRouting({
     "/legal/refunds": { es: "/legal/reembolsos", en: "/legal/refunds" },
     "/legal/payments": { es: "/legal/pagos", en: "/legal/payments" },
     // Privadas
-    "/quote/[token]": { es: "/cotizacion/[token]", en: "/quote/[token]" },
+    "/project/[token]": { es: "/proyecto/[token]", en: "/project/[token]" },
     "/portal": "/portal",
   },
 });

@@ -18,7 +18,9 @@ export const PRIVATE_SEGMENTS: ReadonlySet<string> = new Set([
   "account",
   "invitacion",
   "invitation",
-  // Páginas con datos personales o de pago (llegan en las fases 1 y 3)
+  // Páginas con datos personales o de pago
+  "proyecto",
+  "project",
   "cotizacion",
   "quote",
   "checkout",

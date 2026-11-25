@@ -8,11 +8,11 @@ import { buildWhatsAppUrl, siteConfig } from "@/lib/site";
 import { sendEmail } from "./emails/send";
 import {
   ClientConfirmationEmail,
-  ClientQuoteEmail,
+  ClientProjectEmail,
   TeamLeadEmail,
   type CallSummary,
   type ConfirmationKind,
-  type QuoteSummary,
+  type ProjectSummary,
   type TeamLeadSummary,
 } from "./emails/templates";
 import { emailTranslator } from "./emails/translator";
@@ -41,8 +41,10 @@ async function safely(label: string, send: () => Promise<unknown>) {
 export async function notifyTeam(lead: TeamLeadSummary) {
   const to = getServerEnv().LEADS_NOTIFICATION_EMAIL;
   const t = emailTranslator("es");
-  const subject = lead.quote
-    ? t("team.subjectQuote", { code: lead.quote.code })
+  const subject = lead.project
+    ? t(lead.source === "project_request" ? "team.subjectRequest" : "team.subjectProject", {
+        code: lead.project.code,
+      })
     : t("team.subject", { source: t(`team.source.${lead.source}`) });
   if (!to) {
     console.info(`[correo] sin destinatario del equipo (LEADS_NOTIFICATION_EMAIL): "${subject}"`);
@@ -84,25 +86,24 @@ export async function notifyClientConfirmation(args: {
   );
 }
 
-export async function notifyClientQuote(args: {
+export async function notifyClientProject(args: {
   to: string;
   locale: AppLocale;
   firstName: string;
-  quote: QuoteSummary;
-  call: CallSummary | null;
+  project: ProjectSummary;
   isSample: boolean;
 }) {
   const t = emailTranslator(args.locale);
-  await safely("cotización", () =>
+  await safely("proyecto", () =>
     sendEmail({
       to: args.to,
-      subject: t("quote.subject", { code: args.quote.code }),
-      element: ClientQuoteEmail({
+      // Solo valores del servidor en el asunto: el nombre del proyecto lo escribió el cliente.
+      subject: t("project.subject", { code: args.project.code }),
+      element: ClientProjectEmail({
         t,
         lang: args.locale,
         firstName: args.firstName,
-        quote: args.quote,
-        call: args.call,
+        project: args.project,
         showExampleNotice: args.isSample,
       }),
     }),

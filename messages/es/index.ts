@@ -8,8 +8,8 @@ import forms from "./forms.json";
 import home from "./home.json";
 import legal from "./legal.json";
 import meta from "./meta.json";
+import projects from "./projects.json";
 import portal from "./portal.json";
-import quote from "./quote.json";
 
 /** Un archivo por área. Al agregar un área nueva, se importa aquí en ambos idiomas. */
 const messages = {
@@ -24,7 +24,7 @@ const messages = {
   legal,
   meta,
   portal,
-  quote,
+  projects,
 };
 
 export default messages;

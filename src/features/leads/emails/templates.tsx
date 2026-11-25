@@ -60,73 +60,60 @@ export function ClientConfirmationEmail({
   );
 }
 
-export type QuoteSummary = {
+export type ProjectSummary = {
   code: string;
+  name: string;
   url: string;
   totalText: string;
   lotText: string | null;
   initialText: string;
   weeks: number;
-  validUntilText: string;
 };
 
-export function ClientQuoteEmail({
+/** Al cliente, cuando guarda su proyecto: el enlace privado a su panel. */
+export function ClientProjectEmail({
   t,
   lang,
   firstName,
-  quote,
-  call,
+  project,
   showExampleNotice,
 }: {
   t: EmailTranslator;
   lang: string;
   firstName: string;
-  quote: QuoteSummary;
-  call: CallSummary | null;
+  project: ProjectSummary;
   showExampleNotice: boolean;
 }) {
   const rows: Array<readonly [string, string]> = [
-    [t("quote.total"), quote.totalText],
-    ...(quote.lotText ? [[t("quote.lot"), quote.lotText] as const] : []),
-    [t("quote.initial"), quote.initialText],
-    [t("quote.duration"), t("quote.weeks", { weeks: quote.weeks })],
+    [t("project.total"), project.totalText],
+    ...(project.lotText ? [[t("project.lot"), project.lotText] as const] : []),
+    [t("project.initial"), project.initialText],
+    [t("project.duration"), t("project.weeks", { weeks: project.weeks })],
   ];
   return (
     <EmailLayout
       lang={lang}
-      preview={t("quote.preview", { total: quote.totalText })}
+      preview={t("project.preview", { total: project.totalText })}
       brand={t("brand")}
       footer={t("footer")}
       notice={showExampleNotice ? t("exampleNotice") : undefined}
     >
       <P>{t("greeting", { name: firstName })}</P>
-      <P>{t("quote.intro")}</P>
-      <ButtonLink href={quote.url}>{t("quote.cta")}</ButtonLink>
-      <H>{quote.code}</H>
+      <P>{t("project.intro", { name: project.name })}</P>
+      <ButtonLink href={project.url}>{t("project.cta")}</ButtonLink>
+      <H>{project.code}</H>
       <Rows rows={rows} />
-      <P>{t("quote.validUntil", { date: quote.validUntilText })}</P>
-      <P>{t("quote.estimateNote")}</P>
-      {call ? (
-        <>
-          <H>{t("confirmation.callTitle")}</H>
-          <P>
-            {t("confirmation.callWhen", {
-              date: call.dateText,
-              slot: t(`slots.${call.slot}`),
-              timezone: call.timezone,
-            })}
-          </P>
-          <P>{t("confirmation.callNote")}</P>
-        </>
-      ) : null}
-      <P style={{ fontSize: 13, color: "#4a5873" }}>{t("quote.privateLink")}</P>
+      <P>{t("project.nextSteps")}</P>
+      <P>{t("project.estimateNote")}</P>
+      <P style={{ fontSize: 13, color: "#4a5873" }}>{t("project.privateLink")}</P>
       <P>{t("signature")}</P>
     </EmailLayout>
   );
 }
 
 export type TeamLeadSummary = {
-  source: "quote" | "contact" | "video_call" | "reservation_request" | "listing_inquiry";
+  source:
+    "project" | "project_request" | "contact" | "video_call" | "reservation_request" | "listing_inquiry";
   fullName: string;
   email: string;
   phone: string | null;
@@ -137,7 +124,7 @@ export type TeamLeadSummary = {
   listing: string | null;
   model: string | null;
   call: CallSummary | null;
-  quote: { code: string; totalText: string } | null;
+  project: { code: string; name: string; totalText: string; request?: string } | null;
 };
 
 /** Aviso al equipo de ventas. Siempre en español. */
@@ -153,8 +140,12 @@ export function TeamLeadEmail({ t, lead }: { t: EmailTranslator; lead: TeamLeadS
   ];
   if (lead.listing) rows.push([t("team.fields.listing"), lead.listing]);
   if (lead.model) rows.push([t("team.fields.model"), lead.model]);
-  if (lead.quote) {
-    rows.push([t("team.fields.quote"), lead.quote.code], [t("team.fields.total"), lead.quote.totalText]);
+  if (lead.project) {
+    rows.push(
+      [t("team.fields.project"), `${lead.project.code} · ${lead.project.name}`],
+      [t("team.fields.total"), lead.project.totalText],
+    );
+    if (lead.project.request) rows.push([t("team.fields.request"), lead.project.request]);
   }
   if (lead.call) {
     rows.push([

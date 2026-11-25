@@ -30,26 +30,12 @@
     "callNote": "Te confirmamos la hora exacta por WhatsApp antes de la llamada.",
     "reservationNote": "Todavía no se hizo ningún cobro. Antes de apartar te explicamos el proceso y los documentos de la propiedad."
   },
-  "quote": {
-    "subject": "Tu cotización {code}",
-    "preview": "Total estimado: {total}. Aquí está tu enlace privado.",
-    "intro": "Guardamos tu cotización. Puedes verla cuando quieras con este enlace privado:",
-    "cta": "Ver mi cotización",
-    "total": "Total estimado de tu casa",
-    "lot": "Terreno (se paga aparte)",
-    "initial": "Pago inicial, al firmar",
-    "duration": "Tiempo aproximado de obra",
-    "weeks": "{weeks} semanas",
-    "validUntil": "Este precio se mantiene hasta el {date}.",
-    "privateLink": "El enlace es personal: quien lo tenga puede ver tu cotización.",
-    "estimateNote": "Es un estimado. El precio final se confirma en el contrato, después de revisar tu terreno."
-  },
   "team": {
     "subject": "Nuevo lead: {source}",
-    "subjectQuote": "Nuevo lead: cotización {code}",
     "title": "Llegó un lead nuevo",
     "source": {
-      "quote": "cotización guardada",
+      "project": "proyecto nuevo",
+      "project_request": "solicitud desde el panel del proyecto",
       "contact": "formulario de contacto",
       "video_call": "videollamada",
       "reservation_request": "quiere apartar",
@@ -66,10 +52,27 @@
       "listing": "Propiedad",
       "model": "Modelo",
       "call": "Videollamada",
-      "quote": "Cotización",
-      "total": "Total estimado"
+      "total": "Total estimado",
+      "project": "Proyecto",
+      "request": "Solicitud"
     },
     "none": "No indicó",
-    "replyHint": "Responde en menos de un día hábil. El lead ya está guardado con estado “nuevo”."
+    "replyHint": "Responde en menos de un día hábil. El lead ya está guardado con estado “nuevo”.",
+    "subjectProject": "Nuevo proyecto {code}",
+    "subjectRequest": "Solicitud en el proyecto {code}"
+  },
+  "project": {
+    "subject": "Tu proyecto {code} en ConstruFácil",
+    "preview": "Total estimado: {total}. Aquí está el enlace a tu proyecto.",
+    "intro": "Guardamos tu proyecto “{name}”. Entra a tu panel cuando quieras con este enlace privado:",
+    "cta": "Ver mi proyecto",
+    "total": "Diseño, trámites y obra",
+    "lot": "Terreno (se paga aparte)",
+    "initial": "Pago inicial: diseño y trámites",
+    "duration": "Tiempo aproximado",
+    "weeks": "{weeks} semanas",
+    "nextSteps": "Una persona del equipo te contacta en menos de un día hábil para revisar tu proyecto contigo.",
+    "privateLink": "El enlace es personal: quien lo tenga puede ver y cambiar los materiales de tu proyecto.",
+    "estimateNote": "Es un estimado con precios de referencia. El precio final queda en el contrato, después de revisar tu terreno y tus planos."
   }
 }

@@ -20,8 +20,12 @@ export const RATE_LIMITS = {
   signup: { limit: 5, windowSeconds: 60 * 60 },
   contactForm: { limit: 5, windowSeconds: 60 * 60 },
   videoCallRequest: { limit: 5, windowSeconds: 60 * 60 },
-  /** Cotizaciones guardadas. El cálculo en pantalla no gasta intentos. */
-  quote: { limit: 10, windowSeconds: 60 * 60 },
+  /** Proyectos guardados. El cálculo en pantalla no gasta intentos. */
+  project: { limit: 10, windowSeconds: 60 * 60 },
+  /** Cambios de materiales desde el panel del proyecto (cada cambio recalcula y guarda). */
+  projectUpdate: { limit: 120, windowSeconds: 60 * 60 },
+  /** Solicitudes desde el panel: servicios, pruebas de avance, soporte. */
+  projectRequest: { limit: 10, windowSeconds: 60 * 60 },
   /** Eventos anónimos del embudo del cotizador. */
   funnel: { limit: 300, windowSeconds: 60 * 60 },
   /**

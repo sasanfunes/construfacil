@@ -1,0 +1,387 @@
+{
+  "stages": {
+    "preliminary": {
+      "name": "Design and permits",
+      "description": "Plans, building permit and a site survey. Paid with the initial payment, when you sign."
+    },
+    "foundation": {
+      "name": "Foundation",
+      "description": "The base of your home: footings, foundation beam and the ground-floor slab. This is where you choose the structural system."
+    },
+    "grey_work": {
+      "name": "Shell",
+      "description": "Walls, columns, beams and the pipes inside them. When this stage ends, the shell of the house is done."
+    },
+    "roof": {
+      "name": "Roof",
+      "description": "Roof structure, cover, heat insulation and ceiling."
+    },
+    "finishes": {
+      "name": "Finishes",
+      "description": "What you see and use: floors, doors, windows, bathrooms, kitchen, paint and lighting."
+    }
+  },
+  "categories": {
+    "design": "Design",
+    "permits": "Building permit",
+    "structure": "Structural system",
+    "footing_waterproofing": "Foundation waterproofing",
+    "ground_slab": "Ground-floor slab",
+    "walls": "Walls",
+    "upper_slab": "Upper floor slab",
+    "rough_installations": "Electrical and plumbing rough-in",
+    "roof_structure": "Roof structure",
+    "roof_cover": "Roof cover",
+    "roof_insulation": "Heat insulation",
+    "ceiling": "Ceiling",
+    "floors": "Floors",
+    "doors": "Doors",
+    "windows": "Windows",
+    "bathrooms": "Bathrooms",
+    "kitchen": "Kitchen",
+    "paint_lighting": "Paint and lighting"
+  },
+  "pricing": {
+    "construction_m2": "{price} per m²",
+    "footprint_m2": "{price} per ground-floor m²",
+    "upper_floor_m2": "{price} per upper-floor m²",
+    "per_bathroom": "{price} per bathroom",
+    "fixed": "{price}",
+    "free": "No extra cost"
+  },
+  "intro": {
+    "metaTitle": "Build your home in Honduras",
+    "metaDescription": "Create your construction project: with or without land, with your plans or one of our designs. Experts guide you at every stage and you pay stage by stage.",
+    "eyebrow": "Build",
+    "title": "Create your construction project",
+    "lead": "A project is your home, step by step: the land, the design and the materials for each stage. You put it together here and a team of experts guides you from start to finish.",
+    "cta": "Start my project",
+    "secondary": "See how payments work",
+    "points": {
+      "free": "Creating your project is free and commits you to nothing",
+      "price": "You see the cost of each stage instantly",
+      "change": "You can change materials anytime"
+    },
+    "experts": {
+      "title": "You are not doing it alone",
+      "intro": "People who know how to build in Honduras go with you. You meet them by video call before you sign.",
+      "items": {
+        "permits": {
+          "title": "Permit experts",
+          "body": "They check your land title and get the building permit at the municipality."
+        },
+        "architects": {
+          "title": "Architects",
+          "body": "They design your home with you or adapt your plans, or ours, to your lot."
+        },
+        "engineers": {
+          "title": "Engineers",
+          "body": "They design the structure, supervise the build and sign off each stage before you pay for the next."
+        },
+        "materials": {
+          "title": "Materials experts",
+          "body": "They explain every option, buy at a good price and show you the invoices."
+        }
+      }
+    },
+    "stepsTitle": "How you create your project",
+    "steps": {
+      "name": {
+        "title": "Give it a name",
+        "body": "For example, “Mom's house in Choloma”."
+      },
+      "land": {
+        "title": "Your land",
+        "body": "If you have land, tell us where it is. If not, pick one of our lots or leave it for later."
+      },
+      "design": {
+        "title": "Your design",
+        "body": "Use your own plans, design from scratch with an architect or pick a model from our catalog."
+      },
+      "materials": {
+        "title": "Your materials",
+        "body": "Stage by stage you choose the system and materials and see how the cost changes."
+      },
+      "panel": {
+        "title": "Your dashboard",
+        "body": "You save your project and open your dashboard: materials, payments, services, progress and support."
+      }
+    },
+    "stagesTitle": "The 4 stages of your build",
+    "stagesIntro": "Design and permits come first. Then the build moves through 4 stages. Each stage is paid before it starts, when you see the previous one finished in photos.",
+    "payTitle": "How you pay",
+    "payBody": "No interest and no financing: you pay design and permits when you sign, then each stage when you see the previous one finished.",
+    "abonosTitle": "Installments toward your materials",
+    "abonosBody": "You can pay toward a stage's materials package before it starts. Once the package is paid, we buy the materials and deliver them to your site.",
+    "abonosSoon": "Online installments are coming soon. Meanwhile, we help you on WhatsApp.",
+    "modelsTitle": "No plans? See our designs",
+    "modelsIntro": "Reference prices with the recommended materials. You can change them in your project.",
+    "finalTitle": "Start today, no commitment",
+    "finalBody": "Put your project together in a few minutes. Someone from our team reviews it with you before you sign anything."
+  },
+  "wizard": {
+    "metaTitle": "Start my project",
+    "metaDescription": "Put together your construction project in Honduras: land, design and materials for each stage, with the cost instantly.",
+    "title": "Start my project",
+    "intro": "Answer a few questions. At the end you see the cost of each stage and save your project.",
+    "loading": "Loading…",
+    "noscript": "You need JavaScript to create your project. Message us on WhatsApp and we will put it together with you.",
+    "progress": "Step {step} of {total}",
+    "progressLabel": "Progress",
+    "nav": {
+      "back": "Back",
+      "next": "Next",
+      "review": "See my project",
+      "save": "Save my project",
+      "edit": "Change something"
+    },
+    "estimate": "Your estimate",
+    "name": {
+      "title": "What is your project called?",
+      "hint": "This is how you will see it in your dashboard. You can change it later.",
+      "label": "Project name",
+      "placeholder": "E.g.: Mom's house in Choloma"
+    },
+    "land": {
+      "title": "Do you already have land?",
+      "hint": "If not, you can buy one of our lots or continue without land for now.",
+      "own": {
+        "label": "Yes, I have land",
+        "hint": "We build on your land, in the departments where we work."
+      },
+      "buying_from_us": {
+        "label": "No, I want to buy a lot",
+        "hint": "Lots with reviewed paperwork. You buy it and we build your home on it."
+      },
+      "skipped": {
+        "label": "Not yet, continue without land",
+        "hint": "Put the project together now and choose the land later."
+      }
+    },
+    "location": {
+      "titleOwn": "Where is your land?",
+      "titleSkipped": "Where would you like to build?",
+      "hintSkipped": "It helps us estimate the cost: freight and labor change a little by department.",
+      "department": "Department",
+      "municipality": "Municipality",
+      "choose": "Choose…",
+      "unknown": "I don't know yet",
+      "landArea": "Lot size (optional)",
+      "landAreaHint": "If you don't know it, leave it blank.",
+      "unit": "Unit",
+      "units": {
+        "m2": "Square meters",
+        "varas": "Square varas"
+      }
+    },
+    "lot": {
+      "title": "Choose your lot",
+      "hint": "Every lot has reviewed paperwork. We show you the title deed before you pay.",
+      "filter": "Department",
+      "all": "All",
+      "empty": "No lots available in that department. Pick another one or continue without land.",
+      "choose": "Choose this lot",
+      "chosen": "Chosen"
+    },
+    "plans": {
+      "title": "Do you already have plans for your home?",
+      "hint": "If you do, an engineer reviews them and adapts them for the permit.",
+      "yes": {
+        "label": "Yes, I have plans",
+        "hint": "You upload them later in your dashboard. For now, just tell us the size."
+      },
+      "no": {
+        "label": "I don't have plans",
+        "hint": "We help you with the design in the next step."
+      }
+    },
+    "design": {
+      "title": "How do you want your design?",
+      "hint": "You can design from scratch with an architect or pick one of our models.",
+      "custom": {
+        "label": "Design from scratch",
+        "hint": "An architect designs your home with you, made to measure."
+      },
+      "catalog": {
+        "label": "Pick a model from the catalog",
+        "hint": "Ready designs with complete plans. Faster and more affordable."
+      }
+    },
+    "details": {
+      "titlePlans": "What does your home look like in the plans?",
+      "titleCustom": "How do you picture your home?",
+      "hint": "A rough idea is enough: we use it to estimate the cost of each stage.",
+      "area": "Built area in m² (between {min} and {max})",
+      "floors": "Floors",
+      "bedrooms": "Bedrooms",
+      "bathrooms": "Bathrooms"
+    },
+    "model": {
+      "title": "Choose your model",
+      "hint": "Prices include the recommended materials. You can change them afterwards.",
+      "choose": "Choose this model",
+      "chosen": "Chosen",
+      "tooSmall": "It may not fit on your lot"
+    },
+    "stage": {
+      "eyebrow": "Stage {number} of 4",
+      "included": "Included in this stage",
+      "floors": "How many floors will your home have?",
+      "floorsLocked": "Your design has {count, plural, one {# floor} other {# floors}}.",
+      "recommended": "Recommended",
+      "includedItem": "{name} — {description}"
+    },
+    "summary": {
+      "title": "Your project",
+      "hint": "Review the cost of each stage. If it looks good, save it and open your dashboard."
+    },
+    "save": {
+      "title": "Save your project",
+      "hint": "We email you a private link to your dashboard. Someone from our team contacts you within one business day.",
+      "accountNote": "You will soon be able to sign in with an account; your project will be linked to this email.",
+      "submit": "Save my project",
+      "pending": "Saving…"
+    },
+    "errors": {
+      "nameRequired": "Give your project a name.",
+      "projectNameInvalid": "Use only letters, numbers and spaces in the name.",
+      "chooseLand": "Choose an option.",
+      "chooseDepartment": "Choose the department.",
+      "chooseLot": "Choose a lot.",
+      "choosePlans": "Choose an option.",
+      "chooseDesign": "Choose an option.",
+      "chooseModel": "Choose a model.",
+      "area": "Enter the built area (between {min} and {max} m²).",
+      "landArea": "Check the lot size.",
+      "incomplete": "Some information is missing in a step. Go back and check.",
+      "unavailable": "Something you chose is no longer available. Check your lot, your model or your materials.",
+      "rate_limited": "We received several attempts in a row. Wait a few minutes or message us on WhatsApp.",
+      "server": "We couldn't save your project. Try again or message us on WhatsApp.",
+      "validation": "Check the highlighted fields."
+    }
+  },
+  "summary": {
+    "total": "Design, permits and construction",
+    "lot": "Lot (paid separately)",
+    "grandTotal": "Total with lot: {amount}",
+    "duration": "Approximate time",
+    "weeks": "{count, plural, one {# week} other {# weeks}}",
+    "months": "about {count, plural, one {# month} other {# months}}",
+    "materials": "Materials",
+    "labor": "Labor",
+    "stageWeeks": "{count, plural, one {# week} other {# weeks}}",
+    "stagesTitle": "Cost by stage",
+    "paymentsTitle": "How you pay",
+    "paymentsIntro": "No interest. You pay design and permits when you sign, then each stage before it starts, when you see the previous one finished in photos.",
+    "paymentInitial": "Initial payment: design and permits",
+    "whenInitial": "When you sign the contract.",
+    "whenStage": "When you see the previous stage finished: {previous}.",
+    "warnings": {
+      "lot_smaller_than_model_minimum": "Your lot looks smaller than this model needs. We will review it with you: adjusting the design often solves it."
+    },
+    "designFacts": "{area} m² · {floors, plural, one {# floor} other {# floors}} · {bedrooms, plural, one {# bedroom} other {# bedrooms}} · {bathrooms, plural, one {# bathroom} other {# bathrooms}}",
+    "disclaimer": "This is an estimate with reference prices. The final price goes in the contract, after we review your lot and plans.",
+    "durationValue": "{weeks} · {months}",
+    "materialsAmount": "Materials: {amount}",
+    "laborAmount": "Labor: {amount}"
+  },
+  "panel": {
+    "metaTitle": "My project",
+    "greeting": "Hi {name}",
+    "greetingNoName": "Your project",
+    "code": "Project {code}",
+    "created": "Created on {date}",
+    "status": {
+      "draft": "Draft: we review it with you",
+      "in_review": "Under review with our team",
+      "active": "Under construction",
+      "closed": "Closed"
+    },
+    "land": {
+      "own": "Your own land in {place}",
+      "ownNoPlace": "Your own land",
+      "buying_from_us": "You are buying lot {code}",
+      "skipped": "No land yet"
+    },
+    "design": {
+      "own_plans": "With your plans",
+      "custom": "Custom design",
+      "catalog": "{name}"
+    },
+    "actionsTitle": "What you can do",
+    "actions": {
+      "materials": {
+        "title": "Choose materials",
+        "body": "Change the system or materials of any stage and see the new cost.",
+        "cta": "Go to materials"
+      },
+      "calculate": {
+        "title": "Calculate",
+        "body": "With what you set aside each month, see when you start and when you finish.",
+        "cta": "Open the calculator"
+      },
+      "contribute": {
+        "title": "Pay toward materials",
+        "body": "Pay toward a stage's materials package before it starts. Online soon; today we help you on WhatsApp.",
+        "cta": "I want to pay"
+      },
+      "services": {
+        "title": "Hire services",
+        "body": "Land survey, soil study, design, supervision or paperwork."
+      },
+      "progress": {
+        "title": "Request a progress proof",
+        "body": "Photos, video or a site visit for your family."
+      },
+      "support": {
+        "title": "Support",
+        "body": "Questions? Write to us and a person will answer."
+      },
+      "whatsapp": "Message us on WhatsApp"
+    },
+    "materialsTitle": "Materials by stage",
+    "materialsIntro": "Tap an option to change it. The cost is recalculated and saved automatically.",
+    "materialsLocked": "Your project is already under review: to change materials, write to us.",
+    "saving": "Saving…",
+    "saved": "Changes saved",
+    "saveErrors": {
+      "not_editable": "Your project can no longer be changed here. Write to us and we will do it with you.",
+      "rate_limited": "You made many changes in a row. Wait a few minutes.",
+      "unavailable": "That option is no longer available. Choose another one.",
+      "validation": "We couldn't save the change. Reload the page.",
+      "server": "We couldn't save the change. Try again."
+    },
+    "abonos": {
+      "title": "Materials packages",
+      "intro": "Each stage has its materials package. You can pay toward it before the stage starts; once it is paid, we buy the materials and deliver them to your site.",
+      "paid": "Paid: {amount}",
+      "remaining": "Remaining: {amount}",
+      "soon": "Online installments: coming soon"
+    },
+    "request": {
+      "title": "Ask for it here",
+      "kind": "What do you need?",
+      "kinds": {
+        "service": "Hire a service",
+        "progress_proof": "A progress proof",
+        "support": "Help or support"
+      },
+      "message": "Tell us more (optional)",
+      "submit": "Send request",
+      "pending": "Sending…",
+      "sent": "Done! We received your request. We will contact you within one business day.",
+      "errors": {
+        "rate_limited": "We received several requests in a row. Wait a few minutes or message us on WhatsApp.",
+        "not_found": "We couldn't find your project. Check your link.",
+        "validation": "Check your message (1,000 characters max).",
+        "server": "We couldn't send your request. Try again or message us on WhatsApp."
+      }
+    },
+    "whatsappMessage": "Hi, I have project {code} and I need help.",
+    "contributeMessage": "Hi, I have project {code} and I want to pay toward my materials.",
+    "newProject": "Start another project",
+    "privateNote": "This link is private. Keep it: anyone who has it can see and change your project's materials.",
+    "recap": "{land} · {design} · {facts}",
+    "stageHeading": "{number}. {stage}"
+  }
+}

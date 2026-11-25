@@ -26,7 +26,7 @@ describe("buildBucket", () => {
 
   it("cambia con la acción, el identificador y la sal", () => {
     const base = buildBucket("login", "1.2.3.4", salt);
-    expect(buildBucket("quote", "1.2.3.4", salt)).not.toBe(base);
+    expect(buildBucket("project", "1.2.3.4", salt)).not.toBe(base);
     expect(buildBucket("login", "1.2.3.5", salt)).not.toBe(base);
     expect(buildBucket("login", "1.2.3.4", `${salt}-otra`)).not.toBe(base);
   });
@@ -114,7 +114,7 @@ describe("MemoryRateLimitStore", () => {
 describe("RATE_LIMITS", () => {
   it("cubre login, registro, contacto y cotizador, como pide el brief", () => {
     expect(Object.keys(RATE_LIMITS)).toEqual(
-      expect.arrayContaining(["login", "signup", "contactForm", "quote"]),
+      expect.arrayContaining(["login", "signup", "contactForm", "project"]),
     );
     for (const rule of Object.values(RATE_LIMITS)) {
       expect(rule.limit).toBeGreaterThan(0);
