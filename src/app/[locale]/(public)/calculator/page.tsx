@@ -5,6 +5,7 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { PageIntro } from "@/components/shared/page-intro";
 import { getCatalog } from "@/features/catalog/data/load";
 import { RemittanceCalculator } from "@/features/remittance-calculator/components/remittance-calculator";
+import type { OptionStage } from "@/features/projects/types";
 import { toCalculatorData } from "@/features/remittance-calculator/data";
 import type { AppLocale } from "@/i18n/routing";
 import { pageMetadata } from "@/lib/seo";
@@ -21,8 +22,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function CalculatorPage() {
-  const [t, catalog, messages] = await Promise.all([
+  const [t, tp, catalog, messages] = await Promise.all([
     getTranslations("calculator"),
+    getTranslations("projects"),
     getCatalog(),
     getMessages(),
   ]);
@@ -31,7 +33,9 @@ export default async function CalculatorPage() {
       <PageIntro title={t("title")} intro={t("intro")} />
       <div className="container-page pb-16">
         <NextIntlClientProvider messages={{ common: messages.common, calculator: messages.calculator }}>
-          <RemittanceCalculator data={toCalculatorData(catalog)} />
+          <RemittanceCalculator
+            data={toCalculatorData(catalog, (key) => tp(`stages.${key as OptionStage}.name`))}
+          />
         </NextIntlClientProvider>
       </div>
     </>

@@ -18,6 +18,23 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  /**
+   * Terrenos y Materiales dejaron de ser secciones: comprar un terreno es un paso de
+   * "Construir" y los materiales se eligen dentro del proyecto. Las direcciones viejas
+   * (y las del cotizador anterior) llevan a Construir. Temporales: el sitio aún no se indexa.
+   */
+  async redirects() {
+    return [
+      { source: "/terrenos", destination: "/construir/nuevo", permanent: false },
+      { source: "/terrenos/:slug", destination: "/construir/nuevo?lot=:slug", permanent: false },
+      { source: "/en/land", destination: "/en/build/new", permanent: false },
+      { source: "/en/land/:slug", destination: "/en/build/new?lot=:slug", permanent: false },
+      { source: "/materiales", destination: "/construir", permanent: false },
+      { source: "/en/materials", destination: "/en/build", permanent: false },
+      { source: "/construir/cotizador", destination: "/construir/nuevo", permanent: false },
+      { source: "/en/build/quote", destination: "/en/build/new", permanent: false },
+    ];
+  },
   async headers() {
     return [
       {

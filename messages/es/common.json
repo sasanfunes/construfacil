@@ -11,11 +11,9 @@
     "closeMenu": "Cerrar menú"
   },
   "nav": {
-    "homes": "Casas listas",
-    "land": "Terrenos",
+    "homes": "Casa lista",
     "build": "Construir",
     "calculator": "Calculadora",
-    "materials": "Materiales",
     "howItWorks": "Cómo funciona",
     "whyTrust": "Por qué confiar",
     "faq": "Preguntas frecuentes",

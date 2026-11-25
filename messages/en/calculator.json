@@ -29,8 +29,8 @@
     "timelineTitle": "Your timeline",
     "timelineMonth": "Month {month}",
     "timelineStage": "{stage}: month {start} to {end}",
-    "ctaBuild": "Get a quote for this home",
-    "ctaLand": "See land",
+    "ctaBuild": "Start my project with this model",
+    "ctaLand": "Choose a lot",
     "ctaHome": "See ready homes",
     "noPauseWith": "With {amount} a month, the build never pauses once it starts."
   },

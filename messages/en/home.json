@@ -4,7 +4,7 @@
   "hero": {
     "title": "Your home in Honduras, built from the United States",
     "subtitle": "See every update in photos. Pay for each stage when you see it finished.",
-    "cta": "Get a quote for my home",
+    "cta": "Start my project",
     "secondary": "See ready homes",
     "points": {
       "stages": "You pay for each stage when you see the progress",
@@ -13,31 +13,22 @@
     }
   },
   "paths": {
-    "title": "Four ways to your home",
-    "soon": "Coming soon",
+    "title": "Two ways to your home",
     "readyHome": {
-      "title": "Ready home",
-      "description": "Buy a finished home, one under construction, or a presale."
+      "title": "Ready homes",
+      "description": "Buy a finished home, one under construction or a presale. You see its documents before you pay."
     },
     "build": {
-      "title": "Build on my land",
-      "description": "Design, permits, materials and construction on the land you already own."
-    },
-    "land": {
-      "title": "Buy land",
-      "description": "Lots with reviewed paperwork. If you want, we build your home on it."
-    },
-    "materials": {
-      "title": "Materials for my build",
-      "description": "Buy from the United States and get delivery at your site in Honduras."
+      "title": "Build",
+      "description": "Create your project: with or without land, with your plans or one of our designs. Experts guide you at every stage."
     }
   },
   "how": {
     "title": "How it works",
     "steps": {
       "quote": {
-        "title": "Get a quote online",
-        "body": "In three minutes you know what your home costs, what you pay at each stage and how long it takes."
+        "title": "You create your project",
+        "body": "You choose land, design and materials for each stage. You instantly see what each stage costs and how long it takes."
       },
       "call": {
         "title": "We talk and you sign",
@@ -110,8 +101,8 @@
   },
   "finalCta": {
     "title": "Shall we start your home?",
-    "body": "Get a quote in three minutes or message us on WhatsApp. We reply within one business day.",
-    "quote": "Get a quote for my home",
+    "body": "Create your project in a few minutes or message us on WhatsApp. We reply within one business day.",
+    "quote": "Start my project",
     "schedule": "Book a video call"
   }
 }

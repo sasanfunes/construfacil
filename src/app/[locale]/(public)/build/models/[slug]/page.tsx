@@ -8,12 +8,12 @@ import { ExampleBadge } from "@/components/shared/example-badge";
 import { Price } from "@/components/shared/price";
 import { whatsappHref } from "@/components/shared/whatsapp";
 import { Button } from "@/components/ui/button";
-import { activeModels, pricingRulesFrom } from "@/features/catalog/catalog";
+import { activeModels, projectRulesFrom } from "@/features/catalog/catalog";
 import { FloorPlan } from "@/features/catalog/components/floor-plan";
 import { HouseIllustration } from "@/features/catalog/components/illustrations";
 import { DetailSection, FactsList } from "@/features/catalog/components/listing-detail";
 import { getCatalog } from "@/features/catalog/data/load";
-import { calculateQuote } from "@/features/quote/engine";
+import { modelReferenceEstimate } from "@/features/projects/engine";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import { formatNumber } from "@/lib/format";
@@ -50,39 +50,21 @@ export async function generateMetadata({
 
 export default async function ModelPage({ params }: PageProps<"/[locale]/build/models/[slug]">) {
   const { slug } = await params;
-  const [{ catalog, model }, t, tc, tcat, locale] = await Promise.all([
+  const [{ catalog, model }, t, tc, tcat, tp, locale] = await Promise.all([
     findModel(slug),
     getTranslations("build.model"),
     getTranslations("common"),
     getTranslations("catalog"),
+    getTranslations("projects"),
     getLocale() as Promise<AppLocale>,
   ]);
   if (!model) notFound();
 
-  const rules = pricingRulesFrom(catalog);
   const department =
     catalog.departments.find((d) => d.id === REFERENCE_DEPARTMENT && d.isActive) ??
     catalog.departments.find((d) => d.isActive);
-  const prices = department
-    ? [...catalog.finishLevels]
-        .sort((a, b) => a.sortOrder - b.sortOrder)
-        .map((finish) => ({
-          finish,
-          usdCents: calculateQuote(
-            {
-              landStatus: "not_yet",
-              lotId: null,
-              departmentId: department.id,
-              municipalityId: null,
-              landAreaM2: null,
-              design: { kind: "model", modelId: model.id },
-              finishLevelId: finish.id,
-              extras: [],
-            },
-            rules,
-          ).constructionUsdCents,
-        }))
-    : [];
+  // Con los materiales recomendados y el factor de referencia (1.0, el de Cortés).
+  const estimate = modelReferenceEstimate(model.id, projectRulesFrom(catalog));
   const name = model.name[locale];
   const wa = whatsappHref(t("whatsappMessage", { model: name }));
 
@@ -133,7 +115,9 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/build/m
                       },
                     ]
                   : []),
-                { label: t("buildTime"), value: tc("units.weeks", { count: model.buildWeeks }) },
+                ...(estimate
+                  ? [{ label: t("buildTime"), value: tc("units.weeks", { count: estimate.durationWeeks }) }]
+                  : []),
               ]}
             />
           </DetailSection>
@@ -148,35 +132,20 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/build/m
             </DetailSection>
           ) : null}
 
-          {department ? (
+          {estimate && department ? (
             <DetailSection title={t("pricesTitle")}>
               <p className="text-muted-foreground">{t("pricesIntro", { department: department.name })}</p>
-              <div className="overflow-x-auto rounded-2xl border">
-                <table className="w-full bg-card text-left">
-                  <thead className="bg-muted">
-                    <tr>
-                      <th scope="col" className="p-4">
-                        {t("finishCol")}
-                      </th>
-                      <th scope="col" className="p-4">
-                        {t("priceCol")}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {prices.map(({ finish, usdCents }) => (
-                      <tr key={finish.id} className="border-t">
-                        <th scope="row" className="p-4 font-bold">
-                          {finish.name[locale]}
-                        </th>
-                        <td className="p-4">
-                          <Price usdCents={usdCents} usdToHnl={catalog.exchangeRate.usdToHnl} size="sm" />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <ol className="flex flex-col gap-2">
+                {estimate.stages.map((stage) => (
+                  <li
+                    key={stage.key}
+                    className="flex flex-wrap items-baseline justify-between gap-2 rounded-2xl border bg-card p-4"
+                  >
+                    <span className="font-bold">{tp(`stages.${stage.key}.name`)}</span>
+                    <Price usdCents={stage.costUsdCents} usdToHnl={catalog.exchangeRate.usdToHnl} size="sm" />
+                  </li>
+                ))}
+              </ol>
               <p className="text-sm text-muted-foreground">{t("pricesNote")}</p>
             </DetailSection>
           ) : null}
@@ -184,18 +153,14 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/build/m
 
         <aside className="flex flex-col gap-4 lg:sticky lg:top-6 lg:self-start">
           <div className="flex flex-col gap-4 rounded-2xl border bg-card p-6 shadow-sm">
-            {prices[0] ? (
+            {estimate ? (
               <div className="flex flex-col">
                 <span className="text-sm font-bold text-muted-foreground">{tcat("models.from")}</span>
-                <Price
-                  usdCents={Math.min(...prices.map((p) => p.usdCents))}
-                  usdToHnl={catalog.exchangeRate.usdToHnl}
-                  size="lg"
-                />
+                <Price usdCents={estimate.totalUsdCents} usdToHnl={catalog.exchangeRate.usdToHnl} size="lg" />
               </div>
             ) : null}
             <Button asChild size="lg">
-              <Link href={{ pathname: "/build/quote", query: { model: model.slug } }}>{t("quoteCta")}</Link>
+              <Link href={{ pathname: "/build/new", query: { model: model.slug } }}>{t("quoteCta")}</Link>
             </Button>
             <Button asChild variant="outline">
               <Link href={{ pathname: "/schedule", query: { model: model.slug } }}>

@@ -18,10 +18,8 @@ const COLUMNS = [
     title: "explore",
     links: [
       { href: "/homes", key: "nav.homes" },
-      { href: "/land", key: "nav.land" },
       { href: "/build", key: "nav.build" },
       { href: "/calculator", key: "nav.calculator" },
-      { href: "/materials", key: "nav.materials" },
     ],
   },
   {

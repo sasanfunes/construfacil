@@ -4,7 +4,7 @@
   "hero": {
     "title": "Tu casa en Honduras, construida desde Estados Unidos",
     "subtitle": "Ve cada avance con fotos. Paga cada etapa cuando la ves terminada.",
-    "cta": "Cotizar mi casa",
+    "cta": "Crear mi proyecto",
     "secondary": "Ver casas listas",
     "points": {
       "stages": "Pagas cada etapa cuando ves el avance",
@@ -13,31 +13,22 @@
     }
   },
   "paths": {
-    "title": "Cuatro caminos hacia tu casa",
-    "soon": "Pronto",
+    "title": "Dos caminos hacia tu casa",
     "readyHome": {
       "title": "Casa lista",
-      "description": "Compra una casa terminada, en construcción o en preventa."
+      "description": "Compra una casa terminada, en construcción o en preventa. Ves sus documentos antes de pagar."
     },
     "build": {
-      "title": "Construir en mi terreno",
-      "description": "Diseño, permisos, materiales y obra sobre el terreno que ya tienes."
-    },
-    "land": {
-      "title": "Comprar terreno",
-      "description": "Terrenos con papeles revisados. Si quieres, construimos tu casa en él."
-    },
-    "materials": {
-      "title": "Materiales para mi obra",
-      "description": "Compra desde Estados Unidos y recibe en tu obra en Honduras."
+      "title": "Construir",
+      "description": "Crea tu proyecto: con o sin terreno, con tus planos o con uno de nuestros diseños. Expertos te guían en cada etapa."
     }
   },
   "how": {
     "title": "Cómo funciona",
     "steps": {
       "quote": {
-        "title": "Cotizas en línea",
-        "body": "En tres minutos sabes cuánto cuesta tu casa, cuánto pagas en cada etapa y cuánto tarda."
+        "title": "Creas tu proyecto",
+        "body": "Eliges terreno, diseño y materiales por etapa. Al instante ves cuánto cuesta cada etapa y cuánto tarda."
       },
       "call": {
         "title": "Hablamos y firmas",
@@ -110,8 +101,8 @@
   },
   "finalCta": {
     "title": "¿Empezamos tu casa?",
-    "body": "Cotiza en tres minutos o escríbenos por WhatsApp. Te respondemos en menos de un día hábil.",
-    "quote": "Cotizar mi casa",
+    "body": "Crea tu proyecto en pocos minutos o escríbenos por WhatsApp. Te respondemos en menos de un día hábil.",
+    "quote": "Crear mi proyecto",
     "schedule": "Agendar videollamada"
   }
 }

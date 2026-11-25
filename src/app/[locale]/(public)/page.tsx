@@ -5,9 +5,7 @@ import {
   Hammer,
   Home,
   Landmark,
-  MapPinned,
   MessageCircle,
-  Package,
   Receipt,
   ShieldCheck,
   type LucideIcon,
@@ -19,12 +17,12 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { ExampleBadge } from "@/components/shared/example-badge";
 import { SectionTitle } from "@/components/shared/page-intro";
 import { whatsappHref } from "@/components/shared/whatsapp";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getCatalog } from "@/features/catalog/data/load";
 import { HouseIllustration, LotIllustration } from "@/features/catalog/components/illustrations";
 import { FaqList, HOME_FAQ } from "@/features/content/faq";
 import { RemittanceCalculator } from "@/features/remittance-calculator/components/remittance-calculator";
+import type { OptionStage } from "@/features/projects/types";
 import { toCalculatorData } from "@/features/remittance-calculator/data";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
@@ -36,12 +34,11 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({ locale, href: "/", title: t("metaTitle"), description: t("metaDescription") });
 }
 
+/** Los dos caminos: comprar una casa lista o construir (con o sin terreno). */
 const PATHS = [
-  { key: "readyHome", icon: Home, href: "/homes", soon: false },
-  { key: "build", icon: Hammer, href: "/build", soon: false },
-  { key: "land", icon: MapPinned, href: "/land", soon: false },
-  { key: "materials", icon: Package, href: "/materials", soon: true },
-] as const satisfies ReadonlyArray<{ key: string; icon: LucideIcon; href: string; soon: boolean }>;
+  { key: "readyHome", icon: Home, href: "/homes" },
+  { key: "build", icon: Hammer, href: "/build" },
+] as const satisfies ReadonlyArray<{ key: string; icon: LucideIcon; href: string }>;
 
 const HOW_STEPS = ["quote", "call", "build", "pay"] as const;
 
@@ -55,9 +52,10 @@ const TRUST_POINTS = [
 const TESTIMONIALS = ["carlos", "wendy", "jose"] as const;
 
 export default async function HomePage() {
-  const [t, tc, catalog, messages] = await Promise.all([
+  const [t, tc, tp, catalog, messages] = await Promise.all([
     getTranslations("home"),
     getTranslations("common"),
+    getTranslations("projects"),
     getCatalog(),
     getMessages(),
   ]);
@@ -72,7 +70,7 @@ export default async function HomePage() {
           <p className="max-w-xl text-lg text-brand-muted md:text-xl">{t("hero.subtitle")}</p>
           <div className="flex flex-wrap items-center gap-4">
             <Button asChild size="lg">
-              <Link href="/build/quote">{t("hero.cta")}</Link>
+              <Link href="/build">{t("hero.cta")}</Link>
             </Button>
             <Link
               href="/homes"
@@ -93,11 +91,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Los cuatro caminos */}
+      {/* Los dos caminos */}
       <section aria-labelledby="paths-title" className="container-page flex flex-col gap-6 py-12 md:py-16">
         <SectionTitle id="paths-title">{t("paths.title")}</SectionTitle>
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {PATHS.map(({ key, icon: Icon, href, soon }) => (
+        <ul className="grid gap-4 sm:grid-cols-2">
+          {PATHS.map(({ key, icon: Icon, href }) => (
             <li key={key} className="flex">
               <Link
                 href={href}
@@ -107,11 +105,7 @@ export default async function HomePage() {
                   <span className="inline-flex size-12 items-center justify-center rounded-full bg-accent text-brand">
                     <Icon aria-hidden="true" className="size-6" />
                   </span>
-                  {soon ? (
-                    <Badge>{t("paths.soon")}</Badge>
-                  ) : (
-                    <ArrowRight aria-hidden="true" className="size-5 text-brand" />
-                  )}
+                  <ArrowRight aria-hidden="true" className="size-5 text-brand" />
                 </span>
                 <span className="font-display text-xl font-semibold">{t(`paths.${key}.title`)}</span>
                 <span className="text-muted-foreground">{t(`paths.${key}.description`)}</span>
@@ -159,7 +153,9 @@ export default async function HomePage() {
           </p>
         </div>
         <NextIntlClientProvider messages={{ common: messages.common, calculator: messages.calculator }}>
-          <RemittanceCalculator data={toCalculatorData(catalog)} />
+          <RemittanceCalculator
+            data={toCalculatorData(catalog, (key) => tp(`stages.${key as OptionStage}.name`))}
+          />
         </NextIntlClientProvider>
       </section>
 
@@ -264,7 +260,7 @@ export default async function HomePage() {
             </Button>
           </div>
           <Link
-            href="/build/quote"
+            href="/build"
             className="inline-flex min-h-11 items-center gap-2 font-bold underline underline-offset-4"
           >
             {t("finalCta.quote")}

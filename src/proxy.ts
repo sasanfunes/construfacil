@@ -31,8 +31,8 @@ const API_ROUTES: ReadonlySet<string> = new Set<string>([
 const PROXY_OWNED_HEADERS = ["content-security-policy", "content-security-policy-report-only", "x-nonce"];
 
 /** Fichas del catálogo (ruta interna, después de traducir): `/es/homes/<slug>`, etc. */
-const DETAIL_ROUTE = /^\/([a-z]{2})\/(homes|land|build\/models)\/([^/]+)\/?$/;
-const DETAIL_KIND: Record<string, DetailKind> = { homes: "home", land: "lot", "build/models": "model" };
+const DETAIL_ROUTE = /^\/([a-z]{2})\/(homes|build\/models)\/([^/]+)\/?$/;
+const DETAIL_KIND: Record<string, DetailKind> = { homes: "home", "build/models": "model" };
 
 /**
  * Las fichas usan ISR: Next genera y guarda una página por cada slug que alguien visita, exista

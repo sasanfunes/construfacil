@@ -29,8 +29,8 @@
     "timelineTitle": "Tu línea de tiempo",
     "timelineMonth": "Mes {month}",
     "timelineStage": "{stage}: del mes {start} al {end}",
-    "ctaBuild": "Cotizar esta casa",
-    "ctaLand": "Ver terrenos",
+    "ctaBuild": "Crear mi proyecto con este modelo",
+    "ctaLand": "Elegir un terreno",
     "ctaHome": "Ver casas listas",
     "noPauseWith": "Con {amount} al mes, la obra no se detiene una vez que empieza."
   },

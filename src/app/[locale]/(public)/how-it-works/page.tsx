@@ -110,7 +110,7 @@ export default async function HowItWorksPage() {
             {t("ctaTitle")}
           </h2>
           <Button asChild size="lg">
-            <Link href="/build/quote">{t("cta")}</Link>
+            <Link href="/build">{t("cta")}</Link>
           </Button>
         </section>
       </div>
