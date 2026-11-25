@@ -1,11 +1,13 @@
 import "server-only";
 
-import { getServerEnv } from "@/lib/env.server";
+import { isProductionDeploy } from "@/lib/env";
+import { canWriteToSupabase, getRateLimitSalt } from "@/lib/env.server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 import {
   buildBucket,
   getClientIp,
+  MemoryRateLimitStore,
   RATE_LIMITS,
   type RateLimitAction,
   type RateLimitResult,
@@ -36,7 +38,19 @@ function denied(rule: RateLimitRule): RateLimitResult {
   return { allowed: false, remaining: 0, resetAt: new Date(Date.now() + rule.windowSeconds * 1000) };
 }
 
-const store: RateLimitStore = new PostgresRateLimitStore();
+let store: RateLimitStore | undefined;
+
+/**
+ * Con Supabase, el contador vive en Postgres y lo comparten todas las instancias.
+ * Sin Supabase (solo fuera de producción), en memoria.
+ */
+function getStore(): RateLimitStore {
+  if (store) return store;
+  if (canWriteToSupabase()) store = new PostgresRateLimitStore();
+  else if (isProductionDeploy()) throw new Error("En producción el rate limiting necesita Supabase.");
+  else store = new MemoryRateLimitStore();
+  return store;
+}
 
 /**
  * Identificador de quien hace la petición, a partir de sus cabeceras.
@@ -45,7 +59,7 @@ const store: RateLimitStore = new PostgresRateLimitStore();
  * peticiones bloquearan a todo el mundo.
  */
 export function getRequestIdentifier(headers: Headers): string | null {
-  return getClientIp(headers) ?? (process.env.NODE_ENV === "production" ? null : "local-dev");
+  return getClientIp(headers) ?? (isProductionDeploy() ? null : "local-dev");
 }
 
 /**
@@ -64,8 +78,8 @@ export async function enforceRateLimit(
     console.error(`rate-limit: petición sin identificador en "${action}"; se rechaza`);
     return denied(rule);
   }
-  const bucket = buildBucket(action, identifier, getServerEnv().RATE_LIMIT_SALT);
-  return store.hit(bucket, rule);
+  const bucket = buildBucket(action, identifier, getRateLimitSalt());
+  return getStore().hit(bucket, rule);
 }
 
 export { RATE_LIMITS, type RateLimitAction, type RateLimitResult } from "./rate-limit-core";

@@ -34,9 +34,17 @@ if (!parsed.success) {
 
 export const publicEnv = parsed.data;
 
+/**
+ * ¿Es el despliegue de producción? En Vercel lo dice `VERCEL_ENV`; si se despliega en otro
+ * lado, hay que definir `APP_ENV=production`. No basta `NODE_ENV`: también vale
+ * "production" en un build local o en las pruebas.
+ */
+export function isProductionDeploy(): boolean {
+  return process.env.VERCEL_ENV === "production" || process.env.APP_ENV === "production";
+}
+
 /** En producción nada se deja a los valores por defecto. En desarrollo el sitio público arranca sin Supabase. */
-const isProductionDeploy = process.env.VERCEL_ENV === "production";
-if (isProductionDeploy) {
+if (isProductionDeploy()) {
   if (!publicEnv.NEXT_PUBLIC_SUPABASE_URL || !publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     throw new Error("Faltan NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY en producción.");
   }
@@ -55,4 +63,12 @@ export function getSupabasePublicConfig() {
     );
   }
   return { url, anonKey };
+}
+
+/**
+ * ¿Hay Supabase? Sin él, el sitio usa los datos de EJEMPLO (desarrollo, CI y pruebas).
+ * En producción esto siempre es verdadero: arriba se exige.
+ */
+export function isSupabaseConfigured(): boolean {
+  return Boolean(publicEnv.NEXT_PUBLIC_SUPABASE_URL && publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 }

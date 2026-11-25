@@ -19,6 +19,7 @@ import type { Database } from "./database.types";
 export function createSupabaseAdminClient() {
   const { url } = getSupabasePublicConfig();
   const { SUPABASE_SERVICE_ROLE_KEY } = getServerEnv();
+  if (!SUPABASE_SERVICE_ROLE_KEY) throw new Error("Falta SUPABASE_SERVICE_ROLE_KEY.");
 
   return createClient<Database>(url, SUPABASE_SERVICE_ROLE_KEY, {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },

@@ -22,6 +22,8 @@ export const RATE_LIMITS = {
   videoCallRequest: { limit: 5, windowSeconds: 60 * 60 },
   /** Cotizaciones guardadas. El cálculo en pantalla no gasta intentos. */
   quote: { limit: 10, windowSeconds: 60 * 60 },
+  /** Eventos anónimos del embudo del cotizador. */
+  funnel: { limit: 300, windowSeconds: 60 * 60 },
 } as const satisfies Record<string, RateLimitRule>;
 
 export type RateLimitAction = keyof typeof RATE_LIMITS;
