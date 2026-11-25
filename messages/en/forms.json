@@ -14,8 +14,7 @@
     "callDate": "Video call date",
     "callTimeSlot": "What time works best?",
     "callTimezone": "Your time zone",
-    "privacy": "I accept the {link}. We only use your data to reply to you.",
-    "privacyLink": "privacy notice"
+    "privacy": "I accept the <link>privacy notice</link>. We only use your data to reply to you."
   },
   "channels": {
     "whatsapp": "WhatsApp",

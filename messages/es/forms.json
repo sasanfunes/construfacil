@@ -14,8 +14,7 @@
     "callDate": "Día de la videollamada",
     "callTimeSlot": "¿A qué hora te queda mejor?",
     "callTimezone": "Tu zona horaria",
-    "privacy": "Acepto el {link}. Usamos tus datos solo para responderte.",
-    "privacyLink": "aviso de privacidad"
+    "privacy": "Acepto el <link>aviso de privacidad</link>. Usamos tus datos solo para responderte."
   },
   "channels": {
     "whatsapp": "WhatsApp",

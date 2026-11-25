@@ -309,9 +309,9 @@ export function LeadForm({
           />
           <span>
             {t.rich("fields.privacy", {
-              link: () => (
+              link: (chunks) => (
                 <Link href="/legal/privacy" className="font-bold text-brand underline underline-offset-4">
-                  {t("fields.privacyLink")}
+                  {chunks}
                 </Link>
               ),
             })}
