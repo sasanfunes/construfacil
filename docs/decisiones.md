@@ -2,6 +2,39 @@
 
 Una entrada por decisión, la más reciente arriba. Si una decisión cambia, se agrega una entrada nueva que la reemplaza; no se borra la anterior.
 
+## 25 nov 2026 — Fase 1
+
+### Técnicas
+
+**Modo de ejemplo sin Supabase.** Mientras no exista el proyecto, el catálogo sale de `src/features/catalog/sample/` (marcado como ejemplo) y los leads, cotizaciones y contadores del rate limiting se guardan en memoria. Solo se permite con `APP_ENV` = development, ci, test o preview. Sin `APP_ENV`, todo build de producción y todo despliegue en Vercel exige la configuración completa: un despliegue mal configurado no arranca, en vez de perder leads en silencio.
+
+**Cómo se calcula una cotización.**
+
+- Precio del modelo × multiplicador del acabado × factor del departamento, redondeado a $100. Los extras se redondean a $1.
+- Diseño propio: metros cuadrados × precio por m² del acabado.
+- Plan de pagos: pago inicial (porcentaje en ajustes) y un pago por etapa, proporcional a su costo. Cada etapa se paga al ver terminada la anterior.
+- El terreno, si lo compra con nosotros, se paga aparte y no entra en el plan por etapas.
+- Se descartó una tabla de precio por modelo y acabado: un multiplicador por acabado es más fácil de mantener para el admin y da el mismo resultado.
+- Las reglas de precio son públicas (las lee el visitante): el cotizador las muestra igual. Al guardar, el servidor recalcula todo y guarda la foto con el tipo de cambio del día.
+
+**Cotización guardada con enlace privado.** El cliente recibe por correo un enlace con un token de 32 bytes, válido 180 días; el precio se mantiene 30. En la Fase 2 la cotización se liga a su cuenta si verificó el correo.
+
+**Contenido en los archivos de traducción.** Preguntas frecuentes, testimonios, equipo y textos legales viven en `messages/` hasta que exista el panel (Fase 2). Testimonios y equipo van marcados como ejemplo. Los textos legales son un borrador que necesita revisión de un abogado antes del lanzamiento.
+
+**El selector de idioma recarga la página.** Con un `Link`, el router de Next aprendía el patrón `/[locale]` al ir a `/en` y luego pedía `/casas` como si fuera un idioma (404 en la precarga). Un enlace normal evita la predicción equivocada; cambiar de idioma es poco frecuente.
+
+**Fichas solo con slugs publicados.** Casas, terrenos y modelos usan ISR: Next genera y guarda una página por cada slug que alguien visita. El proxy deja pasar solo los publicados y manda los demás a un 404 fijo, para que URLs inventadas no llenen la caché. Se descartó quitar `generateStaticParams`: obligaba a envolver todo el layout en `<Suspense>`.
+
+**El cotizador es una página estática.** Lee `?lot=` y `?model=` en el navegador, no en el servidor. Leerlos en el servidor hacía la página dinámica (sin caché) y bajaba el rendimiento en celular a 65.
+
+**Zod sin JIT.** Zod v4 prueba `new Function("")` y la CSP lo prohíbe. Se importa de `@/lib/zod`, configurado con `jitless`.
+
+**Ubicación aproximada.** Las coordenadas públicas llevan 3 decimales (~110 m). La dirección exacta se da en la videollamada.
+
+**Correos con plantillas propias.** Los componentes de React Email están obsoletos; las plantillas usan HTML con estilos en línea y se convierten con `@react-email/render`. Sin Resend configurado, en desarrollo el correo solo se anuncia en la consola.
+
+**Mapa con Leaflet y OpenStreetMap.** Se carga solo al abrir la vista de mapa. Para producción con tráfico real hace falta un proveedor de mosaicos con contrato (la política de uso de OpenStreetMap no lo permite); queda pendiente de decidir.
+
 ## 24 nov 2026 — Fase 0
 
 ### Negocio (decidió el dueño del producto)
@@ -63,10 +96,13 @@ Se propusieron en `docs/plan-fase-0.md` y siguen vigentes mientras el dueño no 
 
 ## Pendiente de decidir
 
-| Tema                                       | Bloquea             | Nota                                                                  |
-| ------------------------------------------ | ------------------- | --------------------------------------------------------------------- |
-| Qué respalda "pagos protegidos por etapas" | Textos de la Fase 1 | Mientras tanto el sitio dice "Pagas cada etapa cuando ves el avance". |
-| Términos reales de las garantías           | Fase 1              |                                                                       |
-| Entidad legal en EE. UU.                   | Fase 3              | Stripe no abre cuentas a empresas constituidas en Honduras.           |
-| Dominio, WhatsApp de ventas, constructora  | Lanzamiento         | Hoy van como valores de ejemplo en variables de entorno y ajustes.    |
-| Fotos reales de obras y testimonios        | Lanzamiento         | Todo el contenido de ejemplo irá etiquetado.                          |
+| Tema                                       | Bloquea     | Nota                                                                  |
+| ------------------------------------------ | ----------- | --------------------------------------------------------------------- |
+| Qué respalda "pagos protegidos por etapas" | Lanzamiento | Mientras tanto el sitio dice "Pagas cada etapa cuando ves el avance". |
+| Términos reales de las garantías           | Lanzamiento | Los textos de garantía del sitio son de ejemplo.                      |
+| Revisión legal de términos y privacidad    | Lanzamiento | Los textos legales del sitio son un borrador.                         |
+| Proveedor de mosaicos del mapa             | Lanzamiento | OpenStreetMap no permite tráfico alto en sus servidores.              |
+| Cuenta de Cloudflare para Turnstile        | Fase 2      | CAPTCHA para formularios y registro.                                  |
+| Entidad legal en EE. UU.                   | Fase 3      | Stripe no abre cuentas a empresas constituidas en Honduras.           |
+| Dominio, WhatsApp de ventas, constructora  | Lanzamiento | Hoy van como valores de ejemplo en variables de entorno y ajustes.    |
+| Fotos reales de obras y testimonios        | Lanzamiento | Todo el contenido de ejemplo irá etiquetado.                          |

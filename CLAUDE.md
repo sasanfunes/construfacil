@@ -37,11 +37,14 @@ Esta versión no es la que conoces. Antes de usar una API de Next, lee su guía 
 - **El proxy atiende todas las peticiones** salvo `/_next/`. Consecuencias: una ruta de API nueva se agrega a `API_ROUTES` en `src/proxy.ts` (si no, responde 404), y **no se usan archivos sueltos en `/public`**: las imágenes se importan desde el código o vienen de Supabase Storage. Los archivos de metadatos de la raíz (`robots.txt`, `sitemap.xml`…) están en `PASSTHROUGH_FILES`.
 - El proxy no es la barrera de acceso: cada página y cada acción privada comprueba la sesión y el rol.
 - `params` y `searchParams` son promesas. Los tipos `PageProps<"/ruta">` y `LayoutProps<"/ruta">` son globales y los genera `next typegen`.
+- **Una página pública que lee `searchParams` en el servidor deja de ser estática** (sin caché, más lenta en celular). Si el dato solo hace falta en el navegador, se lee ahí (ver el cotizador).
+- **Fichas con `[slug]`** (casas, terrenos, modelos): usan ISR y el proxy solo deja pasar slugs publicados (`src/features/catalog/data/known-slugs.ts`); el resto va a un 404 fijo para que URLs inventadas no llenen la caché. Una sección de fichas nueva se agrega a `DETAIL_ROUTE` en `src/proxy.ts`.
 
 ## Idiomas (next-intl)
 
 - **Ningún texto visible va escrito en un componente.** Todo sale de `messages/{es,en}/<área>.json`. ESLint (`react/jsx-no-literals`) lo impide.
 - Cada llave nueva se agrega en español y en inglés. `messages/messages.test.ts` falla si no coinciden.
+- No uses arreglos de objetos en los mensajes: rompen los tipos de next-intl. Usa objetos con llaves (`steps.design`, `steps.stages`…).
 - Un área nueva = un archivo JSON por idioma + su import en `messages/{es,en}/index.ts`.
 - Cada ruta nueva se declara en `pathnames` de `src/i18n/routing.ts` con su traducción.
 - Navegación: `Link`, `redirect`, `useRouter`, `usePathname` de `@/i18n/navigation`. Nunca `next/link`.
@@ -74,8 +77,10 @@ Esta versión no es la que conoces. Antes de usar una API de Next, lee su guía 
   - `createSupabaseServerClient()`: con la sesión de la persona. Es el cliente por defecto, también para acciones del equipo, porque así `auth.uid()` queda en la auditoría.
   - `createSupabaseAnonClient()`: sin sesión, para datos públicos en páginas cacheadas.
   - `createSupabaseAdminClient()`: service role, se salta el RLS. Solo para operaciones del sistema (lead de un formulario público, webhook de Stripe, rate limiting, auditoría), después de validar con Zod y comprobar permisos.
-- **Zod** en cada formulario y en cada Server Action o Route Handler. El mismo esquema valida en cliente y servidor.
+- **Zod** en cada formulario y en cada Server Action o Route Handler. El mismo esquema valida en cliente y servidor. Se importa de `@/lib/zod` (sin JIT, porque la CSP prohíbe `eval`); ESLint impide importarlo de `"zod"`.
 - **Rate limiting** al inicio de toda acción pública: `enforceRateLimit(acción, getRequestIdentifier(await headers()))` de `src/lib/security/rate-limit.ts`. No cubre los endpoints de Supabase Auth, que se protegen en Supabase.
+- **Formularios públicos**: después del rate limiting por IP, el control anti-bots (`src/features/leads/bot-check.ts`: campo trampa y tiempo mínimo) y, antes de mandar un correo, `enforceRateLimit("outboundEmail", emailRateLimitKey(correo))`. Nada que escriba el usuario va en el asunto de un correo.
+- **`APP_ENV`**: sin él, todo build de producción y todo despliegue en Vercel exige la configuración completa. El modo de ejemplo (sin Supabase, leads en memoria) solo corre con `APP_ENV` = development, ci, test o preview.
 - **Auditoría**: las tablas sensibles llevan el trigger `private.audit_row_change()`. Lo que un trigger no ve se registra con `logAudit()`.
 - **Dinero**: montos en centavos de USD, enteros. Los precios se calculan en el servidor desde la base; del cliente solo llegan identificadores.
 - **Secretos**: solo en `src/lib/env.server.ts` y módulos con `import "server-only"`. Nunca con prefijo `NEXT_PUBLIC_`.
@@ -107,4 +112,4 @@ Esta versión no es la que conoces. Antes de usar una API de Next, lee su guía 
 | RLS, permisos y triggers            | `supabase/tests/`  | `pnpm test:rls` |
 | Flujos críticos, accesibilidad, CSP | `e2e/`             | `pnpm test:e2e` |
 
-Los e2e fallan con cualquier error en la consola del navegador. Si un caso lo espera (por ejemplo un 404), se desactiva solo en esa prueba.
+Los e2e fallan con cualquier error en la consola del navegador o violación de la CSP. Si un caso lo espera (por ejemplo un 404), se desactiva solo en esa prueba. Usa lo de `e2e/fixtures.ts`: cada prueba llega con su propia IP, `waitForHumanDelay` antes de enviar un formulario (si no, el control anti-bots lo descarta en silencio) y `visibleHeading` para el `h1` (React deja la página anterior oculta en el DOM).

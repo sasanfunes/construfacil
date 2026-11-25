@@ -7,7 +7,7 @@ Plataforma web para que migrantes hondureños en Estados Unidos compren o constr
 - **Decisiones tomadas:** [`docs/decisiones.md`](./docs/decisiones.md)
 - **Estado de seguridad:** [`docs/seguridad.md`](./docs/seguridad.md)
 
-**Estado:** Fase 0 terminada (base del proyecto). Sigue la Fase 1: sitio público y captación.
+**Estado:** Fase 1 terminada (sitio público, catálogo, cotizador, calculadora y captación de leads), a la espera de confirmación para empezar la Fase 2: portal del cliente.
 
 ## Requisitos
 
@@ -23,7 +23,9 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-Abre <http://localhost:3000>. El sitio público arranca sin Supabase; las llaves solo hacen falta para lo que lee o escribe en la base.
+Abre <http://localhost:3000>. Sin Supabase el sitio arranca en **modo de ejemplo**: el catálogo sale de `src/features/catalog/sample/` y los leads y cotizaciones se guardan en memoria (se pierden al reiniciar). Sin Resend, los correos solo se anuncian en la consola.
+
+El modo de ejemplo solo se permite con `APP_ENV` = `development`, `ci`, `test` o `preview` (`.env.example` trae `APP_ENV=development`). Sin `APP_ENV`, `next build` / `next start` y cualquier despliegue en Vercel exigen la configuración completa y no arrancan si falta algo.
 
 ## Comandos
 
@@ -39,6 +41,11 @@ Abre <http://localhost:3000>. El sitio público arranca sin Supabase; las llaves
 | `pnpm test:rls`  | Tests de seguridad de la base contra Postgres                   |
 | `pnpm test:e2e`  | Pruebas de punta a punta con Playwright (requiere `pnpm build`) |
 | `pnpm check`     | Lint + tipos + tests de lógica                                  |
+| `pnpm db:test`   | Levanta un Postgres local en Docker para los tests de RLS       |
+| `pnpm db:seed`   | Regenera `supabase/seed.sql` desde los datos de ejemplo         |
+| `pnpm db:types`  | Regenera `database.types.ts` desde las migraciones              |
+
+`db:seed` y `db:types` aceptan `--check`: en CI fallan si el archivo generado no está al día.
 
 ## Variables de entorno
 
@@ -48,6 +55,8 @@ Todas están documentadas en [`.env.example`](./.env.example). Dos reglas:
 2. `.env.local` no se sube al repo. En Vercel las variables se cargan en el panel del proyecto.
 
 `src/lib/env.ts` valida las públicas y `src/lib/env.server.ts` las secretas. Si falta o está mal una variable, el error dice cuál.
+
+Para producción: Supabase (URL, llave pública y service role), `RATE_LIMIT_SALT`, `RESEND_API_KEY`, `EMAIL_FROM` (dominio verificado en Resend), `LEADS_NOTIFICATION_EMAIL` y `NEXT_PUBLIC_SITE_URL` con https. En Resend, desactiva el seguimiento de clics: los correos llevan el enlace privado de la cotización.
 
 ## Base de datos (Supabase)
 
@@ -103,7 +112,7 @@ pnpm exec playwright install chromium
 pnpm test:e2e
 ```
 
-Corren en viewport de celular y de escritorio. Cualquier error en la consola del navegador hace fallar la prueba.
+Corren en viewport de celular y de escritorio, con datos de ejemplo (`APP_ENV=ci`). Cualquier error en la consola del navegador o violación de la CSP hace fallar la prueba. Cada prueba llega con su propia IP para no chocar con el rate limiting, y los mosaicos del mapa se sirven en local. Si Chromium ya está instalado en otra ruta, usa `PLAYWRIGHT_CHROMIUM_PATH`.
 
 ## Estructura
 
@@ -114,10 +123,12 @@ supabase/tests/       Tests de RLS
 e2e/                  Playwright
 src/app/[locale]/     Páginas: (public), portal, admin
 src/components/       ui (shadcn), layout, shared
-src/features/         Un directorio por dominio (desde la Fase 1)
+src/features/         Un directorio por dominio: catalog, quote, leads,
+                      remittance-calculator, content, geo
 src/i18n/             Idiomas y rutas traducidas
 src/lib/              env, supabase, auth, security, money
-src/proxy.ts          Idioma + CSP de rutas privadas (antes middleware.ts)
+src/proxy.ts          Idioma, CSP de rutas privadas y 404 de fichas inexistentes
+                      (antes middleware.ts)
 ```
 
 ## Idiomas
