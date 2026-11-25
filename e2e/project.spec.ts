@@ -136,6 +136,9 @@ test.describe("construir", () => {
     await expect(page).toHaveURL(/\/construir$/);
     await page.goto("/construir/cotizador?model=modelo-copan");
     await expect(page).toHaveURL(/\/construir\/nuevo\?model=modelo-copan$/);
+    // Los enlaces de las cotizaciones de antes llevan a Construir, sin arrastrar el token.
+    await page.goto(`/cotizacion/${"a".repeat(43)}`);
+    await expect(page).toHaveURL(/\/construir$/);
   });
 
   test("funciona en inglés con las rutas traducidas", async ({ page }) => {

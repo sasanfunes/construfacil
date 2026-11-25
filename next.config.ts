@@ -33,6 +33,9 @@ const nextConfig: NextConfig = {
       { source: "/en/materials", destination: "/en/build", permanent: false },
       { source: "/construir/cotizador", destination: "/construir/nuevo", permanent: false },
       { source: "/en/build/quote", destination: "/en/build/new", permanent: false },
+      // Los enlaces privados de las cotizaciones de antes: el token no se reenvía a ningún lado.
+      { source: "/cotizacion/:token", destination: "/construir", permanent: false },
+      { source: "/en/quote/:token", destination: "/en/build", permanent: false },
     ];
   },
   async headers() {
