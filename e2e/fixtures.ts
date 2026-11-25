@@ -63,7 +63,7 @@ export async function horizontalOverflow(page: Page): Promise<number> {
 /**
  * Los formularios descartan en silencio los envíos hechos menos de 3 segundos después de
  * mostrarse (bots). Las pruebas esperan ese tiempo antes de enviar: se mide desde el campo
- * oculto `startedAt` del formulario o, si no lo hay (cotizador), desde `since`.
+ * oculto `startedAt` del formulario o, si no lo hay (onboarding de Construir), desde `since`.
  */
 export async function waitForHumanDelay(page: Page, since?: number): Promise<void> {
   const field = page.locator('input[name="startedAt"]').first();

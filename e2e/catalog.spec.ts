@@ -47,12 +47,12 @@ test.describe("catálogo", () => {
     await expect(page).toHaveURL(/\/casas$/);
   });
 
-  test("la vista de mapa muestra los terrenos y enlaza a cada ficha", async ({ page }) => {
-    await page.goto("/terrenos");
+  test("la vista de mapa muestra las casas y enlaza a cada ficha", async ({ page }) => {
+    await page.goto("/casas");
     await page.getByRole("link", { name: "Mapa" }).click();
     await expect(page).toHaveURL(/view=map/);
 
-    const map = page.getByRole("region", { name: "Mapa de terrenos" });
+    const map = page.getByRole("region", { name: "Mapa de casas" });
     await expect(map).toBeVisible();
     const markers = map.locator(".leaflet-marker-icon");
     await expect(markers.first()).toBeVisible();
@@ -62,7 +62,7 @@ test.describe("catálogo", () => {
     const link = map.getByRole("link", { name: "Ver ficha" });
     await expect(link).toBeVisible();
     await link.click();
-    await expect(page).toHaveURL(/\/terrenos\/[a-z0-9-]+$/);
+    await expect(page).toHaveURL(/\/casas\/[a-z0-9-]+$/);
   });
 
   test("la ficha de una casa muestra precio en dólares y lempiras, plano y documentos", async ({ page }) => {
@@ -78,7 +78,7 @@ test.describe("catálogo", () => {
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
   });
 
-  test("una ficha que no existe responde 404 en las tres secciones y los dos idiomas", async ({ page }) => {
+  test("una ficha que no existe responde 404 en casas y modelos, en los dos idiomas", async ({ page }) => {
     // El proxy manda los slugs no publicados a un 404 fijo: así no se genera ni se guarda una
     // página por cada URL inventada (ISR).
     page.removeAllListeners("console");
@@ -86,7 +86,6 @@ test.describe("catálogo", () => {
     for (const path of [
       `/casas/no-existe-${suffix}`,
       `/en/homes/no-existe-${suffix}`,
-      `/terrenos/no-existe-${suffix}`,
       `/construir/modelos/no-existe-${suffix}`,
       `/en/build/models/no-existe-${suffix}`,
     ]) {
@@ -98,13 +97,11 @@ test.describe("catálogo", () => {
     }
   });
 
-  test("los modelos llevan al cotizador con el modelo elegido", async ({ page }) => {
+  test("los modelos llevan al onboarding con el modelo elegido", async ({ page }) => {
     await page.goto("/construir/modelos/modelo-copan");
     await expect(visibleHeading(page)).toContainText("Copán");
-    await page
-      .getByRole("link", { name: /Cotizar/ })
-      .first()
-      .click();
-    await expect(page).toHaveURL(/\/construir\/cotizador\?model=modelo-copan/);
+    await page.getByRole("link", { name: "Construir este modelo" }).click();
+    await expect(page).toHaveURL(/\/construir\/nuevo\?model=modelo-copan/);
+    await expect(page.getByLabel("Nombre del proyecto")).toBeVisible();
   });
 });

@@ -7,13 +7,10 @@ const PUBLIC_PAGES = [
   ["/", "/en"],
   ["/casas", "/en/homes"],
   ["/casas/casa-copan-choloma", "/en/homes/casa-copan-choloma"],
-  ["/terrenos", "/en/land"],
-  ["/terrenos/terreno-choloma", "/en/land/terreno-choloma"],
   ["/construir", "/en/build"],
   ["/construir/modelos/modelo-copan", "/en/build/models/modelo-copan"],
-  ["/construir/cotizador", "/en/build/quote"],
+  ["/construir/nuevo", "/en/build/new"],
   ["/calculadora", "/en/calculator"],
-  ["/materiales", "/en/materials"],
   ["/como-funciona", "/en/how-it-works"],
   ["/por-que-confiar", "/en/why-trust-us"],
   ["/preguntas-frecuentes", "/en/faq"],
@@ -46,9 +43,10 @@ test.describe("páginas públicas", () => {
   for (const path of [
     "/casas",
     "/casas/casa-copan-choloma",
-    "/terrenos?view=map",
+    "/casas?view=map",
     "/construir/modelos/modelo-copan",
-    "/construir/cotizador",
+    "/construir",
+    "/construir/nuevo",
     "/calculadora",
     "/preguntas-frecuentes",
     "/contacto",
@@ -105,13 +103,13 @@ test.describe("SEO", () => {
     const response = await request.get("/sitemap.xml");
     expect(response.status()).toBe(200);
     const xml = await response.text();
-    for (const path of ["/casas", "/terrenos", "/construir/cotizador", "/calculadora", "/legal/privacidad"]) {
+    for (const path of ["/casas", "/construir", "/construir/nuevo", "/calculadora", "/legal/privacidad"]) {
       expect(xml).toMatch(new RegExp(`<loc>[^<]*${path}</loc>`));
     }
     expect(xml).toContain('hreflang="en"');
     expect(xml).toContain("/casas/casa-copan-choloma</loc>");
     // Las rutas privadas nunca van al sitemap.
-    expect(xml).not.toMatch(/cotizacion\/|portal/);
+    expect(xml).not.toMatch(/proyecto\/|cotizacion\/|portal/);
   });
 
   test("robots.txt bloquea todo mientras el sitio no se indexa", async ({ request }) => {
