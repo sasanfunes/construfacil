@@ -76,7 +76,12 @@ test.describe("construir", () => {
 
   test("en el panel se cambian materiales y se piden servicios", async ({ page }) => {
     await createProject(page);
-    const total = page.locator("#materiales h3", { hasText: "Cimentación" }).locator("..");
+    // "Elegir materiales" llega abierto.
+    await expect(page.getByRole("button", { name: "Elegir materiales" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+    const total = page.locator("#materiales h4", { hasText: "Cimentación" }).locator("..");
     const before = await total.innerText();
     await page.getByText("Concreto reforzado", { exact: true }).click();
     await expect(page.getByText("Cambios guardados")).toBeVisible();
@@ -86,10 +91,48 @@ test.describe("construir", () => {
     await page.reload();
     await expect(page.getByRole("radio", { name: /Concreto reforzado/ })).toBeChecked();
 
-    await page.getByLabel("Una prueba de avance").check();
-    await page.getByLabel("Cuéntanos más (opcional)").fill("Quiero ver fotos del terreno.");
-    await page.getByRole("button", { name: "Enviar solicitud" }).click();
-    await expect(page.getByText("¡Listo! Recibimos tu solicitud")).toBeVisible();
+    // Cada botón abre su opción debajo, sin salir del panel.
+    await page.getByRole("button", { name: "Pedir prueba de avance" }).click();
+    const request = page.getByRole("region", { name: "Pedir prueba de avance" });
+    await expect(page.getByRole("region", { name: "Elegir materiales" })).toBeHidden();
+    await request.getByLabel("Cuéntanos más (opcional)").fill("Quiero ver fotos del terreno.");
+    await request.getByRole("button", { name: "Enviar solicitud" }).click();
+    await expect(request.getByText("¡Listo! Recibimos tu solicitud")).toBeVisible();
+  });
+
+  test("el total va junto al nombre y Calcular se abre dentro del panel", async ({ page }) => {
+    const url = await createProject(page);
+    const name = page.getByRole("heading", { level: 1 });
+    const card = page.getByText("Diseño, trámites y obra").first();
+    await expect(card).toBeVisible();
+    const nameBox = (await name.boundingBox())!;
+    const cardBox = (await card.boundingBox())!;
+    if ((page.viewportSize()?.width ?? 0) >= 768) {
+      // Escritorio: a la derecha del nombre y a su altura.
+      expect(cardBox.x).toBeGreaterThan(nameBox.x + nameBox.width);
+      expect(Math.abs(cardBox.y - nameBox.y)).toBeLessThan(160);
+    } else {
+      // Celular: justo debajo del encabezado, antes de las opciones.
+      const actions = (await page.getByRole("heading", { name: "Qué puedes hacer" }).boundingBox())!;
+      expect(cardBox.y).toBeGreaterThan(nameBox.y);
+      expect(cardBox.y).toBeLessThan(actions.y);
+    }
+
+    const calculate = page.getByRole("button", { name: "Calcular" });
+    await calculate.click();
+    await expect(calculate).toHaveAttribute("aria-expanded", "true");
+    const calculator = page.getByRole("region", { name: "Calcular" });
+    const result = calculator.getByText(/^Empiezas tu obra en|^Puedes empezar tu obra ya/);
+    await expect(result).toBeVisible();
+    const first = await result.innerText();
+    await calculator.getByRole("spinbutton", { name: "¿Cuánto puedes apartar cada mes? (USD)" }).fill("3000");
+    await expect(result).not.toHaveText(first);
+    expect(page.url()).toBe(url);
+
+    // Otro clic lo cierra.
+    await calculate.click();
+    await expect(calculator).toBeHidden();
+    expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
   });
 
   test("el panel no se cachea, lleva la CSP estricta y no se indexa", async ({ page, request }) => {

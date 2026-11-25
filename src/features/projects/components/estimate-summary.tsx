@@ -12,7 +12,8 @@ import type { ProjectEstimate } from "../types";
 
 /**
  * Resumen del costo de un proyecto: total, tiempo, costo de cada etapa (materiales y mano
- * de obra) y plan de pagos. Sin estado propio: lo usan el onboarding y el panel.
+ * de obra) y plan de pagos. Sin estado propio. El onboarding lo usa entero; el panel pone el
+ * total junto al nombre del proyecto y el detalle junto a los materiales.
  */
 export function EstimateSummary({
   estimate,
@@ -23,48 +24,86 @@ export function EstimateSummary({
   usdToHnl: number;
   className?: string;
 }) {
+  return (
+    <div className={cn("flex flex-col gap-8", className)}>
+      <EstimateTotal estimate={estimate} usdToHnl={usdToHnl} />
+      <EstimateWarnings estimate={estimate} />
+      <EstimateDetails estimate={estimate} />
+    </div>
+  );
+}
+
+/** El cuadro azul: total, terreno aparte y tiempo. */
+export function EstimateTotal({
+  estimate,
+  usdToHnl,
+  className,
+}: {
+  estimate: ProjectEstimate;
+  usdToHnl: number;
+  className?: string;
+}) {
   const t = useTranslations("projects");
   const locale = useLocale() as AppLocale;
-  const stageName = (key: ProjectEstimate["stages"][number]["key"]) => t(`stages.${key}.name`);
   const months = Math.max(1, Math.round(weeksToMonths(estimate.durationWeeks)));
 
   return (
-    <div className={cn("flex flex-col gap-8", className)}>
-      <div className="on-brand flex flex-col gap-5 rounded-2xl bg-brand p-6 text-brand-foreground">
-        <div className="flex flex-col gap-1">
-          <span className="font-bold text-brand-muted">{t("summary.total")}</span>
-          <Price usdCents={estimate.totalUsdCents} usdToHnl={usdToHnl} size="lg" onBrand />
-        </div>
-        {estimate.lotPriceUsdCents ? (
-          <div className="flex flex-col gap-1 border-t border-white/15 pt-4">
-            <span className="font-bold text-brand-muted">{t("summary.lot")}</span>
-            <Usd usdCents={estimate.lotPriceUsdCents} className="text-xl font-bold" />
-            <span className="text-sm text-brand-muted">
-              {t("summary.grandTotal", { amount: formatUsd(estimate.grandTotalUsdCents, locale) })}
-            </span>
-          </div>
-        ) : null}
-        <p className="flex items-center gap-3 border-t border-white/15 pt-4">
-          <CalendarClock aria-hidden="true" className="size-6 shrink-0" />
-          <span className="flex flex-col">
-            <span className="text-sm text-brand-muted">{t("summary.duration")}</span>
-            <span className="font-bold">
-              {t("summary.durationValue", {
-                weeks: t("summary.weeks", { count: estimate.durationWeeks }),
-                months: t("summary.months", { count: months }),
-              })}
-            </span>
-          </span>
-        </p>
+    <div
+      className={cn("on-brand flex flex-col gap-5 rounded-2xl bg-brand p-6 text-brand-foreground", className)}
+    >
+      <div className="flex flex-col gap-1">
+        <span className="font-bold text-brand-muted">{t("summary.total")}</span>
+        <Price usdCents={estimate.totalUsdCents} usdToHnl={usdToHnl} size="lg" onBrand />
       </div>
+      {estimate.lotPriceUsdCents ? (
+        <div className="flex flex-col gap-1 border-t border-white/15 pt-4">
+          <span className="font-bold text-brand-muted">{t("summary.lot")}</span>
+          <Usd usdCents={estimate.lotPriceUsdCents} className="text-xl font-bold" />
+          <span className="text-sm text-brand-muted">
+            {t("summary.grandTotal", { amount: formatUsd(estimate.grandTotalUsdCents, locale) })}
+          </span>
+        </div>
+      ) : null}
+      <p className="flex items-center gap-3 border-t border-white/15 pt-4">
+        <CalendarClock aria-hidden="true" className="size-6 shrink-0" />
+        <span className="flex flex-col">
+          <span className="text-sm text-brand-muted">{t("summary.duration")}</span>
+          <span className="font-bold">
+            {t("summary.durationValue", {
+              weeks: t("summary.weeks", { count: estimate.durationWeeks }),
+              months: t("summary.months", { count: months }),
+            })}
+          </span>
+        </span>
+      </p>
+    </div>
+  );
+}
 
+/** Avisos que no bloquean (p. ej. terreno más chico que el mínimo del modelo). */
+export function EstimateWarnings({ estimate }: { estimate: ProjectEstimate }) {
+  const t = useTranslations("projects");
+  if (estimate.warnings.length === 0) return null;
+  return (
+    <>
       {estimate.warnings.map((warning) => (
         <p key={warning} className="flex gap-3 rounded-2xl bg-accent p-4">
           <CircleAlert aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-primary" />
           {t(`summary.warnings.${warning}`)}
         </p>
       ))}
+    </>
+  );
+}
 
+/** Costo y tiempo de cada etapa, plan de pagos y la nota de que es un estimado. */
+export function EstimateDetails({ estimate, className }: { estimate: ProjectEstimate; className?: string }) {
+  const t = useTranslations("projects");
+  const locale = useLocale() as AppLocale;
+  const stageName = (key: ProjectEstimate["stages"][number]["key"]) => t(`stages.${key}.name`);
+
+  return (
+    <div className={cn("flex flex-col gap-8", className)}>
       <section className="flex flex-col gap-3">
         <h3 className="text-xl">{t("summary.stagesTitle")}</h3>
         <ol className="flex flex-col gap-3">

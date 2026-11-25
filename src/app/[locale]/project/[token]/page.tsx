@@ -1,13 +1,4 @@
-import {
-  Calculator,
-  ClipboardList,
-  HardHat,
-  Headset,
-  Lock,
-  MessageCircle,
-  Package,
-  Wallet,
-} from "lucide-react";
+import { Lock } from "lucide-react";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
@@ -18,7 +9,7 @@ import { whatsappHref } from "@/components/shared/whatsapp";
 import { Badge } from "@/components/ui/badge";
 import { getCatalog } from "@/features/catalog/data/load";
 import { hashAccessToken, isWellFormedAccessToken } from "@/features/leads/token";
-import { MaterialsEditor, ProjectRequestForm } from "@/features/projects/components/project-panel";
+import { ProjectPanel } from "@/features/projects/components/project-panel";
 import { getProjectStore } from "@/features/projects/store";
 import { OPTION_CATEGORIES } from "@/features/projects/types";
 import { Link } from "@/i18n/navigation";
@@ -83,84 +74,44 @@ export default async function ProjectPanelPage({ params }: PageProps<"/[locale]/
     .filter((line) => OPTION_CATEGORIES[line.category].choice === "user")
     .map((line) => line.optionId);
 
-  const actions = [
-    { key: "materials", icon: Package, href: "#materiales" },
-    { key: "calculate", icon: Calculator, href: null },
-    { key: "contribute", icon: Wallet, href: "#abonos" },
-    { key: "services", icon: HardHat, href: "#solicitud" },
-    { key: "progress", icon: ClipboardList, href: "#solicitud" },
-    { key: "support", icon: Headset, href: "#solicitud" },
-  ] as const;
+  // El encabezado se arma aquí (servidor); el panel le pone al lado el total del proyecto.
+  const header = (
+    <>
+      <p className="flex flex-wrap items-center gap-3 text-sm font-bold text-muted-foreground">
+        <span className="inline-flex items-center gap-2">
+          <Lock aria-hidden="true" className="size-4" />
+          {t("code", { code: project.code })}
+        </span>
+        <Badge variant={editable ? "neutral" : "brand"}>{t(`status.${project.status}`)}</Badge>
+      </p>
+      <p className="text-lg font-bold">
+        {project.firstName ? t("greeting", { name: project.firstName }) : t("greetingNoName")}
+      </p>
+      <h1 className="text-3xl md:text-4xl lg:text-5xl">{project.name}</h1>
+      <p className="text-muted-foreground">
+        {t("recap", {
+          land: landText,
+          design: designText,
+          facts: tp("summary.designFacts", {
+            area: formatNumber(estimate.design.areaM2, locale),
+            floors: estimate.design.floors,
+            bedrooms: estimate.design.bedrooms,
+            bathrooms: estimate.design.bathrooms,
+          }),
+        })}
+      </p>
+      <p className="text-sm text-muted-foreground">
+        {t("created", { date: formatDate(project.createdAt, locale) })}
+      </p>
+    </>
+  );
 
   return (
     <div className="container-page flex flex-col gap-10 py-8 md:py-12">
-      <header className="flex flex-col gap-3">
-        <p className="flex flex-wrap items-center gap-3 text-sm font-bold text-muted-foreground">
-          <span className="inline-flex items-center gap-2">
-            <Lock aria-hidden="true" className="size-4" />
-            {t("code", { code: project.code })}
-          </span>
-          <Badge variant={editable ? "neutral" : "brand"}>{t(`status.${project.status}`)}</Badge>
-        </p>
-        <p className="text-lg font-bold">
-          {project.firstName ? t("greeting", { name: project.firstName }) : t("greetingNoName")}
-        </p>
-        <h1 className="text-3xl md:text-5xl">{project.name}</h1>
-        <p className="text-muted-foreground">
-          {t("recap", {
-            land: landText,
-            design: designText,
-            facts: tp("summary.designFacts", {
-              area: formatNumber(estimate.design.areaM2, locale),
-              floors: estimate.design.floors,
-              bedrooms: estimate.design.bedrooms,
-              bathrooms: estimate.design.bathrooms,
-            }),
-          })}
-        </p>
-        <p className="text-sm text-muted-foreground">
-          {t("created", { date: formatDate(project.createdAt, locale) })}
-        </p>
-      </header>
-
-      <section aria-labelledby="actions-title" className="flex flex-col gap-4">
-        <h2 id="actions-title" className="text-2xl">
-          {t("actionsTitle")}
-        </h2>
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {actions.map(({ key, icon: Icon, href }) => (
-            <li key={key} className="flex">
-              {href ? (
-                <a
-                  href={href}
-                  className="flex flex-1 items-start gap-4 rounded-2xl border-2 bg-card p-4 transition-colors hover:border-brand"
-                >
-                  <Icon aria-hidden="true" className="mt-0.5 size-7 shrink-0 text-brand" />
-                  <span className="flex flex-col gap-1">
-                    <span className="font-display text-lg font-semibold">{t(`actions.${key}.title`)}</span>
-                    <span className="text-sm text-muted-foreground">{t(`actions.${key}.body`)}</span>
-                  </span>
-                </a>
-              ) : (
-                <Link
-                  href="/calculator"
-                  className="flex flex-1 items-start gap-4 rounded-2xl border-2 bg-card p-4 transition-colors hover:border-brand"
-                >
-                  <Icon aria-hidden="true" className="mt-0.5 size-7 shrink-0 text-brand" />
-                  <span className="flex flex-col gap-1">
-                    <span className="font-display text-lg font-semibold">{t(`actions.${key}.title`)}</span>
-                    <span className="text-sm text-muted-foreground">{t(`actions.${key}.body`)}</span>
-                  </span>
-                </Link>
-              )}
-            </li>
-          ))}
-        </ul>
-      </section>
-
       <NextIntlClientProvider
         messages={{
           common: messages.common,
+          calculator: messages.calculator,
           projects: {
             stages: messages.projects.stages,
             categories: messages.projects.categories,
@@ -171,37 +122,17 @@ export default async function ProjectPanelPage({ params }: PageProps<"/[locale]/
           },
         }}
       >
-        <MaterialsEditor
+        <ProjectPanel
+          header={header}
           token={token}
           initialEstimate={estimate}
           initialOptionIds={optionIds}
           options={catalog.constructionOptions.filter((o) => o.isActive)}
           usdToHnl={project.usdToHnl}
           editable={editable}
-          whatsappHref={contribute}
+          contributeHref={contribute}
+          helpHref={help}
         />
-
-        <section
-          id="solicitud"
-          aria-labelledby="request-title"
-          className="flex scroll-mt-24 flex-col gap-5 rounded-2xl bg-muted/60 p-5 md:p-8"
-        >
-          <h2 id="request-title" className="text-2xl">
-            {t("request.title")}
-          </h2>
-          <ProjectRequestForm token={token} />
-          {help ? (
-            <a
-              href={help}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center gap-2 self-start font-bold text-brand underline underline-offset-4"
-            >
-              <MessageCircle aria-hidden="true" className="size-5" />
-              {t("actions.whatsapp")}
-            </a>
-          ) : null}
-        </section>
       </NextIntlClientProvider>
 
       <footer className="flex flex-col gap-3 border-t pt-6">

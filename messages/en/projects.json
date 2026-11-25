@@ -311,18 +311,14 @@
     "actionsTitle": "What you can do",
     "actions": {
       "materials": {
-        "title": "Choose materials",
-        "body": "Change the system or materials of any stage and see the new cost.",
-        "cta": "Go to materials"
+        "title": "Choose materials"
       },
       "calculate": {
         "title": "Calculate",
-        "body": "With what you set aside each month, see when you start and when you finish.",
-        "cta": "Open the calculator"
+        "body": "With what you set aside each month, see when you start and when you finish."
       },
       "contribute": {
         "title": "Pay toward materials",
-        "body": "Pay toward a stage's materials package before it starts. Online soon; today we help you on WhatsApp.",
         "cta": "I want to pay"
       },
       "services": {
@@ -359,13 +355,6 @@
       "soon": "Online installments: coming soon"
     },
     "request": {
-      "title": "Ask for it here",
-      "kind": "What do you need?",
-      "kinds": {
-        "service": "Hire a service",
-        "progress_proof": "A progress proof",
-        "support": "Help or support"
-      },
       "message": "Tell us more (optional)",
       "submit": "Send request",
       "pending": "Sending…",

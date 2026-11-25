@@ -311,18 +311,14 @@
     "actionsTitle": "Qué puedes hacer",
     "actions": {
       "materials": {
-        "title": "Elegir materiales",
-        "body": "Cambia el sistema o los materiales de cualquier etapa y mira el nuevo costo.",
-        "cta": "Ir a materiales"
+        "title": "Elegir materiales"
       },
       "calculate": {
         "title": "Calcular",
-        "body": "Con lo que apartas cada mes, mira cuándo empiezas y cuándo terminas.",
-        "cta": "Abrir la calculadora"
+        "body": "Con lo que apartas cada mes, mira cuándo empiezas y cuándo terminas."
       },
       "contribute": {
         "title": "Abonar a materiales",
-        "body": "Abona al paquete de materiales de una etapa antes de que empiece. Pronto en línea; hoy te ayudamos por WhatsApp.",
         "cta": "Quiero abonar"
       },
       "services": {
@@ -359,13 +355,6 @@
       "soon": "Abonos en línea: pronto"
     },
     "request": {
-      "title": "Pídelo aquí",
-      "kind": "¿Qué necesitas?",
-      "kinds": {
-        "service": "Contratar un servicio",
-        "progress_proof": "Una prueba de avance",
-        "support": "Ayuda o soporte"
-      },
       "message": "Cuéntanos más (opcional)",
       "submit": "Enviar solicitud",
       "pending": "Enviando…",
