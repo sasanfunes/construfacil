@@ -105,12 +105,30 @@ describe("cobertura de seguridad de la base", () => {
       where table_schema = 'public' and grantee = 'authenticated'
       order by 1
     `);
-    expect(rows.map((row) => row.grant)).toEqual([
+    // Escritura de tabla completa: solo en catálogo y reglas de precio, y las políticas la
+    // limitan a admin. Lectura de tabla completa: datos públicos o protegidos por RLS.
+    const catalogTables = [
+      "finish_levels",
+      "homes",
+      "house_models",
+      "lots",
+      "quote_extras",
+      "region_price_factors",
+      "stage_templates",
+    ];
+    const expected = [
       "app_settings:DELETE",
       "audit_log:SELECT",
       "departments:SELECT",
+      "funnel_events:SELECT",
+      "leads:SELECT",
       "municipalities:SELECT",
-    ]);
+      "quote_items:SELECT",
+      ...catalogTables.flatMap((table) =>
+        ["DELETE", "INSERT", "SELECT", "UPDATE"].map((p) => `${table}:${p}`),
+      ),
+    ].sort();
+    expect(rows.map((row) => row.grant)).toEqual(expected);
   });
 
   it("ninguna función expuesta por la API la puede ejecutar un visitante o un usuario", async () => {
@@ -142,7 +160,29 @@ describe("cobertura de seguridad de la base", () => {
       "has_role",
       "is_admin",
       "is_staff",
+      // La usa un CHECK de homes; es pura y no lee datos.
+      "is_valid_home_feature_list",
       "user_is_staff",
     ]);
+  });
+
+  it("toda llave foránea tiene un índice que empieza por sus columnas", async () => {
+    const { rows } = await sql<{ fk: string }>(`
+      select c.conrelid::regclass::text || ' (' || string_agg(a.attname, ', ' order by k.ord) || ')' as fk
+      from pg_constraint c
+      join pg_namespace n on n.oid = c.connamespace
+      cross join lateral unnest(c.conkey) with ordinality as k(attnum, ord)
+      join pg_attribute a on a.attrelid = c.conrelid and a.attnum = k.attnum
+      where c.contype = 'f' and n.nspname = 'public'
+        and not exists (
+          select 1 from pg_index i
+          where i.indrelid = c.conrelid
+            and (i.indkey::int2[])[0:cardinality(c.conkey) - 1] @> c.conkey
+            and (i.indkey::int2[])[0:cardinality(c.conkey) - 1] <@ c.conkey
+        )
+      group by c.oid, c.conrelid
+      order by 1
+    `);
+    expect(rows.map((row) => row.fk)).toEqual([]);
   });
 });
