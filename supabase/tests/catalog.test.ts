@@ -97,6 +97,20 @@ describe("catálogo", () => {
       }
     });
 
+    it("las coordenadas públicas se guardan redondeadas a unos 110 m", async () => {
+      const coords = await as(user(admin), async (db) => {
+        await db.query("update public.homes set latitude = 15.62345, longitude = -87.94876 where id = $1", [
+          CHOLOMA_HOME,
+        ]);
+        const result = await db.query<{ latitude: string; longitude: string }>(
+          "select latitude::text, longitude::text from public.homes where id = $1",
+          [CHOLOMA_HOME],
+        );
+        return result.rows[0];
+      });
+      expect(coords).toEqual({ latitude: "15.623", longitude: "-87.949" });
+    });
+
     it("admin cambia un precio y el cambio queda en la bitácora con su nombre", async () => {
       expect(
         await rowCount(
