@@ -26,7 +26,9 @@ export default defineConfig({
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
   ],
   webServer: {
+    // Datos de ejemplo y leads en memoria: solo se permite con un APP_ENV que no sea producción.
     command: `pnpm exec next start -p ${PORT}`,
+    env: { APP_ENV: process.env.APP_ENV ?? "ci" },
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

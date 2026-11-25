@@ -15,6 +15,8 @@ permissions:
 
 env:
   NEXT_TELEMETRY_DISABLED: "1"
+  # Build y pruebas con datos de ejemplo: sin esto, el build exigiría Supabase y Resend.
+  APP_ENV: ci
   # Valores de ejemplo, sin secretos. El build público no necesita Supabase.
   NEXT_PUBLIC_SITE_URL: http://localhost:3100
   NEXT_PUBLIC_WHATSAPP_NUMBER: "50400000000"

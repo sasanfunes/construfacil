@@ -184,6 +184,13 @@ type MemoryState = {
   funnel: FunnelEventInput[];
 };
 
+/** Tope de registros en memoria (modo ejemplo): se descartan los más viejos. */
+const MEMORY_LIMIT = 1_000;
+
+function capArray<T>(items: T[]) {
+  if (items.length > MEMORY_LIMIT) items.splice(0, items.length - MEMORY_LIMIT);
+}
+
 class MemoryLeadStore implements LeadStore {
   // En globalThis para sobrevivir a la recarga en caliente de `next dev`.
   private state: MemoryState = ((globalThis as { __construfacilLeads?: MemoryState }).__construfacilLeads ??=
@@ -196,6 +203,7 @@ class MemoryLeadStore implements LeadStore {
   async submitLead(lead: NewLead, videoCall: NewVideoCall | null) {
     const id = crypto.randomUUID();
     this.state.leads.push({ ...lead, id, videoCall });
+    capArray(this.state.leads);
     console.info(`[leads] guardado en memoria (modo ejemplo): ${lead.source} ${id}`);
     return { leadId: id };
   }
@@ -215,6 +223,10 @@ class MemoryLeadStore implements LeadStore {
       result: quote.result,
       usdToHnl: quote.usdToHnl,
     });
+    for (const oldest of this.state.quotes.keys()) {
+      if (this.state.quotes.size <= MEMORY_LIMIT) break;
+      this.state.quotes.delete(oldest);
+    }
     return { quoteCode: code };
   }
 
@@ -224,6 +236,7 @@ class MemoryLeadStore implements LeadStore {
 
   async trackFunnelEvent(event: FunnelEventInput) {
     this.state.funnel.push(event);
+    capArray(this.state.funnel);
   }
 }
 

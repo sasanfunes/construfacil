@@ -34,17 +34,28 @@ if (!parsed.success) {
 
 export const publicEnv = parsed.data;
 
+/** Valores de `APP_ENV` que permiten arrancar sin Supabase ni Resend (datos de ejemplo). */
+const NON_PRODUCTION_APP_ENVS: ReadonlySet<string> = new Set(["development", "test", "ci", "preview"]);
+
 /**
- * ¿Es el despliegue de producción? En Vercel lo dice `VERCEL_ENV`; si se despliega en otro
- * lado, hay que definir `APP_ENV=production`. No basta `NODE_ENV`: también vale
- * "production" en un build local o en las pruebas.
+ * ¿Hay que exigir la configuración completa? Falla cerrado: cualquier build de producción o
+ * despliegue en Vercel (vistas previas incluidas) cuenta como producción, salvo que `APP_ENV`
+ * diga explícitamente que no lo es. Así un despliegue mal configurado no arranca en modo de
+ * ejemplo, perdiendo leads en memoria y con una sal pública en el rate limiting.
+ *
+ * - `next dev`, Vitest: no es producción (NODE_ENV distinto de "production").
+ * - `next build` / `next start` en tu máquina o en CI: define `APP_ENV=development` o `ci`.
+ * - Vista previa de Vercel con datos de ejemplo: `APP_ENV=preview`, y con Deployment Protection.
  */
 export function isProductionDeploy(): boolean {
-  return process.env.VERCEL_ENV === "production" || process.env.APP_ENV === "production";
+  const appEnv = process.env.APP_ENV;
+  if (appEnv) return !NON_PRODUCTION_APP_ENVS.has(appEnv);
+  if (process.env.VERCEL) return true;
+  return process.env.NODE_ENV === "production";
 }
 
 /** En producción nada se deja a los valores por defecto. En desarrollo el sitio público arranca sin Supabase. */
-if (isProductionDeploy()) {
+if (typeof window === "undefined" && isProductionDeploy()) {
   if (!publicEnv.NEXT_PUBLIC_SUPABASE_URL || !publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     throw new Error("Faltan NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY en producción.");
   }
