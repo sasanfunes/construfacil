@@ -10,6 +10,11 @@ import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { SAMPLE_CATALOG } from "../src/features/catalog/sample";
+import {
+  LEGACY_SAMPLE_EXTRAS,
+  LEGACY_SAMPLE_FINISH_LEVELS,
+  LEGACY_SAMPLE_STAGES,
+} from "../src/features/catalog/sample/pricing";
 import { MUNICIPALITIES } from "../src/features/geo/data";
 
 type SqlValue = string | number | boolean | null | undefined | readonly string[] | { json: unknown };
@@ -81,7 +86,7 @@ where not exists (select 1 from public.exchange_rates);
         key: "payments.initial_payment_percent",
         value: { json: c.initialPaymentPercent },
         is_public: true,
-        description: "EJEMPLO. Porcentaje del pago inicial en el plan por etapas.",
+        description: "EJEMPLO. Porcentaje del pago inicial al comprar una casa lista.",
       },
       {
         key: "company.legal_name",
@@ -106,10 +111,10 @@ where not exists (select 1 from public.exchange_rates);
     ],
     "key",
   ),
-  "-- Etapas de obra\n" +
+  "-- Legado del cotizador de la Fase 1: etapas, acabados y extras\n" +
     insert(
       "stage_templates",
-      c.stages.map((s) => ({
+      LEGACY_SAMPLE_STAGES.map((s) => ({
         key: s.key,
         name_es: s.name.es,
         name_en: s.name.en,
@@ -122,48 +127,69 @@ where not exists (select 1 from public.exchange_rates);
       })),
       "key",
     ),
-  "-- Acabados\n" +
-    insert(
-      "finish_levels",
-      c.finishLevels.map((f) => ({
-        id: f.id,
-        key: f.key,
-        name_es: f.name.es,
-        name_en: f.name.en,
-        description_es: f.description.es,
-        description_en: f.description.en,
-        includes_es: f.includes.es,
-        includes_en: f.includes.en,
-        price_multiplier: f.priceMultiplier,
-        custom_price_per_m2_usd_cents: f.customPricePerM2UsdCents,
-        sort_order: f.sortOrder,
-      })),
-      "id",
-    ),
+  insert(
+    "finish_levels",
+    LEGACY_SAMPLE_FINISH_LEVELS.map((f) => ({
+      id: f.id,
+      key: f.key,
+      name_es: f.name.es,
+      name_en: f.name.en,
+      description_es: f.description.es,
+      description_en: f.description.en,
+      includes_es: f.includes.es,
+      includes_en: f.includes.en,
+      price_multiplier: f.priceMultiplier,
+      custom_price_per_m2_usd_cents: f.customPricePerM2UsdCents,
+      sort_order: f.sortOrder,
+    })),
+    "id",
+  ),
   "-- Factor de precio por departamento\n" +
     insert(
       "region_price_factors",
       c.regionFactors.map((r) => ({ department_id: r.departmentId, factor: r.factor })),
       "department_id",
     ),
-  "-- Extras del cotizador\n" +
+  insert(
+    "quote_extras",
+    LEGACY_SAMPLE_EXTRAS.map((e) => ({
+      id: e.id,
+      key: e.key,
+      name_es: e.name.es,
+      name_en: e.name.en,
+      description_es: e.description.es,
+      description_en: e.description.en,
+      pricing_unit: e.pricingUnit,
+      unit_price_usd_cents: e.unitPriceUsdCents,
+      min_quantity: e.minQuantity,
+      max_quantity: e.maxQuantity,
+      default_quantity: e.defaultQuantity,
+      applies_region_factor: e.appliesRegionFactor,
+      stage_key: e.stageKey,
+      sort_order: e.sortOrder,
+    })),
+    "id",
+  ),
+  "-- Sistemas y materiales por etapa de obra\n" +
     insert(
-      "quote_extras",
-      c.extras.map((e) => ({
-        id: e.id,
-        key: e.key,
-        name_es: e.name.es,
-        name_en: e.name.en,
-        description_es: e.description.es,
-        description_en: e.description.en,
-        pricing_unit: e.pricingUnit,
-        unit_price_usd_cents: e.unitPriceUsdCents,
-        min_quantity: e.minQuantity,
-        max_quantity: e.maxQuantity,
-        default_quantity: e.defaultQuantity,
-        applies_region_factor: e.appliesRegionFactor,
-        stage_key: e.stageKey,
-        sort_order: e.sortOrder,
+      "construction_options",
+      c.constructionOptions.map((o) => ({
+        id: o.id,
+        stage: o.stage,
+        category: o.category,
+        key: o.key,
+        name_es: o.name.es,
+        name_en: o.name.en,
+        description_es: o.description.es,
+        description_en: o.description.en,
+        pricing_basis: o.pricingBasis,
+        unit_price_usd_cents: o.unitPriceUsdCents,
+        materials_share_bp: o.materialsShareBp,
+        weeks_factor: o.weeksFactor,
+        is_default: o.isDefault,
+        is_active: o.isActive,
+        is_example: o.isExample,
+        sort_order: o.sortOrder,
       })),
       "id",
     ),

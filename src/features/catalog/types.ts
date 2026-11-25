@@ -132,4 +132,7 @@ export type HouseModel = {
   sortOrder: number;
 };
 
+/** Factor de precio por departamento (flete y mano de obra). 1.0 = referencia. */
+export type RegionFactor = { departmentId: number; factor: number };
+
 export type ExchangeRate = { usdToHnl: number; effectiveDate: string; isExample: boolean };

@@ -2,10 +2,10 @@ import Form from "next/form";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox, Field, Input, Select } from "@/components/ui/field";
+import { Field, Input, Select } from "@/components/ui/field";
 import type { Department, Municipality } from "@/features/geo/data";
 
-import { activeFilterCount, type HomeFilters, type LotFilters } from "../filters";
+import { activeFilterCount, type HomeFilters } from "../filters";
 import { CONSTRUCTION_STATUSES } from "../types";
 
 import { FilterPanel } from "./filter-panel";
@@ -151,50 +151,6 @@ export function HomeFiltersForm({
             defaultValue={filters.minArea}
           />
         </Field>
-        <Actions clearHref={action} />
-      </Form>
-    </FilterPanel>
-  );
-}
-
-export function LotFiltersForm({ action, filters, geo }: { action: string; filters: LotFilters; geo: Geo }) {
-  const t = useTranslations("catalog");
-  const count = activeFilterCount(filters);
-  const checks = [
-    ["water", filters.water],
-    ["electricity", filters.electricity],
-    ["sewer", filters.sewer],
-    ["paved", filters.paved],
-    ["clearTitle", filters.clearTitle],
-  ] as const;
-  return (
-    <FilterPanel summary={count > 0 ? t("filters.titleCount", { count }) : t("filters.title")}>
-      <Form action={action} className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {filters.view === "map" ? <input type="hidden" name="view" value="map" /> : null}
-        <LocationFields geo={geo} department={filters.department} city={filters.city} />
-        <PriceFields minPrice={filters.minPrice} maxPrice={filters.maxPrice} />
-        <Field id="filter-min-area" label={t("filters.minAreaLot")}>
-          <Input
-            id="filter-min-area"
-            name="minArea"
-            type="number"
-            inputMode="numeric"
-            min={0}
-            step={10}
-            defaultValue={filters.minArea}
-          />
-        </Field>
-        <fieldset className="flex flex-col gap-2 sm:col-span-2 lg:col-span-3">
-          <legend className="mb-2 font-bold">{t("filters.services")}</legend>
-          <div className="flex flex-wrap gap-x-6 gap-y-1">
-            {checks.map(([name, checked]) => (
-              <label key={name} className="flex min-h-11 cursor-pointer items-center gap-3">
-                <Checkbox name={name} value="1" defaultChecked={Boolean(checked)} />
-                {t(`filters.${name}`)}
-              </label>
-            ))}
-          </div>
-        </fieldset>
         <Actions clearHref={action} />
       </Form>
     </FilterPanel>

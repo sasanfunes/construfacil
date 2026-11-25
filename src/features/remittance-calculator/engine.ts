@@ -1,6 +1,9 @@
 import { weeksToMonths } from "@/lib/units";
 
-import type { QuoteResult } from "@/features/quote/types";
+import type { ProjectEstimate } from "@/features/projects/types";
+
+/** Plan por etapas: costo, tiempo y pagos de cada etapa (sale del motor de proyectos). */
+export type StagedPlan = Pick<ProjectEstimate, "payments" | "stages">;
 
 /**
  * Calculadora "De remesa a patrimonio".
@@ -63,7 +66,7 @@ export function planPurchase(priceUsdCents: number, savings: SavingsInput): Purc
 }
 
 export function planBuild(
-  quote: Pick<QuoteResult, "payments" | "stages">,
+  quote: StagedPlan,
   coveredByInitial: ReadonlySet<string>,
   savings: SavingsInput,
 ): BuildPlan | null {
@@ -125,7 +128,7 @@ export function splitMonths(totalMonths: number): { years: number; months: numbe
  * mes se logra.
  */
 export function monthlyToNeverPause(
-  quote: Pick<QuoteResult, "payments" | "stages">,
+  quote: StagedPlan,
   coveredByInitial: ReadonlySet<string>,
   initialSavingsUsdCents: number,
 ): number | null {

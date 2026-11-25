@@ -1,4 +1,4 @@
-import type { Home, Lot } from "./types";
+import type { Home } from "./types";
 
 /**
  * Plan de pagos SUGERIDO que se muestra en la ficha de una casa o terreno. Es orientativo:
@@ -34,15 +34,4 @@ export function suggestedHomePlan(
     );
   }
   return plan;
-}
-
-export function suggestedLotPlan(lot: Pick<Lot, "priceUsdCents">) {
-  const price = lot.priceUsdCents;
-  const reservation = Math.min(RESERVATION_DEPOSIT_USD_CENTS.lot, price);
-  const initial = Math.max(toDollar(price * 0.3) - reservation, 0);
-  return [
-    { key: "reservation", amountUsdCents: reservation },
-    { key: "initial", amountUsdCents: initial },
-    { key: "deed", amountUsdCents: price - reservation - initial },
-  ] satisfies SuggestedPayment[];
 }

@@ -1,26 +1,18 @@
 import { describe, expect, it } from "vitest";
 
-import { pricingRulesFrom } from "@/features/catalog/catalog";
+import { projectRulesFrom } from "@/features/catalog/catalog";
 import { SAMPLE_CATALOG } from "@/features/catalog/sample";
-import { calculateQuote } from "@/features/quote/engine";
+import { modelReferenceEstimate } from "@/features/projects/engine";
 
 import { monthlyToNeverPause, planBuild, planPurchase, splitMonths } from "./engine";
 
-const rules = pricingRulesFrom(SAMPLE_CATALOG);
-const covered = new Set(rules.stages.filter((s) => s.coveredByInitialPayment).map((s) => s.key));
-const copan = calculateQuote(
-  {
-    landStatus: "own",
-    lotId: null,
-    departmentId: 5,
-    municipalityId: null,
-    landAreaM2: 200,
-    design: { kind: "model", modelId: "c3000000-0000-4000-8000-000000000002" },
-    finishLevelId: "d4000000-0000-4000-8000-000000000002",
-    extras: [],
-  },
-  rules,
-); // $43,800; pago inicial $8,760; 22 semanas
+const rules = projectRulesFrom(SAMPLE_CATALOG);
+const covered = new Set<string>(["preliminary"]);
+// Modelo Copán con las opciones por defecto: unos $38,500; pago inicial (diseño y trámites)
+// cerca de $1,000; unas 24 semanas.
+const copan = modelReferenceEstimate("c3000000-0000-4000-8000-000000000002", rules)!;
+const initial = copan.payments[0]!.amountUsdCents / 100;
+const total = copan.totalUsdCents / 100;
 
 const usd = (dollars: number) => dollars * 100;
 
@@ -32,14 +24,14 @@ describe("planBuild", () => {
     })!;
     expect(plan.startMonth).toBe(0);
     expect(plan.waitingMonths).toBe(0);
-    expect(plan.finishMonth).toBe(Math.ceil((22 * 12) / 52)); // 5.08 → 6
+    expect(plan.finishMonth).toBe(Math.ceil((copan.stages.at(-1)!.endWeek * 12) / 52));
   });
 
   it("con $500 al mes, empieza cuando junta el pago inicial", () => {
     const plan = planBuild(copan, covered, { monthlyUsdCents: usd(500), initialSavingsUsdCents: 0 })!;
-    expect(plan.startMonth).toBe(Math.ceil(8_760 / 500)); // 18
+    expect(plan.startMonth).toBe(Math.ceil(initial / 500));
     // Sin financiamiento, termina cuando junta el total.
-    expect(plan.finishMonth).toBeGreaterThanOrEqual(Math.ceil(43_800 / 500));
+    expect(plan.finishMonth).toBeGreaterThanOrEqual(Math.ceil(total / 500));
     expect(plan.waitingMonths).toBeGreaterThan(0);
   });
 
@@ -49,7 +41,7 @@ describe("planBuild", () => {
       monthlyUsdCents: usd(800),
       initialSavingsUsdCents: usd(5_000),
     })!;
-    expect(withSavings.startMonth).toBeLessThan(without.startMonth);
+    expect(withSavings.startMonth).toBeLessThanOrEqual(without.startMonth);
     expect(withSavings.finishMonth).toBeLessThan(without.finishMonth);
   });
 

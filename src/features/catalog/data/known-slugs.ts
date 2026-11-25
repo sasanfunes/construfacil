@@ -3,10 +3,10 @@ import "server-only";
 import { isSupabaseConfigured } from "@/lib/env";
 import { createSupabaseAnonClient } from "@/lib/supabase/server";
 
-import { activeModels, listedHomes, listedLots, type Catalog } from "../catalog";
+import { activeModels, listedHomes, type Catalog } from "../catalog";
 import { SAMPLE_CATALOG } from "../sample";
 
-export type DetailKind = "home" | "lot" | "model";
+export type DetailKind = "home" | "model";
 type SlugSets = Record<DetailKind, ReadonlySet<string>>;
 
 /** Cuánto tiempo se reutiliza la lista. Una casa recién publicada tarda como máximo esto en verse. */
@@ -14,10 +14,9 @@ const TTL_MS = 60_000;
 
 let cached: { expiresAt: number; slugs: Promise<SlugSets | null> } | null = null;
 
-function fromCatalog(catalog: Pick<Catalog, "homes" | "lots" | "models">): SlugSets {
+function fromCatalog(catalog: Pick<Catalog, "homes" | "models">): SlugSets {
   return {
     home: new Set(listedHomes(catalog).map((h) => h.slug)),
-    lot: new Set(listedLots(catalog).map((l) => l.slug)),
     model: new Set(activeModels(catalog).map((m) => m.slug)),
   };
 }
@@ -26,15 +25,13 @@ async function load(): Promise<SlugSets | null> {
   if (!isSupabaseConfigured()) return fromCatalog(SAMPLE_CATALOG);
   const db = createSupabaseAnonClient();
   // El RLS ya filtra lo que un visitante puede ver; el filtro repite la regla de `listedHomes`.
-  const [homes, lots, models] = await Promise.all([
+  const [homes, models] = await Promise.all([
     db.from("homes").select("slug").in("listing_status", ["published", "reserved"]),
-    db.from("lots").select("slug").in("listing_status", ["published", "reserved"]),
     db.from("house_models").select("slug").eq("is_active", true),
   ]);
-  if (homes.error || lots.error || models.error) return null;
+  if (homes.error || models.error) return null;
   return {
     home: new Set(homes.data.map((row) => row.slug)),
-    lot: new Set(lots.data.map((row) => row.slug)),
     model: new Set(models.data.map((row) => row.slug)),
   };
 }

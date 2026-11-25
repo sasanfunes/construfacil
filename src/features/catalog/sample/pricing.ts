@@ -1,13 +1,53 @@
-import type { FinishLevel, QuoteExtra, RegionFactor, StageTemplate } from "@/features/quote/types";
+import type { Localized, RegionFactor } from "../types";
 
 /**
- * EJEMPLO. Reglas de precio de ejemplo para desarrollo. Los montos son razonables para
- * Honduras en 2026, pero no son precios de la empresa: los define el admin en la base.
+ * EJEMPLO. Factor de precio por departamento (flete y mano de obra).
+ *
+ * El resto de este archivo es LEGADO del cotizador de la Fase 1 (acabados, extras y etapas):
+ * ya no lo usa el sitio, pero sus tablas siguen en la base para las cotizaciones guardadas y
+ * `pnpm db:seed` las sigue llenando con estos ejemplos.
  */
 
+export type LegacyFinishLevel = {
+  id: string;
+  key: string;
+  name: Localized;
+  description: Localized;
+  includes: Readonly<Record<"es" | "en", readonly string[]>>;
+  priceMultiplier: number;
+  customPricePerM2UsdCents: number;
+  sortOrder: number;
+};
+
+export type LegacyQuoteExtra = {
+  id: string;
+  key: string;
+  name: Localized;
+  description: Localized;
+  pricingUnit: "fixed" | "per_m2" | "per_linear_m" | "per_unit";
+  unitPriceUsdCents: number;
+  minQuantity: number;
+  maxQuantity: number;
+  defaultQuantity: number;
+  appliesRegionFactor: boolean;
+  stageKey: string;
+  sortOrder: number;
+};
+
+export type LegacyStageTemplate = {
+  key: string;
+  name: Localized;
+  description: Localized;
+  sortOrder: number;
+  costShareBp: number;
+  durationShareBp: number;
+  coveredByInitialPayment: boolean;
+};
+
+/** EJEMPLO. Pago inicial al comprar una casa lista (porcentaje del precio). */
 export const SAMPLE_INITIAL_PAYMENT_PERCENT = 20;
 
-export const SAMPLE_STAGES: StageTemplate[] = [
+export const LEGACY_SAMPLE_STAGES: LegacyStageTemplate[] = [
   {
     key: "permits",
     name: { es: "Trámites y diseño", en: "Permits and design" },
@@ -94,7 +134,7 @@ export const SAMPLE_STAGES: StageTemplate[] = [
   },
 ];
 
-export const SAMPLE_FINISH_LEVELS: FinishLevel[] = [
+export const LEGACY_SAMPLE_FINISH_LEVELS: LegacyFinishLevel[] = [
   {
     id: "d4000000-0000-4000-8000-000000000001",
     key: "basic",
@@ -188,7 +228,7 @@ export const SAMPLE_REGION_FACTORS: RegionFactor[] = [
   { departmentId: 3, factor: 0.97 }, // Comayagua
 ];
 
-export const SAMPLE_EXTRAS: QuoteExtra[] = [
+export const LEGACY_SAMPLE_EXTRAS: LegacyQuoteExtra[] = [
   {
     id: "e5000000-0000-4000-8000-000000000001",
     key: "perimeter_wall",

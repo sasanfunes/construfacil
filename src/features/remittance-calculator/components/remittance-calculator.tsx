@@ -5,7 +5,7 @@ import { useId, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Field, Input, Select } from "@/components/ui/field";
-import { trackFunnelEvent } from "@/features/quote/actions";
+import { trackFunnelEvent } from "@/features/funnel/actions";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import { formatUsd } from "@/lib/money";
@@ -72,7 +72,7 @@ export function RemittanceCalculator({ data, className }: { data: CalculatorData
   const noPause = useMemo(
     () =>
       goal === "build" && model
-        ? monthlyToNeverPause(model.quote, new Set(data.coveredByInitial), savings * 100)
+        ? monthlyToNeverPause(model.quote, new Set<string>(data.coveredByInitial), savings * 100)
         : null,
     [goal, model, savings, data],
   );
@@ -196,7 +196,7 @@ export function RemittanceCalculator({ data, className }: { data: CalculatorData
                       <li key={stage.key} className="flex flex-col gap-1">
                         <span className="text-sm">
                           {t("result.timelineStage", {
-                            stage: data.stageNames[stage.key]?.[locale] ?? stage.key,
+                            stage: data.stageNames[stage.key] ?? stage.key,
                             start: Math.floor(stage.startMonth) + 1,
                             end: Math.max(Math.ceil(stage.endMonth), Math.floor(stage.startMonth) + 1),
                           })}
@@ -217,7 +217,7 @@ export function RemittanceCalculator({ data, className }: { data: CalculatorData
               </div>
               {model ? (
                 <Button asChild size="lg" className="self-start">
-                  <Link href={{ pathname: "/build/quote", query: { model: model.slug } }}>
+                  <Link href={{ pathname: "/build/new", query: { model: model.slug } }}>
                     {t("result.ctaBuild")}
                   </Link>
                 </Button>
@@ -244,7 +244,7 @@ export function RemittanceCalculator({ data, className }: { data: CalculatorData
               </p>
             ) : null}
             <Button asChild size="lg" className="self-start">
-              <Link href={goal === "land" ? "/land" : "/homes"}>
+              <Link href={goal === "land" ? { pathname: "/build/new", query: { land: "buy" } } : "/homes"}>
                 {goal === "land" ? t("result.ctaLand") : t("result.ctaHome")}
               </Link>
             </Button>

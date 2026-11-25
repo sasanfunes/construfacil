@@ -1,8 +1,13 @@
 import { z } from "@/lib/zod";
 
 import type { Department, Municipality } from "@/features/geo/data";
-import type { FinishLevel, QuoteExtra, RegionFactor, StageTemplate } from "@/features/quote/types";
-import { PRICING_UNITS } from "@/features/quote/types";
+import {
+  OPTION_CATEGORIES,
+  OPTION_CATEGORY_KEYS,
+  PRICING_BASES,
+  type ConstructionOption,
+  type OptionCategory,
+} from "@/features/projects/types";
 import type { Tables } from "@/lib/supabase/database.types";
 
 import {
@@ -14,6 +19,7 @@ import {
   type HomeFeature,
   type HouseModel,
   type Lot,
+  type RegionFactor,
 } from "../types";
 
 /**
@@ -30,13 +36,9 @@ export const COLUMNS = {
   lots: "id, slug, code, title_es, title_en, summary_es, summary_en, description_es, description_en, department_id, municipality_id, neighborhood, latitude, longitude, listing_status, price_usd_cents, area_m2, front_m, depth_m, has_water, has_electricity, has_sewer, road_access, legal_status, topography, is_example, sort_order",
   models:
     "id, slug, name_es, name_en, summary_es, summary_en, description_es, description_en, area_m2, bedrooms, bathrooms, floors, min_lot_area_m2, min_lot_front_m, build_weeks, base_price_usd_cents, floor_plan, is_active, is_example, sort_order",
-  finishLevels:
-    "id, key, name_es, name_en, description_es, description_en, includes_es, includes_en, price_multiplier, custom_price_per_m2_usd_cents, is_active, sort_order",
   regionFactors: "department_id, factor",
-  extras:
-    "id, key, name_es, name_en, description_es, description_en, pricing_unit, unit_price_usd_cents, min_quantity, max_quantity, default_quantity, applies_region_factor, stage_key, is_active, sort_order",
-  stages:
-    "key, name_es, name_en, description_es, description_en, sort_order, cost_share_bp, duration_share_bp, covered_by_initial_payment",
+  constructionOptions:
+    "id, stage, category, key, name_es, name_en, description_es, description_en, pricing_basis, unit_price_usd_cents, materials_share_bp, weeks_factor, is_default, is_active, is_example, sort_order",
   exchangeRates: "usd_to_hnl, effective_date, is_example",
 } as const;
 
@@ -50,10 +52,8 @@ const TABLE_OF = {
   homes: "homes",
   lots: "lots",
   models: "house_models",
-  finishLevels: "finish_levels",
   regionFactors: "region_price_factors",
-  extras: "quote_extras",
-  stages: "stage_templates",
+  constructionOptions: "construction_options",
 } as const;
 
 /** PostgREST devuelve `numeric` como número, pero algunos proxies lo pasan como texto. */
@@ -181,52 +181,40 @@ export function mapModel(row: Row<"models">): HouseModel {
   };
 }
 
-export function mapFinishLevel(row: Row<"finishLevels">): FinishLevel {
-  return {
-    id: row.id,
-    key: row.key,
-    name: { es: row.name_es, en: row.name_en },
-    description: { es: row.description_es, en: row.description_en },
-    includes: { es: row.includes_es, en: row.includes_en },
-    priceMultiplier: num(row.price_multiplier),
-    customPricePerM2UsdCents: num(row.custom_price_per_m2_usd_cents),
-    sortOrder: row.sort_order,
-  };
-}
-
 export function mapRegionFactor(row: Pick<Row<"regionFactors">, "department_id" | "factor">): RegionFactor {
   return { departmentId: row.department_id, factor: num(row.factor) };
 }
 
-export function mapExtra(row: Row<"extras">): QuoteExtra {
-  if (!(PRICING_UNITS as readonly string[]).includes(row.pricing_unit)) {
-    throw new TypeError(`Unidad de precio desconocida: ${row.pricing_unit}`);
+/**
+ * Opción de construcción. Una categoría desconocida (por ejemplo, agregada en la base sin
+ * su traducción) se rechaza: el onboarding no sabría dónde mostrarla.
+ */
+export function mapConstructionOption(row: Row<"constructionOptions">): ConstructionOption {
+  if (!(OPTION_CATEGORY_KEYS as readonly string[]).includes(row.category)) {
+    throw new TypeError(`Categoría de opción desconocida: ${row.category}`);
+  }
+  const category = row.category as OptionCategory;
+  if (OPTION_CATEGORIES[category].stage !== row.stage) {
+    throw new TypeError(`La categoría ${row.category} no pertenece a la etapa ${row.stage}`);
+  }
+  if (!(PRICING_BASES as readonly string[]).includes(row.pricing_basis)) {
+    throw new TypeError(`Base de precio desconocida: ${row.pricing_basis}`);
   }
   return {
     id: row.id,
+    stage: row.stage,
+    category,
     key: row.key,
     name: { es: row.name_es, en: row.name_en },
     description: { es: row.description_es, en: row.description_en },
-    pricingUnit: row.pricing_unit,
+    pricingBasis: row.pricing_basis,
     unitPriceUsdCents: num(row.unit_price_usd_cents),
-    minQuantity: num(row.min_quantity),
-    maxQuantity: num(row.max_quantity),
-    defaultQuantity: num(row.default_quantity),
-    appliesRegionFactor: row.applies_region_factor,
-    stageKey: row.stage_key,
+    materialsShareBp: row.materials_share_bp,
+    weeksFactor: num(row.weeks_factor),
+    isDefault: row.is_default,
+    isActive: row.is_active,
+    isExample: row.is_example,
     sortOrder: row.sort_order,
-  };
-}
-
-export function mapStage(row: Row<"stages">): StageTemplate {
-  return {
-    key: row.key,
-    name: { es: row.name_es, en: row.name_en },
-    description: { es: row.description_es, en: row.description_en },
-    sortOrder: row.sort_order,
-    costShareBp: row.cost_share_bp,
-    durationShareBp: row.duration_share_bp,
-    coveredByInitialPayment: row.covered_by_initial_payment,
   };
 }
 

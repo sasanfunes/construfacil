@@ -1,16 +1,22 @@
 import { describe, expect, it } from "vitest";
 
+import { OPTION_CATEGORIES, OPTION_CATEGORY_KEYS } from "@/features/projects/types";
+
 import { HOME_FEATURES } from "../types";
 
 import { SAMPLE_CATALOG } from "./index";
+import { LEGACY_SAMPLE_EXTRAS, LEGACY_SAMPLE_FINISH_LEVELS, LEGACY_SAMPLE_STAGES } from "./pricing";
 
 /** Los datos de ejemplo terminan en la base: tienen que cumplir sus restricciones. */
 describe("datos de ejemplo", () => {
-  const { homes, lots, models, extras, stages, finishLevels, regionFactors, departments, municipalities } =
+  const { homes, lots, models, constructionOptions, regionFactors, departments, municipalities } =
     SAMPLE_CATALOG;
+  const extras = LEGACY_SAMPLE_EXTRAS;
+  const stages = LEGACY_SAMPLE_STAGES;
+  const finishLevels = LEGACY_SAMPLE_FINISH_LEVELS;
 
   it("todo está marcado como ejemplo", () => {
-    expect([...homes, ...lots, ...models].every((item) => item.isExample)).toBe(true);
+    expect([...homes, ...lots, ...models, ...constructionOptions].every((item) => item.isExample)).toBe(true);
     expect(SAMPLE_CATALOG.exchangeRate.isExample).toBe(true);
   });
 
@@ -23,7 +29,9 @@ describe("datos de ejemplo", () => {
     expect(new Set(homes.map((h) => h.code)).size).toBe(homes.length);
     for (const h of homes) expect(h.code).toMatch(/^CF-C-\d{3,5}$/);
     for (const l of lots) expect(l.code).toMatch(/^CF-T-\d{3,5}$/);
-    const ids = [...homes, ...lots, ...models, ...extras, ...finishLevels].map((item) => item.id);
+    const ids = [...homes, ...lots, ...models, ...extras, ...finishLevels, ...constructionOptions].map(
+      (item) => item.id,
+    );
     expect(new Set(ids).size).toBe(ids.length);
     for (const id of ids)
       expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
@@ -84,7 +92,31 @@ describe("datos de ejemplo", () => {
       ).toBe(true);
   });
 
-  it("las etapas suman 100 % de costo y de tiempo", () => {
+  it("cada categoría de opciones tiene al menos una opción y, si la elige el cliente, una por defecto", () => {
+    for (const category of OPTION_CATEGORY_KEYS) {
+      const options = constructionOptions.filter((o) => o.category === category);
+      expect(options.length, category).toBeGreaterThan(0);
+      for (const option of options) expect(option.stage, option.key).toBe(OPTION_CATEGORIES[category].stage);
+      if (OPTION_CATEGORIES[category].choice === "user") {
+        expect(options.filter((o) => o.isDefault).length, category).toBe(1);
+      } else {
+        expect(options.filter((o) => o.isDefault).length, category).toBe(0);
+      }
+    }
+    const keys = constructionOptions.map((o) => `${o.category}/${o.key}`);
+    expect(new Set(keys).size).toBe(keys.length);
+    for (const option of constructionOptions) {
+      expect(option.key).toMatch(/^[a-z][a-z_]{1,39}$/);
+      expect(option.materialsShareBp).toBeGreaterThanOrEqual(0);
+      expect(option.materialsShareBp).toBeLessThanOrEqual(10_000);
+      for (const locale of ["es", "en"] as const) {
+        expect(option.name[locale].length, option.key).toBeLessThanOrEqual(80);
+        expect(option.description[locale].length, option.key).toBeLessThanOrEqual(300);
+      }
+    }
+  });
+
+  it("legado: las etapas del cotizador anterior suman 100 % de costo y de tiempo", () => {
     expect(stages.reduce((sum, s) => sum + s.costShareBp, 0)).toBe(10_000);
     expect(stages.reduce((sum, s) => sum + s.durationShareBp, 0)).toBe(10_000);
   });

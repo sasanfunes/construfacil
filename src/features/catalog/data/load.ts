@@ -10,16 +10,14 @@ import { SAMPLE_CATALOG } from "../sample";
 
 import {
   COLUMNS,
+  mapConstructionOption,
   mapDepartment,
   mapExchangeRate,
-  mapExtra,
-  mapFinishLevel,
   mapHome,
   mapLot,
   mapModel,
   mapMunicipality,
   mapRegionFactor,
-  mapStage,
   parseInitialPaymentPercent,
 } from "./mappers";
 
@@ -51,36 +49,27 @@ function unwrap<T>(label: string, result: { data: T | null; error: { message: st
 async function loadFromSupabase(): Promise<Catalog> {
   const db = createSupabaseAnonClient();
 
-  const [
-    departments,
-    municipalities,
-    homes,
-    lots,
-    models,
-    finishLevels,
-    regionFactors,
-    extras,
-    stages,
-    rates,
-    setting,
-  ] = await Promise.all([
-    db.from("departments").select(COLUMNS.departments).order("id"),
-    db.from("municipalities").select(COLUMNS.municipalities).order("id"),
-    db.from("homes").select(COLUMNS.homes),
-    db.from("lots").select(COLUMNS.lots),
-    db.from("house_models").select(COLUMNS.models),
-    db.from("finish_levels").select(COLUMNS.finishLevels).order("sort_order"),
-    db.from("region_price_factors").select(COLUMNS.regionFactors),
-    db.from("quote_extras").select(COLUMNS.extras).order("sort_order"),
-    db.from("stage_templates").select(COLUMNS.stages).order("sort_order"),
-    db
-      .from("exchange_rates")
-      .select(COLUMNS.exchangeRates)
-      .order("effective_date", { ascending: false })
-      .order("created_at", { ascending: false })
-      .limit(1),
-    db.from("app_settings").select("key, value").eq("key", "payments.initial_payment_percent").maybeSingle(),
-  ]);
+  const [departments, municipalities, homes, lots, models, regionFactors, options, rates, setting] =
+    await Promise.all([
+      db.from("departments").select(COLUMNS.departments).order("id"),
+      db.from("municipalities").select(COLUMNS.municipalities).order("id"),
+      db.from("homes").select(COLUMNS.homes),
+      db.from("lots").select(COLUMNS.lots),
+      db.from("house_models").select(COLUMNS.models),
+      db.from("region_price_factors").select(COLUMNS.regionFactors),
+      db.from("construction_options").select(COLUMNS.constructionOptions).order("sort_order"),
+      db
+        .from("exchange_rates")
+        .select(COLUMNS.exchangeRates)
+        .order("effective_date", { ascending: false })
+        .order("created_at", { ascending: false })
+        .limit(1),
+      db
+        .from("app_settings")
+        .select("key, value")
+        .eq("key", "payments.initial_payment_percent")
+        .maybeSingle(),
+    ]);
 
   const rate = unwrap("el tipo de cambio", rates)[0];
   if (!rate) throw new Error("No hay tipo de cambio cargado en exchange_rates.");
@@ -92,10 +81,8 @@ async function loadFromSupabase(): Promise<Catalog> {
     homes: unwrap("casas", homes).map(mapHome),
     lots: unwrap("terrenos", lots).map(mapLot),
     models: unwrap("modelos", models).map(mapModel),
-    finishLevels: unwrap("acabados", finishLevels).map(mapFinishLevel),
     regionFactors: unwrap("factores por departamento", regionFactors).map(mapRegionFactor),
-    extras: unwrap("extras", extras).map(mapExtra),
-    stages: unwrap("etapas", stages).map(mapStage),
+    constructionOptions: unwrap("opciones de construcción", options).map(mapConstructionOption),
     initialPaymentPercent: parseInitialPaymentPercent(setting.data?.value, 20),
     exchangeRate: mapExchangeRate(rate),
   };

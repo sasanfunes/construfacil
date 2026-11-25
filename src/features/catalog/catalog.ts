@@ -1,13 +1,7 @@
 import type { Department, Municipality } from "@/features/geo/data";
-import type {
-  FinishLevel,
-  PricingRules,
-  QuoteExtra,
-  RegionFactor,
-  StageTemplate,
-} from "@/features/quote/types";
+import type { ConstructionOption, ProjectRules } from "@/features/projects/types";
 
-import type { ExchangeRate, Home, HouseModel, Lot } from "./types";
+import type { ExchangeRate, Home, HouseModel, Lot, RegionFactor } from "./types";
 
 /**
  * Todo lo público del catálogo en un solo objeto. Es pequeño (decenas de registros), así
@@ -21,25 +15,23 @@ export type Catalog = {
   homes: Home[];
   lots: Lot[];
   models: HouseModel[];
-  finishLevels: FinishLevel[];
   regionFactors: RegionFactor[];
-  extras: QuoteExtra[];
-  stages: StageTemplate[];
+  /** Sistemas y materiales por etapa de obra (proyectos de "Construir"). */
+  constructionOptions: ConstructionOption[];
+  /** Pago inicial al comprar una casa lista, en % del precio. */
   initialPaymentPercent: number;
   exchangeRate: ExchangeRate;
 };
 
-export function pricingRulesFrom(catalog: Catalog): PricingRules {
+/** Reglas del cálculo de un proyecto de construcción. */
+export function projectRulesFrom(catalog: Catalog): ProjectRules {
   return {
     departments: catalog.departments,
     municipalities: catalog.municipalities,
-    models: catalog.models,
     lots: catalog.lots,
-    finishLevels: catalog.finishLevels,
+    models: catalog.models,
     regionFactors: catalog.regionFactors,
-    extras: catalog.extras,
-    stages: catalog.stages,
-    initialPaymentPercent: catalog.initialPaymentPercent,
+    options: catalog.constructionOptions,
   };
 }
 

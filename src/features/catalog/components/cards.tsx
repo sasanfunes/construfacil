@@ -1,4 +1,4 @@
-import { Bath, BedDouble, Car, Droplets, Ruler, Zap } from "lucide-react";
+import { Bath, BedDouble, Car, Ruler } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { ExampleBadge } from "@/components/shared/example-badge";
@@ -7,11 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import { formatNumber } from "@/lib/format";
-import { squareMetersToVaras } from "@/lib/units";
 
 import type { Home, HouseModel, Lot } from "../types";
 
-import { HouseIllustration, LotIllustration } from "./illustrations";
+import { HouseIllustration } from "./illustrations";
 
 type Place = { municipality: string; department: string };
 
@@ -95,52 +94,6 @@ export function LotLegalBadge({ legalStatus }: { legalStatus: Lot["legalStatus"]
   const t = useTranslations("catalog");
   return (
     <Badge variant={legalStatus === "full_title" ? "success" : "neutral"}>{t(`legal.${legalStatus}`)}</Badge>
-  );
-}
-
-export function LotCard({
-  lot,
-  place,
-  locale,
-  usdToHnl,
-}: {
-  lot: Lot;
-  place: Place;
-  locale: AppLocale;
-  usdToHnl: number;
-}) {
-  const t = useTranslations("catalog");
-  return (
-    <article className="group relative flex flex-col overflow-hidden rounded-2xl border bg-card transition-shadow hover:shadow-lg">
-      <LotIllustration seed={lot.slug} className="aspect-[16/10] w-full" />
-      <div className="flex flex-1 flex-col gap-3 p-5">
-        <div className="flex flex-wrap gap-2">
-          {lot.listingStatus === "reserved" ? <Badge variant="brand">{t("listing.reserved")}</Badge> : null}
-          <LotLegalBadge legalStatus={lot.legalStatus} />
-          {lot.isExample ? <ExampleBadge /> : null}
-        </div>
-        <h3 className="text-xl">
-          <Link
-            href={{ pathname: "/land/[slug]", params: { slug: lot.slug } }}
-            className="after:absolute after:inset-0"
-          >
-            {lot.title[locale]}
-          </Link>
-        </h3>
-        <p className="text-muted-foreground">{t("place", place)}</p>
-        <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm font-bold text-muted-foreground">
-          <Fact icon={Ruler}>
-            {t("facts.lotArea", {
-              m2: formatNumber(lot.areaM2, locale),
-              varas: formatNumber(squareMetersToVaras(lot.areaM2), locale),
-            })}
-          </Fact>
-          {lot.hasWater ? <Fact icon={Droplets}>{t("services.water")}</Fact> : null}
-          {lot.hasElectricity ? <Fact icon={Zap}>{t("services.electricity")}</Fact> : null}
-        </p>
-        <Price usdCents={lot.priceUsdCents} usdToHnl={usdToHnl} className="mt-auto pt-2" />
-      </div>
-    </article>
   );
 }
 

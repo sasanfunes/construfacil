@@ -2,12 +2,12 @@ import {
   activeModels,
   listedHomes,
   listedLots,
-  pricingRulesFrom,
+  projectRulesFrom,
   type Catalog,
 } from "@/features/catalog/catalog";
 import type { Localized } from "@/features/catalog/types";
-import { calculateQuote } from "@/features/quote/engine";
-import type { QuoteResult } from "@/features/quote/types";
+import { modelReferenceEstimate } from "@/features/projects/engine";
+import { OPTION_STAGES, PRELIMINARY_STAGE, type ProjectEstimate } from "@/features/projects/types";
 
 /** Departamento de referencia para la calculadora: Cortés (factor 1.0). */
 const REFERENCE_DEPARTMENT = 5;
@@ -17,10 +17,11 @@ export type CalculatorData = {
     id: string;
     slug: string;
     name: Localized;
-    quote: Pick<QuoteResult, "payments" | "stages" | "totalUsdCents">;
+    quote: Pick<ProjectEstimate, "payments" | "stages" | "totalUsdCents">;
   }>;
   coveredByInitial: string[];
-  stageNames: Record<string, Localized>;
+  /** Nombres de las etapas, ya traducidos. */
+  stageNames: Record<string, string>;
   referenceDepartment: string;
   typicalLotUsdCents: number | null;
   typicalHomeUsdCents: number | null;
@@ -34,43 +35,28 @@ function median(values: number[]): number | null {
   return Math.round(value / 10_000) * 10_000;
 }
 
-/** Datos ya calculados en el servidor: el navegador solo simula el ahorro. */
-export function toCalculatorData(catalog: Catalog): CalculatorData {
-  const rules = pricingRulesFrom(catalog);
+/**
+ * Datos ya calculados en el servidor: el navegador solo simula el ahorro. Cada modelo se
+ * calcula con las opciones por defecto y el factor de referencia (Cortés, 1.0).
+ */
+export function toCalculatorData(catalog: Catalog, stageName: (key: string) => string): CalculatorData {
+  const rules = projectRulesFrom(catalog);
   const department =
     catalog.departments.find((d) => d.id === REFERENCE_DEPARTMENT && d.isActive) ??
     catalog.departments.find((d) => d.isActive);
-  const standard = catalog.finishLevels.find((f) => f.key === "standard") ?? catalog.finishLevels[0];
 
-  const models =
-    department && standard
-      ? activeModels(catalog).map((model) => {
-          const { payments, stages, totalUsdCents } = calculateQuote(
-            {
-              landStatus: "not_yet",
-              lotId: null,
-              departmentId: department.id,
-              municipalityId: null,
-              landAreaM2: null,
-              design: { kind: "model", modelId: model.id },
-              finishLevelId: standard.id,
-              extras: [],
-            },
-            rules,
-          );
-          return {
-            id: model.id,
-            slug: model.slug,
-            name: model.name,
-            quote: { payments, stages, totalUsdCents },
-          };
-        })
-      : [];
+  const models = activeModels(catalog).flatMap((model) => {
+    const estimate = modelReferenceEstimate(model.id, rules);
+    if (!estimate) return [];
+    const { payments, stages, totalUsdCents } = estimate;
+    return [{ id: model.id, slug: model.slug, name: model.name, quote: { payments, stages, totalUsdCents } }];
+  });
 
   return {
     models,
-    coveredByInitial: catalog.stages.filter((s) => s.coveredByInitialPayment).map((s) => s.key),
-    stageNames: Object.fromEntries(catalog.stages.map((s) => [s.key, s.name])),
+    // El pago inicial cubre diseño y trámites.
+    coveredByInitial: [PRELIMINARY_STAGE],
+    stageNames: Object.fromEntries(OPTION_STAGES.map((key) => [key, stageName(key)])),
     referenceDepartment: department?.name ?? "",
     typicalLotUsdCents: median(
       listedLots(catalog)

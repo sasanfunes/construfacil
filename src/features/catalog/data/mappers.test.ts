@@ -2,7 +2,14 @@ import { describe, expect, it } from "vitest";
 
 import { SAMPLE_CATALOG } from "../sample";
 
-import { COLUMNS, mapExtra, mapHome, mapLot, mapModel, parseInitialPaymentPercent } from "./mappers";
+import {
+  COLUMNS,
+  mapConstructionOption,
+  mapHome,
+  mapLot,
+  mapModel,
+  parseInitialPaymentPercent,
+} from "./mappers";
 
 const home = SAMPLE_CATALOG.homes[0]!;
 const lot = SAMPLE_CATALOG.lots[0]!;
@@ -115,28 +122,33 @@ describe("mapeo de filas de Supabase", () => {
     );
   });
 
-  it("rechaza unidades de precio desconocidas y números que no son números", () => {
-    const extra = SAMPLE_CATALOG.extras[0]!;
+  it("una opción de construcción vuelve idéntica; categorías, etapas y bases desconocidas se rechazan", () => {
+    const option = SAMPLE_CATALOG.constructionOptions.find((o) => o.category === "walls")!;
     const row = {
-      id: extra.id,
-      key: extra.key,
-      name_es: extra.name.es,
-      name_en: extra.name.en,
-      description_es: extra.description.es,
-      description_en: extra.description.en,
-      pricing_unit: extra.pricingUnit,
-      unit_price_usd_cents: extra.unitPriceUsdCents,
-      min_quantity: extra.minQuantity,
-      max_quantity: extra.maxQuantity,
-      default_quantity: extra.defaultQuantity,
-      applies_region_factor: extra.appliesRegionFactor,
-      stage_key: extra.stageKey,
-      is_active: true,
-      sort_order: extra.sortOrder,
+      id: option.id,
+      stage: option.stage,
+      category: option.category,
+      key: option.key,
+      name_es: option.name.es,
+      name_en: option.name.en,
+      description_es: option.description.es,
+      description_en: option.description.en,
+      pricing_basis: option.pricingBasis,
+      unit_price_usd_cents: option.unitPriceUsdCents,
+      materials_share_bp: option.materialsShareBp,
+      weeks_factor: String(option.weeksFactor) as unknown as number,
+      is_default: option.isDefault,
+      is_active: option.isActive,
+      is_example: option.isExample,
+      sort_order: option.sortOrder,
     };
-    expect(mapExtra(row)).toEqual(extra);
-    expect(() => mapExtra({ ...row, pricing_unit: "por_saco" as never })).toThrow(TypeError);
-    expect(() => mapExtra({ ...row, unit_price_usd_cents: "mucho" as unknown as number })).toThrow(TypeError);
+    expect(mapConstructionOption(row)).toEqual(option);
+    expect(() => mapConstructionOption({ ...row, category: "piscina" })).toThrow(TypeError);
+    expect(() => mapConstructionOption({ ...row, stage: "roof" })).toThrow(TypeError);
+    expect(() => mapConstructionOption({ ...row, pricing_basis: "por_saco" as never })).toThrow(TypeError);
+    expect(() =>
+      mapConstructionOption({ ...row, unit_price_usd_cents: "mucho" as unknown as number }),
+    ).toThrow(TypeError);
   });
 
   it("el porcentaje de pago inicial cae al valor por defecto si el ajuste es raro", () => {
