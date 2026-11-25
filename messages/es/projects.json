@@ -306,7 +306,7 @@
     "design": {
       "own_plans": "Con tus planos",
       "custom": "Diseño a tu medida",
-      "catalog": "Modelo {name}"
+      "catalog": "{name}"
     },
     "actionsTitle": "Qué puedes hacer",
     "actions": {

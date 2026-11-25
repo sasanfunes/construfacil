@@ -105,11 +105,13 @@ describe("proyectos de construcción", () => {
       ).toBe(total.rows[0]!.n);
       await sql("update public.construction_options set is_active = false where id = $1", [CONCRETE_BLOCK]);
       try {
-        expect(await rowCount(anon, "select 1 from public.construction_options where id = $1", [CONCRETE_BLOCK])).toBe(
-          0,
-        );
         expect(
-          await rowCount(user(ventas), "select 1 from public.construction_options where id = $1", [CONCRETE_BLOCK]),
+          await rowCount(anon, "select 1 from public.construction_options where id = $1", [CONCRETE_BLOCK]),
+        ).toBe(0);
+        expect(
+          await rowCount(user(ventas), "select 1 from public.construction_options where id = $1", [
+            CONCRETE_BLOCK,
+          ]),
         ).toBe(1);
       } finally {
         await sql("update public.construction_options set is_active = true where id = $1", [CONCRETE_BLOCK]);
@@ -122,7 +124,9 @@ describe("proyectos de construcción", () => {
           await rowCount(user(actor), "update public.construction_options set unit_price_usd_cents = 1"),
         ).toBe(0);
       }
-      expect(await errorCode(anon, "update public.construction_options set unit_price_usd_cents = 1")).toBe(DENIED);
+      expect(await errorCode(anon, "update public.construction_options set unit_price_usd_cents = 1")).toBe(
+        DENIED,
+      );
       expect(
         await rowCount(
           user(admin),
@@ -137,7 +141,9 @@ describe("proyectos de construcción", () => {
         [CONCRETE_BLOCK],
       );
       expect(audit.rows[0]).toEqual({ actor_id: admin, after: "12000" });
-      await sql("update public.construction_options set unit_price_usd_cents = 11500 where id = $1", [CONCRETE_BLOCK]);
+      await sql("update public.construction_options set unit_price_usd_cents = 11500 where id = $1", [
+        CONCRETE_BLOCK,
+      ]);
     });
 
     it("una opción no puede ir en una categoría que no existe o en la etapa equivocada", async () => {
@@ -162,9 +168,10 @@ describe("proyectos de construcción", () => {
     it("submit_project guarda lead, proyecto y selecciones juntos, con un código legible", async () => {
       const { project_id, project_code } = await submitProject(project());
       expect(project_code).toMatch(/^CF-P-[0-9A-F]{6}$/);
-      const rows = await sql("select count(*)::int as n from public.project_selections where project_id = $1", [
-        project_id,
-      ]);
+      const rows = await sql(
+        "select count(*)::int as n from public.project_selections where project_id = $1",
+        [project_id],
+      );
       expect(rows.rows[0]!.n).toBe(selections.length);
       const leadRow = await sql(
         "select l.source from public.projects p join public.leads l on l.id = p.lead_id where p.id = $1",
@@ -184,7 +191,9 @@ describe("proyectos de construcción", () => {
 
     it("rechaza terrenos apartados, totales que no cuadran y opciones de otra categoría", async () => {
       await expect(
-        submitProject(project({ land_status: "buying_from_us", lot_id: RESERVED_LOT, lot_price_usd_cents: 1 })),
+        submitProject(
+          project({ land_status: "buying_from_us", lot_id: RESERVED_LOT, lot_price_usd_cents: 1 }),
+        ),
       ).rejects.toThrow(/Terreno no disponible/);
       await expect(submitProject(project({ total_usd_cents: 1 }))).rejects.toThrow();
       await expect(submitProject(project(), [selection("walls", REINFORCED_CONCRETE)])).rejects.toThrow(
@@ -230,13 +239,16 @@ describe("proyectos de construcción", () => {
         service,
         async (db) =>
           (
-            await db.query<{ id: string }>("select public.submit_project_request($1, 'progress_proof', 'Fotos') as id", [
-              hash(token),
-            ])
+            await db.query<{ id: string }>(
+              "select public.submit_project_request($1, 'progress_proof', 'Fotos') as id",
+              [hash(token)],
+            )
           ).rows[0]!.id,
         { commit: true },
       );
-      const row = await sql("select project_id, kind, status from public.project_requests where id = $1", [id]);
+      const row = await sql("select project_id, kind, status from public.project_requests where id = $1", [
+        id,
+      ]);
       expect(row.rows[0]).toEqual({ project_id: projectId, kind: "progress_proof", status: "open" });
       await expect(
         as(service, (db) => db.query("select public.submit_project_request($1, 'support', '')", [hash("x")])),
@@ -246,12 +258,17 @@ describe("proyectos de construcción", () => {
     it("nadie fuera del servidor puede llamar a estas funciones", async () => {
       for (const actor of [anon, user(cliente), user(admin)]) {
         expect(
-          await errorCode(actor, "select * from public.submit_project($1, $2, '[]'::jsonb)", [lead(), project()]),
+          await errorCode(actor, "select * from public.submit_project($1, $2, '[]'::jsonb)", [
+            lead(),
+            project(),
+          ]),
         ).toBe(DENIED);
         expect(
           await errorCode(actor, "select public.update_project_selections('x', '{}'::jsonb, '[]'::jsonb)"),
         ).toBe(DENIED);
-        expect(await errorCode(actor, "select public.submit_project_request('x', 'support', '')")).toBe(DENIED);
+        expect(await errorCode(actor, "select public.submit_project_request('x', 'support', '')")).toBe(
+          DENIED,
+        );
       }
     });
   });
@@ -270,11 +287,15 @@ describe("proyectos de construcción", () => {
 
     it("ventas y admin ven proyectos, selecciones y solicitudes", async () => {
       for (const staff of [ventas, admin]) {
-        expect(await rowCount(user(staff), "select id, code, name from public.projects where id = $1", [projectId])).toBe(
-          1,
-        );
         expect(
-          await rowCount(user(staff), "select 1 from public.project_selections where project_id = $1", [projectId]),
+          await rowCount(user(staff), "select id, code, name from public.projects where id = $1", [
+            projectId,
+          ]),
+        ).toBe(1);
+        expect(
+          await rowCount(user(staff), "select 1 from public.project_selections where project_id = $1", [
+            projectId,
+          ]),
         ).toBe(selections.length);
       }
     });
@@ -298,7 +319,12 @@ describe("proyectos de construcción", () => {
       }
       expect(await rowCount(user(cliente), "update public.projects set status = 'active'")).toBe(0);
       expect(
-        await rowCount(user(ventas), "update public.projects set status = 'in_review' where id = $1", [projectId], true),
+        await rowCount(
+          user(ventas),
+          "update public.projects set status = 'in_review' where id = $1",
+          [projectId],
+          true,
+        ),
       ).toBe(1);
       const audit = await sql(
         `select actor_id, after_data ->> 'status' as status from public.audit_log
