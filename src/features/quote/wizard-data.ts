@@ -25,9 +25,13 @@ export function toWizardData(catalog: Catalog): WizardData {
     description: { es: "", en: "" },
     floorPlan: m.floorPlan.filter((r) => r.room === "carport"),
   }));
+  const municipalities = catalog.municipalities.filter((m) =>
+    departments.some((d) => d.id === m.departmentId),
+  );
   return {
     rules: {
       departments,
+      municipalities: municipalities.map(({ id, departmentId }) => ({ id, departmentId })),
       models,
       lots,
       finishLevels: [...catalog.finishLevels].sort((a, b) => a.sortOrder - b.sortOrder),
@@ -36,7 +40,7 @@ export function toWizardData(catalog: Catalog): WizardData {
       stages: catalog.stages,
       initialPaymentPercent: catalog.initialPaymentPercent,
     },
-    municipalities: catalog.municipalities.filter((m) => departments.some((d) => d.id === m.departmentId)),
+    municipalities,
     usdToHnl: catalog.exchangeRate.usdToHnl,
     exchangeRateDate: catalog.exchangeRate.effectiveDate,
   };

@@ -27,6 +27,7 @@ export type FormErrorKey =
   | "invalid"
   | "nameTooShort"
   | "nameTooLong"
+  | "nameInvalid"
   | "emailInvalid"
   | "phoneInvalid"
   | "phoneRequired"

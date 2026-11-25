@@ -54,6 +54,7 @@
     "required": "Este campo es obligatorio.",
     "invalid": "Revisa este dato.",
     "nameTooShort": "Escribe tu nombre completo.",
+    "nameInvalid": "Escribe tu nombre solo con letras.",
     "nameTooLong": "El nombre es demasiado largo.",
     "emailInvalid": "Escribe un correo válido, por ejemplo nombre@correo.com.",
     "phoneInvalid": "Escribe el número con código de país, solo números.",

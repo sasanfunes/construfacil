@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { buildBucket, getClientIp, MemoryRateLimitStore, normalizeIp, RATE_LIMITS } from "./rate-limit-core";
+import {
+  buildBucket,
+  emailRateLimitKey,
+  getClientIp,
+  MemoryRateLimitStore,
+  normalizeIp,
+  RATE_LIMITS,
+} from "./rate-limit-core";
 
 describe("buildBucket", () => {
   const salt = "sal-de-prueba-con-mas-de-treinta-y-dos-caracteres";
@@ -22,6 +29,30 @@ describe("buildBucket", () => {
     expect(buildBucket("quote", "1.2.3.4", salt)).not.toBe(base);
     expect(buildBucket("login", "1.2.3.5", salt)).not.toBe(base);
     expect(buildBucket("login", "1.2.3.4", `${salt}-otra`)).not.toBe(base);
+  });
+});
+
+describe("MemoryRateLimitStore con tope", () => {
+  it("no guarda más contadores que el tope y sigue contando bien", async () => {
+    const store = new MemoryRateLimitStore(() => 0, 3);
+    const rule = { limit: 1, windowSeconds: 60 };
+    for (const ip of ["a", "b", "c", "d", "e"]) await store.hit(ip, rule);
+    expect((store as unknown as { windows: Map<string, unknown> }).windows.size).toBeLessThanOrEqual(3);
+    expect((await store.hit("e", rule)).allowed).toBe(false);
+  });
+});
+
+describe("emailRateLimitKey", () => {
+  it("cuenta como una sola bandeja las variantes de una misma dirección", () => {
+    const key = emailRateLimitKey("analopez@gmail.com");
+    for (const email of ["Ana.Lopez@gmail.com", "analopez+1@gmail.com", "a.n.a.lopez+x@googlemail.com"]) {
+      expect(emailRateLimitKey(email), email).toBe(key);
+    }
+  });
+
+  it("solo quita puntos en Gmail y conserva el dominio", () => {
+    expect(emailRateLimitKey("ana.lopez+tag@outlook.com")).toBe("email:ana.lopez@outlook.com");
+    expect(emailRateLimitKey("ana.lopez@outlook.com")).not.toBe(emailRateLimitKey("analopez@outlook.com"));
   });
 });
 

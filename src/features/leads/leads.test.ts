@@ -51,6 +51,26 @@ describe("contactInfoSchema", () => {
     });
   });
 
+  it("acepta nombres con tildes, apóstrofos y guiones, y rechaza URLs, correos y números", () => {
+    for (const fullName of ["José Ñúñez", "María-José O'Connor", "Ana  María   López", "Zoë D’Arcy"]) {
+      expect(contactInfoSchema.safeParse({ ...valid, fullName }).success, fullName).toBe(true);
+    }
+    expect(contactInfoSchema.parse({ ...valid, fullName: "Ana  María   López" }).fullName).toBe(
+      "Ana María López",
+    );
+    for (const fullName of [
+      "https://evil.example/verificar Pérez",
+      "ana@correo.com",
+      "Juan 2",
+      "<b>Ana</b>",
+      "\u202eAna",
+    ]) {
+      const result = contactInfoSchema.safeParse({ ...valid, fullName });
+      expect(result.success, fullName).toBe(false);
+      expect(fieldErrorsOf(result.error!).fullName, fullName).toBe("nameInvalid");
+    }
+  });
+
   it("rechaza estados que no existen", () => {
     expect(contactInfoSchema.safeParse({ ...valid, usState: "XX" }).success).toBe(false);
     expect(contactInfoSchema.parse({ ...valid, usState: "TX" }).usState).toBe("TX");

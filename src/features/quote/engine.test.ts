@@ -49,7 +49,10 @@ describe("calculateQuote", () => {
 
   it("aplica el acabado y el factor del departamento, redondeando a $100", () => {
     // 43,800 × 1.32 × 1.07 = 61,861.68 → 61,900
-    const result = calculateQuote({ ...base, departmentId: 1, finishLevelId: PREMIUM }, rules);
+    const result = calculateQuote(
+      { ...base, departmentId: 1, municipalityId: null, finishLevelId: PREMIUM },
+      rules,
+    );
     expect(result.constructionUsdCents).toBe(6_190_000);
     expect(result.regionFactor).toBe(1.07);
     expect(result.finishMultiplier).toBe(1.32);
@@ -72,6 +75,7 @@ describe("calculateQuote", () => {
       {
         ...base,
         departmentId: 8, // FM 1.04
+        municipalityId: null,
         extras: [
           { extraId: WALL, quantity: 56 },
           { extraId: SOLAR, quantity: 1 }, // sin factor
@@ -88,9 +92,10 @@ describe("calculateQuote", () => {
     expect(result.totalUsdCents).toBe(result.constructionUsdCents + result.extrasUsdCents);
 
     const installations = result.stages.find((s) => s.key === "installations")!;
-    const withoutExtras = calculateQuote({ ...base, departmentId: 8 }, rules).stages.find(
-      (s) => s.key === "installations",
-    )!;
+    const withoutExtras = calculateQuote(
+      { ...base, departmentId: 8, municipalityId: null },
+      rules,
+    ).stages.find((s) => s.key === "installations")!;
     expect(installations.costUsdCents - withoutExtras.costUsdCents).toBe(390_000 + 156_000);
   });
 
@@ -143,6 +148,27 @@ describe("calculateQuote", () => {
     expect(result.grandTotalUsdCents).toBe(result.totalUsdCents + 1_280_000);
     // El terreno no entra en el plan de pagos por etapas.
     expect(sum(result.payments.map((p) => p.amountUsdCents))).toBe(result.totalUsdCents);
+  });
+
+  it("guarda la ubicación del terreno comprado, no la que mandó el navegador", () => {
+    const lot = SAMPLE_CATALOG.lots.find((l) => l.id === CHOLOMA_LOT)!;
+    const result = calculateQuote(
+      { ...base, landStatus: "buying_from_us", lotId: CHOLOMA_LOT, departmentId: 1, landAreaM2: 9_999_999 },
+      rules,
+    );
+    expect(result.location).toEqual({
+      departmentId: lot.departmentId,
+      municipalityId: lot.municipalityId,
+      landAreaM2: lot.areaM2,
+    });
+  });
+
+  it("rechaza un municipio que no es del departamento elegido", () => {
+    const otherDepartment = SAMPLE_CATALOG.municipalities.find((m) => m.departmentId !== base.departmentId)!;
+    expect(() => calculateQuote({ ...base, municipalityId: otherDepartment.id }, rules)).toThrow(
+      expect.objectContaining({ code: "municipality_mismatch" }),
+    );
+    expect(calculateQuote({ ...base, municipalityId: null }, rules).location.municipalityId).toBeNull();
   });
 
   it("avisa si el terreno es más chico que el mínimo del modelo, sin bloquear", () => {

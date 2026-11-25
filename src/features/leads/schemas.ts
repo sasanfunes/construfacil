@@ -96,11 +96,24 @@ export function addDays(isoDate: string, days: number): string {
 const emptyToUndefined = (value: unknown) =>
   typeof value === "string" && value.trim() === "" ? undefined : value;
 
+/**
+ * Letras (con tildes y diéresis), espacios, apóstrofo, punto y guion. El primer nombre va en el
+ * saludo de los correos: sin esta regla, alguien podría escribir una URL como "nombre" y usar
+ * nuestros correos de confirmación para mandar enlaces a la dirección de otra persona.
+ */
+const NAME_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M}'’. -]*$/u;
+
 export const fullNameSchema = z
   .string({ error: "required" })
   .trim()
-  .min(2, { error: "nameTooShort" })
-  .max(120, { error: "nameTooLong" });
+  .transform((value) => value.replace(/\s+/g, " "))
+  .pipe(
+    z
+      .string()
+      .min(2, { error: "nameTooShort" })
+      .max(120, { error: "nameTooLong" })
+      .regex(NAME_PATTERN, { error: "nameInvalid" }),
+  );
 
 export const emailSchema = z
   .string({ error: "required" })

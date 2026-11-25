@@ -39,3 +39,11 @@ export const funnelEventSchema = z.object({
   locale: z.enum(["es", "en"]),
 });
 export type FunnelEventInput = z.infer<typeof funnelEventSchema>;
+
+/**
+ * Lo que puede reportar el navegador. `quote_saved` lo registra solo el servidor al guardar
+ * la cotización: si lo aceptáramos del navegador, cualquiera podría inflar esa cifra.
+ */
+export const clientFunnelEventSchema = funnelEventSchema.extend({
+  event: z.enum(FUNNEL_EVENTS.filter((event) => event !== "quote_saved")),
+});

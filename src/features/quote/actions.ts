@@ -13,11 +13,11 @@ import { hashQuoteToken, newQuoteToken } from "@/features/leads/token";
 import { getPathname } from "@/i18n/navigation";
 import { formatDate } from "@/lib/format";
 import { formatUsd } from "@/lib/money";
-import { enforceRateLimit, getRequestIdentifier } from "@/lib/security/rate-limit";
+import { emailRateLimitKey, enforceRateLimit, getRequestIdentifier } from "@/lib/security/rate-limit";
 import { siteConfig } from "@/lib/site";
 
 import { calculateQuote, QuoteInputError } from "./engine";
-import { funnelEventSchema, quoteInputSchema } from "./schemas";
+import { clientFunnelEventSchema, quoteInputSchema } from "./schemas";
 
 export type SaveQuoteResult =
   | { status: "success"; path: string }
@@ -46,15 +46,15 @@ function saveQuoteSchema(today: string) {
  * Devuelve la ruta del enlace privado para llevar al cliente ahí.
  */
 export async function saveQuote(payload: unknown): Promise<SaveQuoteResult> {
+  const requestHeaders = await headers();
+  const byIp = await enforceRateLimit("quote", getRequestIdentifier(requestHeaders));
+  if (!byIp.allowed) return { status: "error", error: "rate_limited" };
+
   const raw = (typeof payload === "object" && payload !== null ? payload : {}) as Record<string, unknown>;
   if (looksLikeBot({ honeypot: raw[HONEYPOT_FIELD], startedAt: raw[STARTED_AT_FIELD], now: Date.now() })) {
     console.warn("[cotizador] envío descartado: parece automatizado");
     return { status: "error", error: "server" };
   }
-
-  const requestHeaders = await headers();
-  const byIp = await enforceRateLimit("quote", getRequestIdentifier(requestHeaders));
-  if (!byIp.allowed) return { status: "error", error: "rate_limited" };
 
   const today = new Date().toISOString().slice(0, 10);
   const parsed = saveQuoteSchema(today).safeParse(payload);
@@ -62,7 +62,7 @@ export async function saveQuote(payload: unknown): Promise<SaveQuoteResult> {
     return { status: "error", error: "validation", fieldErrors: fieldErrorsOf(parsed.error) };
   const { locale, quote: input, contact, videoCall: call, sessionId } = parsed.data;
 
-  const byEmail = await enforceRateLimit("quote", `email:${contact.email}`);
+  const byEmail = await enforceRateLimit("outboundEmail", emailRateLimitKey(contact.email));
   if (!byEmail.allowed) return { status: "error", error: "rate_limited" };
 
   const catalog = await getCatalog();
@@ -95,7 +95,14 @@ export async function saveQuote(payload: unknown): Promise<SaveQuoteResult> {
         lotId: input.lotId,
         houseModelId: model,
       },
-      { tokenHash: hashQuoteToken(token), locale, input, result, usdToHnl: catalog.exchangeRate.usdToHnl },
+      {
+        tokenHash: hashQuoteToken(token),
+        locale,
+        // Se guarda la ubicación con la que se calculó (la del terreno, si compra uno nuestro).
+        input: { ...input, ...result.location },
+        result,
+        usdToHnl: catalog.exchangeRate.usdToHnl,
+      },
       videoCall,
     ));
   } catch (error) {
@@ -152,11 +159,11 @@ export async function saveQuote(payload: unknown): Promise<SaveQuoteResult> {
 
 /** Evento anónimo del embudo. Nunca falla hacia el navegador: medir no debe estorbar. */
 export async function trackFunnelEvent(payload: unknown): Promise<void> {
-  const parsed = funnelEventSchema.safeParse(payload);
-  if (!parsed.success) return;
   try {
     const limit = await enforceRateLimit("funnel", getRequestIdentifier(await headers()));
     if (!limit.allowed) return;
+    const parsed = clientFunnelEventSchema.safeParse(payload);
+    if (!parsed.success) return;
     await getLeadStore().trackFunnelEvent(parsed.data);
   } catch (error) {
     console.error(`[embudo] no se pudo registrar: ${(error as Error).message}`);

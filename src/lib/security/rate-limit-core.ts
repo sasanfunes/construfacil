@@ -24,6 +24,11 @@ export const RATE_LIMITS = {
   quote: { limit: 10, windowSeconds: 60 * 60 },
   /** Eventos anónimos del embudo del cotizador. */
   funnel: { limit: 300, windowSeconds: 60 * 60 },
+  /**
+   * Correos de confirmación a una misma dirección, sumando todos los formularios. Evita que
+   * alguien use los formularios para llenar de correos la bandeja de otra persona.
+   */
+  outboundEmail: { limit: 6, windowSeconds: 24 * 60 * 60 },
 } as const satisfies Record<string, RateLimitRule>;
 
 export type RateLimitAction = keyof typeof RATE_LIMITS;
@@ -48,6 +53,22 @@ export function buildBucket(action: string, identifier: string, salt: string): s
  * (millones de direcciones), así que se cuenta por bloque y no por dirección.
  * Devuelve `null` si el texto no es una IP.
  */
+/**
+ * Correo normalizado para contar intentos: sin mayúsculas, sin etiqueta `+algo` y, en Gmail,
+ * sin puntos. Así `Ana.Lopez+1@gmail.com` y `analopez@googlemail.com` cuentan como la misma
+ * bandeja. Solo se usa para el límite; el correo se guarda tal como lo escribió la persona.
+ */
+export function emailRateLimitKey(email: string): string {
+  const [rawLocal = "", rawDomain = ""] = email
+    .trim()
+    .toLowerCase()
+    .split(/@(?=[^@]*$)/);
+  const domain = rawDomain === "googlemail.com" ? "gmail.com" : rawDomain;
+  let local = rawLocal.split("+")[0] ?? rawLocal;
+  if (domain === "gmail.com") local = local.replaceAll(".", "");
+  return `email:${local}@${domain}`;
+}
+
 export function normalizeIp(raw: string): string | null {
   let ip = raw.trim().toLowerCase();
   if (ip.startsWith("[")) ip = ip.slice(1, ip.indexOf("]") === -1 ? undefined : ip.indexOf("]"));
@@ -98,11 +119,26 @@ export function getClientIp(headers: Headers): string | null {
 export class MemoryRateLimitStore implements RateLimitStore {
   private readonly windows = new Map<string, { hits: number; resetAt: number }>();
 
-  constructor(private readonly now: () => number = Date.now) {}
+  constructor(
+    private readonly now: () => number = Date.now,
+    /** Tope de contadores: sin él, peticiones desde muchas IPs harían crecer la memoria sin fin. */
+    private readonly maxEntries = 10_000,
+  ) {}
+
+  private prune(now: number) {
+    for (const [key, entry] of this.windows) if (entry.resetAt <= now) this.windows.delete(key);
+    // Si aun así está lleno, se descartan los más viejos (el Map conserva el orden de inserción).
+    for (const key of this.windows.keys()) {
+      if (this.windows.size < this.maxEntries) break;
+      this.windows.delete(key);
+    }
+  }
 
   async hit(bucket: string, rule: RateLimitRule): Promise<RateLimitResult> {
+    const now = this.now();
+    if (this.windows.size >= this.maxEntries) this.prune(now);
     const windowMs = rule.windowSeconds * 1000;
-    const windowStart = Math.floor(this.now() / windowMs) * windowMs;
+    const windowStart = Math.floor(now / windowMs) * windowMs;
     const key = `${bucket}:${windowStart}`;
     const entry = this.windows.get(key) ?? { hits: 0, resetAt: windowStart + windowMs };
     entry.hits += 1;

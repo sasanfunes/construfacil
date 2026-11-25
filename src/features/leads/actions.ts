@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 
 import { getCatalog } from "@/features/catalog/data/load";
-import { enforceRateLimit, getRequestIdentifier } from "@/lib/security/rate-limit";
+import { emailRateLimitKey, enforceRateLimit, getRequestIdentifier } from "@/lib/security/rate-limit";
 
 import { HONEYPOT_FIELD, looksLikeBot, STARTED_AT_FIELD } from "./bot-check";
 import { callSummary, notifyClientConfirmation, notifyTeam } from "./notify";
@@ -41,6 +41,12 @@ export async function submitLeadRequest(
   _previous: LeadFormState,
   formData: FormData,
 ): Promise<LeadFormState> {
+  const requestHeaders = await headers();
+  const intentRaw = formData.get("intent");
+  const rateAction = intentRaw === "video_call" ? "videoCallRequest" : "contactForm";
+  const byIp = await enforceRateLimit(rateAction, getRequestIdentifier(requestHeaders));
+  if (!byIp.allowed) return { status: "error", error: "rate_limited" };
+
   const locale = localeSchema.parse(formData.get("locale"));
 
   if (
@@ -54,12 +60,6 @@ export async function submitLeadRequest(
     return { status: "success" };
   }
 
-  const requestHeaders = await headers();
-  const intentRaw = formData.get("intent");
-  const rateAction = intentRaw === "video_call" ? "videoCallRequest" : "contactForm";
-  const byIp = await enforceRateLimit(rateAction, getRequestIdentifier(requestHeaders));
-  if (!byIp.allowed) return { status: "error", error: "rate_limited" };
-
   const today = new Date().toISOString().slice(0, 10);
   const parsed = leadRequestSchema(today).safeParse(leadRequestFromFormData(formData));
   if (!parsed.success)
@@ -68,7 +68,7 @@ export async function submitLeadRequest(
 
   // Cada formulario manda un correo de confirmación: se limita por destinatario para que
   // nadie lo use para llenar de correos la bandeja de otra persona.
-  const byEmail = await enforceRateLimit(rateAction, `email:${request.email}`);
+  const byEmail = await enforceRateLimit("outboundEmail", emailRateLimitKey(request.email));
   if (!byEmail.allowed) return { status: "error", error: "rate_limited" };
 
   // El contexto (casa, terreno, modelo) debe existir y estar disponible.

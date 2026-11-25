@@ -74,6 +74,7 @@ export function sortedStages(stages: readonly StageTemplate[]): StageTemplate[] 
 export function calculateQuote(input: QuoteInput, rules: PricingRules): QuoteResult {
   // --- Ubicación y terreno -----------------------------------------------------------
   let departmentId = input.departmentId;
+  let municipalityId = input.municipalityId;
   let landAreaM2 = input.landAreaM2;
   let lotPriceUsdCents: number | null = null;
 
@@ -82,12 +83,17 @@ export function calculateQuote(input: QuoteInput, rules: PricingRules): QuoteRes
     const lot = rules.lots.find((l) => l.id === input.lotId);
     if (!lot || lot.listingStatus !== "published") throw new QuoteInputError("lot_unavailable");
     departmentId = lot.departmentId;
+    municipalityId = lot.municipalityId;
     landAreaM2 = lot.areaM2;
     lotPriceUsdCents = lot.priceUsdCents;
   }
 
   const department = rules.departments.find((d) => d.id === departmentId);
   if (!department?.isActive) throw new QuoteInputError("department_unavailable");
+  if (municipalityId !== null) {
+    const municipality = rules.municipalities.find((m) => m.id === municipalityId);
+    if (municipality?.departmentId !== departmentId) throw new QuoteInputError("municipality_mismatch");
+  }
   if (landAreaM2 !== null && !(landAreaM2 > 0 && landAreaM2 < 10_000_000)) {
     throw new QuoteInputError("land_area_invalid");
   }
@@ -211,6 +217,7 @@ export function calculateQuote(input: QuoteInput, rules: PricingRules): QuoteRes
   }
 
   return {
+    location: { departmentId, municipalityId, landAreaM2 },
     constructionUsdCents,
     extrasUsdCents,
     totalUsdCents,

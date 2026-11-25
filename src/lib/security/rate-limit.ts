@@ -82,4 +82,9 @@ export async function enforceRateLimit(
   return getStore().hit(bucket, rule);
 }
 
-export { RATE_LIMITS, type RateLimitAction, type RateLimitResult } from "./rate-limit-core";
+export {
+  emailRateLimitKey,
+  RATE_LIMITS,
+  type RateLimitAction,
+  type RateLimitResult,
+} from "./rate-limit-core";

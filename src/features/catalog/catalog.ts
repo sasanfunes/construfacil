@@ -32,6 +32,7 @@ export type Catalog = {
 export function pricingRulesFrom(catalog: Catalog): PricingRules {
   return {
     departments: catalog.departments,
+    municipalities: catalog.municipalities,
     models: catalog.models,
     lots: catalog.lots,
     finishLevels: catalog.finishLevels,

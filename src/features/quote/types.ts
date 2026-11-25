@@ -1,5 +1,5 @@
 import type { HouseModel, Localized, Lot } from "@/features/catalog/types";
-import type { Department } from "@/features/geo/data";
+import type { Department, Municipality } from "@/features/geo/data";
 
 export const PRICING_UNITS = ["fixed", "per_m2", "per_linear_m", "per_unit"] as const;
 export type PricingUnit = (typeof PRICING_UNITS)[number];
@@ -45,6 +45,7 @@ export type StageTemplate = {
 /** Todo lo que necesita el cálculo. Sale de la base (o de los datos de ejemplo). */
 export type PricingRules = {
   departments: readonly Department[];
+  municipalities: readonly Pick<Municipality, "id" | "departmentId">[];
   models: readonly HouseModel[];
   lots: readonly Lot[];
   finishLevels: readonly FinishLevel[];
@@ -98,7 +99,12 @@ export type QuoteExtraLine = {
 
 export type QuoteWarning = "lot_smaller_than_model_minimum";
 
+/** Dónde se construye, ya comprobado: si compra un terreno nuestro, sale del terreno. */
+export type QuoteLocation = Pick<QuoteInput, "departmentId" | "municipalityId" | "landAreaM2">;
+
 export type QuoteResult = {
+  /** Ubicación con la que se calculó. Es la que se guarda, no la que mandó el navegador. */
+  location: QuoteLocation;
   constructionUsdCents: number;
   extrasUsdCents: number;
   /** Construcción + extras: lo que cubre el plan de pagos por etapas. */

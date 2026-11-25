@@ -54,6 +54,7 @@
     "required": "This field is required.",
     "invalid": "Please check this field.",
     "nameTooShort": "Please enter your full name.",
+    "nameInvalid": "Please use only letters in your name.",
     "nameTooLong": "That name is too long.",
     "emailInvalid": "Enter a valid email, for example name@email.com.",
     "phoneInvalid": "Enter the number with the country code, digits only.",
