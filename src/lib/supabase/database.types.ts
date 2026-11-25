@@ -1,9 +1,7 @@
 /**
- * Tipos de la base de datos. Refleja las migraciones de `supabase/migrations`.
- *
- * Escrito a mano mientras no exista el proyecto de Supabase. Cuando exista, se regenera con:
+ * Tipos de la base de datos. ARCHIVO GENERADO por `pnpm db:types` desde las migraciones.
+ * No editar a mano. Cuando exista el proyecto de Supabase también se puede usar:
  *   pnpm dlx supabase gen types typescript --linked > src/lib/supabase/database.types.ts
- * y no se vuelve a editar a mano.
  */
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
@@ -54,6 +52,7 @@ export type Database = {
           user_agent: string | null;
         };
         Insert: {
+          id?: never;
           occurred_at?: string;
           actor_id?: string | null;
           actor_role?: Database["public"]["Enums"]["user_role"] | null;
@@ -66,7 +65,20 @@ export type Database = {
           ip_hash?: string | null;
           user_agent?: string | null;
         };
-        Update: never;
+        Update: {
+          id?: never;
+          occurred_at?: string;
+          actor_id?: string | null;
+          actor_role?: Database["public"]["Enums"]["user_role"] | null;
+          action?: string;
+          entity_type?: string;
+          entity_id?: string | null;
+          before_data?: Json | null;
+          after_data?: Json | null;
+          metadata?: Json;
+          ip_hash?: string | null;
+          user_agent?: string | null;
+        };
         Relationships: [];
       };
       departments: {
@@ -87,12 +99,18 @@ export type Database = {
           is_active?: boolean;
           latitude: number;
           longitude: number;
+          created_at?: string;
+          updated_at?: string;
         };
         Update: {
+          id?: number;
+          iso_code?: string;
           name?: string;
           is_active?: boolean;
           latitude?: number;
           longitude?: number;
+          created_at?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -113,8 +131,431 @@ export type Database = {
           source: string;
           is_example?: boolean;
           created_by?: string | null;
+          created_at?: string;
         };
-        Update: never;
+        Update: {
+          id?: string;
+          usd_to_hnl?: number;
+          effective_date?: string;
+          source?: string;
+          is_example?: boolean;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      finish_levels: {
+        Row: {
+          id: string;
+          key: string;
+          name_es: string;
+          name_en: string;
+          description_es: string;
+          description_en: string;
+          includes_es: string[];
+          includes_en: string[];
+          price_multiplier: number;
+          custom_price_per_m2_usd_cents: number;
+          is_active: boolean;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          key: string;
+          name_es: string;
+          name_en: string;
+          description_es: string;
+          description_en: string;
+          includes_es?: string[];
+          includes_en?: string[];
+          price_multiplier: number;
+          custom_price_per_m2_usd_cents: number;
+          is_active?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          key?: string;
+          name_es?: string;
+          name_en?: string;
+          description_es?: string;
+          description_en?: string;
+          includes_es?: string[];
+          includes_en?: string[];
+          price_multiplier?: number;
+          custom_price_per_m2_usd_cents?: number;
+          is_active?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      funnel_events: {
+        Row: {
+          id: number;
+          event: string;
+          step: number | null;
+          session_id: string;
+          locale: string;
+          occurred_at: string;
+        };
+        Insert: {
+          id?: never;
+          event: string;
+          step?: number | null;
+          session_id: string;
+          locale: string;
+          occurred_at?: string;
+        };
+        Update: {
+          id?: never;
+          event?: string;
+          step?: number | null;
+          session_id?: string;
+          locale?: string;
+          occurred_at?: string;
+        };
+        Relationships: [];
+      };
+      homes: {
+        Row: {
+          id: string;
+          slug: string;
+          code: string;
+          title_es: string;
+          title_en: string;
+          summary_es: string;
+          summary_en: string;
+          description_es: string;
+          description_en: string;
+          department_id: number;
+          municipality_id: number;
+          neighborhood: string | null;
+          latitude: number | null;
+          longitude: number | null;
+          construction_status: Database["public"]["Enums"]["construction_status"];
+          listing_status: Database["public"]["Enums"]["listing_status"];
+          price_usd_cents: number;
+          bedrooms: number;
+          bathrooms: number;
+          construction_area_m2: number;
+          lot_area_m2: number;
+          floors: number;
+          parking_spaces: number;
+          features: string[];
+          house_model_id: string | null;
+          video_url: string | null;
+          tour_url: string | null;
+          estimated_delivery: string | null;
+          is_example: boolean;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          code: string;
+          title_es: string;
+          title_en: string;
+          summary_es: string;
+          summary_en: string;
+          description_es: string;
+          description_en: string;
+          department_id: number;
+          municipality_id: number;
+          neighborhood?: string | null;
+          latitude?: number | null;
+          longitude?: number | null;
+          construction_status: Database["public"]["Enums"]["construction_status"];
+          listing_status?: Database["public"]["Enums"]["listing_status"];
+          price_usd_cents: number;
+          bedrooms: number;
+          bathrooms: number;
+          construction_area_m2: number;
+          lot_area_m2: number;
+          floors?: number;
+          parking_spaces?: number;
+          features?: string[];
+          house_model_id?: string | null;
+          video_url?: string | null;
+          tour_url?: string | null;
+          estimated_delivery?: string | null;
+          is_example?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          slug?: string;
+          code?: string;
+          title_es?: string;
+          title_en?: string;
+          summary_es?: string;
+          summary_en?: string;
+          description_es?: string;
+          description_en?: string;
+          department_id?: number;
+          municipality_id?: number;
+          neighborhood?: string | null;
+          latitude?: number | null;
+          longitude?: number | null;
+          construction_status?: Database["public"]["Enums"]["construction_status"];
+          listing_status?: Database["public"]["Enums"]["listing_status"];
+          price_usd_cents?: number;
+          bedrooms?: number;
+          bathrooms?: number;
+          construction_area_m2?: number;
+          lot_area_m2?: number;
+          floors?: number;
+          parking_spaces?: number;
+          features?: string[];
+          house_model_id?: string | null;
+          video_url?: string | null;
+          tour_url?: string | null;
+          estimated_delivery?: string | null;
+          is_example?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      house_models: {
+        Row: {
+          id: string;
+          slug: string;
+          name_es: string;
+          name_en: string;
+          summary_es: string;
+          summary_en: string;
+          description_es: string;
+          description_en: string;
+          area_m2: number;
+          bedrooms: number;
+          bathrooms: number;
+          floors: number;
+          min_lot_area_m2: number;
+          min_lot_front_m: number | null;
+          build_weeks: number;
+          base_price_usd_cents: number;
+          floor_plan: Json;
+          is_active: boolean;
+          is_example: boolean;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          name_es: string;
+          name_en: string;
+          summary_es: string;
+          summary_en: string;
+          description_es: string;
+          description_en: string;
+          area_m2: number;
+          bedrooms: number;
+          bathrooms: number;
+          floors: number;
+          min_lot_area_m2: number;
+          min_lot_front_m?: number | null;
+          build_weeks: number;
+          base_price_usd_cents: number;
+          floor_plan?: Json;
+          is_active?: boolean;
+          is_example?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          slug?: string;
+          name_es?: string;
+          name_en?: string;
+          summary_es?: string;
+          summary_en?: string;
+          description_es?: string;
+          description_en?: string;
+          area_m2?: number;
+          bedrooms?: number;
+          bathrooms?: number;
+          floors?: number;
+          min_lot_area_m2?: number;
+          min_lot_front_m?: number | null;
+          build_weeks?: number;
+          base_price_usd_cents?: number;
+          floor_plan?: Json;
+          is_active?: boolean;
+          is_example?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      leads: {
+        Row: {
+          id: string;
+          source: Database["public"]["Enums"]["lead_source"];
+          status: Database["public"]["Enums"]["lead_status"];
+          full_name: string;
+          email: string;
+          phone: string | null;
+          preferred_channel: Database["public"]["Enums"]["contact_channel"];
+          locale: string;
+          us_state: string | null;
+          message: string | null;
+          home_id: string | null;
+          lot_id: string | null;
+          house_model_id: string | null;
+          assigned_to: string | null;
+          privacy_accepted_at: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          source: Database["public"]["Enums"]["lead_source"];
+          status?: Database["public"]["Enums"]["lead_status"];
+          full_name: string;
+          email: string;
+          phone?: string | null;
+          preferred_channel?: Database["public"]["Enums"]["contact_channel"];
+          locale: string;
+          us_state?: string | null;
+          message?: string | null;
+          home_id?: string | null;
+          lot_id?: string | null;
+          house_model_id?: string | null;
+          assigned_to?: string | null;
+          privacy_accepted_at: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          source?: Database["public"]["Enums"]["lead_source"];
+          status?: Database["public"]["Enums"]["lead_status"];
+          full_name?: string;
+          email?: string;
+          phone?: string | null;
+          preferred_channel?: Database["public"]["Enums"]["contact_channel"];
+          locale?: string;
+          us_state?: string | null;
+          message?: string | null;
+          home_id?: string | null;
+          lot_id?: string | null;
+          house_model_id?: string | null;
+          assigned_to?: string | null;
+          privacy_accepted_at?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      lots: {
+        Row: {
+          id: string;
+          slug: string;
+          code: string;
+          title_es: string;
+          title_en: string;
+          summary_es: string;
+          summary_en: string;
+          description_es: string;
+          description_en: string;
+          department_id: number;
+          municipality_id: number;
+          neighborhood: string | null;
+          latitude: number | null;
+          longitude: number | null;
+          listing_status: Database["public"]["Enums"]["listing_status"];
+          price_usd_cents: number;
+          area_m2: number;
+          front_m: number | null;
+          depth_m: number | null;
+          has_water: boolean;
+          has_electricity: boolean;
+          has_sewer: boolean;
+          road_access: Database["public"]["Enums"]["road_access"];
+          legal_status: Database["public"]["Enums"]["lot_legal_status"];
+          topography: Database["public"]["Enums"]["topography"];
+          is_example: boolean;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          code: string;
+          title_es: string;
+          title_en: string;
+          summary_es: string;
+          summary_en: string;
+          description_es: string;
+          description_en: string;
+          department_id: number;
+          municipality_id: number;
+          neighborhood?: string | null;
+          latitude?: number | null;
+          longitude?: number | null;
+          listing_status?: Database["public"]["Enums"]["listing_status"];
+          price_usd_cents: number;
+          area_m2: number;
+          front_m?: number | null;
+          depth_m?: number | null;
+          has_water?: boolean;
+          has_electricity?: boolean;
+          has_sewer?: boolean;
+          road_access: Database["public"]["Enums"]["road_access"];
+          legal_status: Database["public"]["Enums"]["lot_legal_status"];
+          topography: Database["public"]["Enums"]["topography"];
+          is_example?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          slug?: string;
+          code?: string;
+          title_es?: string;
+          title_en?: string;
+          summary_es?: string;
+          summary_en?: string;
+          description_es?: string;
+          description_en?: string;
+          department_id?: number;
+          municipality_id?: number;
+          neighborhood?: string | null;
+          latitude?: number | null;
+          longitude?: number | null;
+          listing_status?: Database["public"]["Enums"]["listing_status"];
+          price_usd_cents?: number;
+          area_m2?: number;
+          front_m?: number | null;
+          depth_m?: number | null;
+          has_water?: boolean;
+          has_electricity?: boolean;
+          has_sewer?: boolean;
+          road_access?: Database["public"]["Enums"]["road_access"];
+          legal_status?: Database["public"]["Enums"]["lot_legal_status"];
+          topography?: Database["public"]["Enums"]["topography"];
+          is_example?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
         Relationships: [];
       };
       municipalities: {
@@ -129,27 +570,26 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          id?: never;
           department_id: number;
           name: string;
           is_active?: boolean;
           latitude?: number | null;
           longitude?: number | null;
+          created_at?: string;
+          updated_at?: string;
         };
         Update: {
+          id?: never;
+          department_id?: number;
           name?: string;
           is_active?: boolean;
           latitude?: number | null;
           longitude?: number | null;
+          created_at?: string;
+          updated_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "municipalities_department_id_fkey";
-            columns: ["department_id"];
-            isOneToOne: false;
-            referencedRelation: "departments";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       profiles: {
         Row: {
@@ -173,8 +613,11 @@ export type Database = {
           preferred_locale?: string;
           notification_prefs?: Json;
           stripe_customer_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
         };
         Update: {
+          id?: string;
           full_name?: string | null;
           phone?: string | null;
           country?: string;
@@ -182,13 +625,231 @@ export type Database = {
           preferred_locale?: string;
           notification_prefs?: Json;
           stripe_customer_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      quote_extras: {
+        Row: {
+          id: string;
+          key: string;
+          name_es: string;
+          name_en: string;
+          description_es: string;
+          description_en: string;
+          pricing_unit: Database["public"]["Enums"]["pricing_unit"];
+          unit_price_usd_cents: number;
+          min_quantity: number;
+          max_quantity: number;
+          default_quantity: number;
+          applies_region_factor: boolean;
+          stage_key: string;
+          is_active: boolean;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          key: string;
+          name_es: string;
+          name_en: string;
+          description_es: string;
+          description_en: string;
+          pricing_unit: Database["public"]["Enums"]["pricing_unit"];
+          unit_price_usd_cents: number;
+          min_quantity?: number;
+          max_quantity?: number;
+          default_quantity?: number;
+          applies_region_factor?: boolean;
+          stage_key: string;
+          is_active?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          key?: string;
+          name_es?: string;
+          name_en?: string;
+          description_es?: string;
+          description_en?: string;
+          pricing_unit?: Database["public"]["Enums"]["pricing_unit"];
+          unit_price_usd_cents?: number;
+          min_quantity?: number;
+          max_quantity?: number;
+          default_quantity?: number;
+          applies_region_factor?: boolean;
+          stage_key?: string;
+          is_active?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      quote_items: {
+        Row: {
+          id: string;
+          quote_id: string;
+          extra_id: string;
+          quantity: number;
+          unit_price_usd_cents: number;
+          total_usd_cents: number;
+        };
+        Insert: {
+          id?: string;
+          quote_id: string;
+          extra_id: string;
+          quantity: number;
+          unit_price_usd_cents: number;
+          total_usd_cents: number;
+        };
+        Update: {
+          id?: string;
+          quote_id?: string;
+          extra_id?: string;
+          quantity?: number;
+          unit_price_usd_cents?: number;
+          total_usd_cents?: number;
+        };
+        Relationships: [];
+      };
+      quotes: {
+        Row: {
+          id: string;
+          code: string;
+          lead_id: string;
+          access_token_hash: string;
+          locale: string;
+          land_status: Database["public"]["Enums"]["quote_land_status"];
+          lot_id: string | null;
+          department_id: number;
+          municipality_id: number | null;
+          land_area_m2: number | null;
+          house_model_id: string | null;
+          custom_area_m2: number | null;
+          finish_level_id: string;
+          construction_usd_cents: number;
+          extras_usd_cents: number;
+          total_usd_cents: number;
+          lot_price_usd_cents: number | null;
+          initial_payment_percent: number;
+          duration_weeks: number;
+          breakdown: Json;
+          usd_to_hnl: number;
+          valid_until: string;
+          access_expires_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          code?: string;
+          lead_id: string;
+          access_token_hash: string;
+          locale: string;
+          land_status: Database["public"]["Enums"]["quote_land_status"];
+          lot_id?: string | null;
+          department_id: number;
+          municipality_id?: number | null;
+          land_area_m2?: number | null;
+          house_model_id?: string | null;
+          custom_area_m2?: number | null;
+          finish_level_id: string;
+          construction_usd_cents: number;
+          extras_usd_cents: number;
+          total_usd_cents: number;
+          lot_price_usd_cents?: number | null;
+          initial_payment_percent: number;
+          duration_weeks: number;
+          breakdown: Json;
+          usd_to_hnl: number;
+          valid_until: string;
+          access_expires_at: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          code?: string;
+          lead_id?: string;
+          access_token_hash?: string;
+          locale?: string;
+          land_status?: Database["public"]["Enums"]["quote_land_status"];
+          lot_id?: string | null;
+          department_id?: number;
+          municipality_id?: number | null;
+          land_area_m2?: number | null;
+          house_model_id?: string | null;
+          custom_area_m2?: number | null;
+          finish_level_id?: string;
+          construction_usd_cents?: number;
+          extras_usd_cents?: number;
+          total_usd_cents?: number;
+          lot_price_usd_cents?: number | null;
+          initial_payment_percent?: number;
+          duration_weeks?: number;
+          breakdown?: Json;
+          usd_to_hnl?: number;
+          valid_until?: string;
+          access_expires_at?: string;
+          created_at?: string;
         };
         Relationships: [];
       };
       rate_limits: {
         Row: { bucket: string; window_start: string; hits: number };
-        Insert: never;
-        Update: never;
+        Insert: { bucket: string; window_start: string; hits?: number };
+        Update: { bucket?: string; window_start?: string; hits?: number };
+        Relationships: [];
+      };
+      region_price_factors: {
+        Row: { department_id: number; factor: number; created_at: string; updated_at: string };
+        Insert: { department_id: number; factor: number; created_at?: string; updated_at?: string };
+        Update: { department_id?: number; factor?: number; created_at?: string; updated_at?: string };
+        Relationships: [];
+      };
+      stage_templates: {
+        Row: {
+          key: string;
+          name_es: string;
+          name_en: string;
+          description_es: string;
+          description_en: string;
+          sort_order: number;
+          cost_share_bp: number;
+          duration_share_bp: number;
+          covered_by_initial_payment: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          key: string;
+          name_es: string;
+          name_en: string;
+          description_es: string;
+          description_en: string;
+          sort_order: number;
+          cost_share_bp: number;
+          duration_share_bp: number;
+          covered_by_initial_payment?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          key?: string;
+          name_es?: string;
+          name_en?: string;
+          description_es?: string;
+          description_en?: string;
+          sort_order?: number;
+          cost_share_bp?: number;
+          duration_share_bp?: number;
+          covered_by_initial_payment?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
         Relationships: [];
       };
       user_roles: {
@@ -201,19 +862,55 @@ export type Database = {
         Insert: {
           user_id: string;
           role?: Database["public"]["Enums"]["user_role"];
+          assigned_by?: string | null;
+          assigned_at?: string;
         };
         Update: {
+          user_id?: string;
           role?: Database["public"]["Enums"]["user_role"];
+          assigned_by?: string | null;
+          assigned_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "user_roles_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: true;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
+      };
+      video_call_requests: {
+        Row: {
+          id: string;
+          lead_id: string;
+          preferred_date: string;
+          time_slot: Database["public"]["Enums"]["time_slot"];
+          timezone: string;
+          status: Database["public"]["Enums"]["video_call_status"];
+          confirmed_at: string | null;
+          confirmed_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          lead_id: string;
+          preferred_date: string;
+          time_slot: Database["public"]["Enums"]["time_slot"];
+          timezone: string;
+          status?: Database["public"]["Enums"]["video_call_status"];
+          confirmed_at?: string | null;
+          confirmed_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          lead_id?: string;
+          preferred_date?: string;
+          time_slot?: Database["public"]["Enums"]["time_slot"];
+          timezone?: string;
+          status?: Database["public"]["Enums"]["video_call_status"];
+          confirmed_at?: string | null;
+          confirmed_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
     };
     Views: Record<never, never>;
@@ -222,13 +919,33 @@ export type Database = {
         Args: { p_bucket: string; p_limit: number; p_window_seconds: number };
         Returns: { allowed: boolean; remaining: number; reset_at: string }[];
       };
+      submit_lead: { Args: { p_lead: Json; p_video_call?: Json | null }; Returns: string };
+      submit_quote: {
+        Args: { p_lead: Json; p_quote: Json; p_items: Json; p_video_call?: Json | null };
+        Returns: { quote_id: string; quote_code: string }[];
+      };
     };
     Enums: {
+      construction_status: "ready" | "under_construction" | "presale";
+      contact_channel: "whatsapp" | "phone" | "email";
+      lead_source: "quote" | "contact" | "video_call" | "reservation_request" | "listing_inquiry";
+      lead_status: "new" | "contacted" | "negotiating" | "won" | "lost";
+      listing_status: "draft" | "published" | "reserved" | "sold";
+      lot_legal_status: "full_title" | "useful_domain" | "title_in_process";
+      pricing_unit: "fixed" | "per_m2" | "per_linear_m" | "per_unit";
+      quote_land_status: "own" | "buying_from_us" | "not_yet";
+      road_access: "paved" | "gravel" | "dirt";
+      time_slot: "morning" | "afternoon" | "evening";
+      topography: "flat" | "gentle_slope" | "steep";
       user_role: "cliente" | "familiar_autorizado" | "ventas" | "gerente_proyecto" | "logistica" | "admin";
+      video_call_status: "requested" | "confirmed" | "completed" | "cancelled";
     };
     CompositeTypes: Record<never, never>;
   };
 };
 
-export type Tables<Name extends keyof Database["public"]["Tables"]> = Database["public"]["Tables"][Name]["Row"];
+export type Tables<Name extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][Name]["Row"];
+export type TablesInsert<Name extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][Name]["Insert"];
 export type Enums<Name extends keyof Database["public"]["Enums"]> = Database["public"]["Enums"][Name];
