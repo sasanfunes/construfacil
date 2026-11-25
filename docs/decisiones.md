@@ -2,6 +2,46 @@
 
 Una entrada por decisión, la más reciente arriba. Si una decisión cambia, se agrega una entrada nueva que la reemplaza; no se borra la anterior.
 
+## 25 nov 2026 — Construir con proyectos
+
+Cambio pedido por el dueño del producto después de revisar la Fase 1.
+
+### Negocio (decidió el dueño del producto)
+
+| Tema                | Decisión                                                                                                                                                                                                                                                     |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Secciones del sitio | Dos: **Casa lista** (comprar una casa) y **Construir**. Terrenos y Materiales dejan de ser secciones: comprar un terreno es un paso de Construir y los materiales se eligen dentro del proyecto.                                                             |
+| Construir           | El cliente **crea un proyecto**: nombre, terreno (propio, comprar uno de los nuestros o seguir sin terreno), planos o diseño (desde cero o del catálogo) y materiales por etapa. Al final entra a su panel.                                                  |
+| Etapas de obra      | Cuatro: **Cimentación, Obra gris, Techos y Acabados**. Antes de ellas, diseño y trámites (pago inicial). La tubería va en obra gris; muebles de baño y luminarias, en acabados.                                                                              |
+| Cuenta              | Se crea **al final** del onboarding. Mientras no exista Supabase, el proyecto se guarda con un enlace privado por correo.                                                                                                                                    |
+| Aportes de dinero   | **Abonos a paquetes de materiales**: cada abono es para el paquete de materiales de una etapa, a precio cerrado; se compra cuando está pagado. Es una venta con pagos parciales, no un saldo. Cobro real en la Fase 3, después de la revisión de un abogado. |
+| Panel en esta ronda | Proyecto, materiales editables, cálculo, plan de pagos y paquetes de materiales. Contratar servicios, pedir pruebas de avance y soporte llegan al equipo como solicitud. Chat, documentos y cobros: Fases 2 y 3.                                             |
+| Lista de materiales | La aprobada en el plan (estructura, impermeabilización, muros, entrepiso, techo, aislamiento, cielo falso, pisos, puertas, ventanas, baños y cocina). Precios de ejemplo hasta que el dueño dé los reales.                                                   |
+
+### Técnicas
+
+**Costo por opciones, no por acabado.** Reemplaza "Cómo se calcula una cotización" del 25 nov. Cada opción tiene un precio por unidad y una base: m² de construcción, m² de planta baja (cimentación y techo), m² de planta alta (entrepiso), por baño o fijo. Costo = cantidad × precio × factor del departamento, redondeado a dólares. Cada opción también aporta tiempo y dice qué parte de su costo son materiales (el resto es mano de obra): de ahí sale el paquete de materiales de cada etapa.
+
+**Plan de pagos del proyecto.** Diseño y trámites al firmar; después, cada etapa se paga antes de empezar, al ver terminada la anterior. El terreno, si lo compra con nosotros, se paga aparte.
+
+**El cotizador anterior se retira.** Sus tablas (`quotes`, `finish_levels`, `quote_extras`, `stage_templates`) quedan en la base como legado y el seed las sigue llenando para las pruebas. `modelos.base_price_usd_cents` ya no se usa para precios: el "desde" de un modelo sale del motor con las opciones recomendadas.
+
+**Categorías de opciones: lista cerrada.** Cada categoría tiene su etapa, su nombre traducido y su lugar en el onboarding (`OPTION_CATEGORIES` y `private.construction_category_stage`). Agregar una es un cambio de código, no solo de datos.
+
+**Proyecto con enlace privado de 365 días.** El cliente cambia materiales mientras el proyecto es un borrador; cuando ventas lo pasa a revisión, los cambios van por el equipo.
+
+**Estados del proyecto en orden.** Borrador → en revisión → activo → cerrado. En revisión puede volver a borrador (el equipo se lo devuelve al cliente para que ajuste materiales); cerrado es final. Lo impone un trigger, no la interfaz.
+
+**Cambiar materiales no cambia el terreno ni el diseño.** Al recalcular desde el panel, el terreno (ubicación y precio) y el diseño (área, plantas, baños) salen de lo guardado; los materiales se cobran a precio de hoy. Así un terreno apartado o un modelo retirado del catálogo no bloquean el panel, y lo que ve el cliente coincide con lo que ve el equipo.
+
+**La base comprueba los montos.** El servidor los calcula y `private.check_project_amounts()` verifica, antes de guardar, precios contra el catálogo, cantidades contra el diseño, el factor del departamento y que las etapas sumen los totales. Si un administrador cambia un precio, un proyecto que se guarde en el mismo minuto (con la caché anterior) puede fallar; el cliente lo vuelve a intentar.
+
+**Nombres solo con letras latinas.** El nombre de la persona y el del proyecto rechazan otros alfabetos: hay letras que imitan un punto y sirven para escribir dominios falsos. El nombre del proyecto admite hasta 4 números (no cabe un teléfono). Para nuestros clientes no es una restricción real; si algún día lo es, se revisa.
+
+**El onboarding es una página estática.** Lee `?lot=`, `?model=` y `?land=buy` en el navegador, como el cotizador anterior, para no perder la caché.
+
+**Redirecciones temporales.** `/terrenos`, `/materiales` y el cotizador viejo llevan a Construir (307 mientras el sitio no se indexa).
+
 ## 25 nov 2026 — Fase 1
 
 ### Técnicas

@@ -33,12 +33,12 @@ Esta versión no es la que conoces. Antes de usar una API de Next, lee su guía 
 - **Nada de `new Date()`, `Date.now()`, `Math.random()` ni `crypto.randomUUID()` durante el prerender**: rompe el build. Va dentro de `"use cache"`, después de `await connection()`, o en un componente de cliente.
 - **`src/proxy.ts`** reemplaza a `middleware.ts`.
 - El idioma se lee con `next/root-params` (lo hace `src/i18n/request.ts`). No se usa `setRequestLocale`.
-- **Rutas privadas** (`portal`, `admin`, cuenta, cotización guardada, checkout): su layout exporta `instant = false` y la página hace `await connection()`. Así no se cachean y reciben la CSP con nonce. Toda ruta privada nueva se agrega a `PRIVATE_SEGMENTS` en `src/lib/security/private-paths.ts`, en todos los idiomas; un test falla si una carpeta de `src/app/[locale]` queda sin clasificar. Las páginas públicas viven dentro de `src/app/[locale]/(public)/`.
+- **Rutas privadas** (`portal`, `admin`, cuenta, panel del proyecto, checkout): su layout exporta `instant = false` y la página hace `await connection()`. Así no se cachean y reciben la CSP con nonce. Toda ruta privada nueva se agrega a `PRIVATE_SEGMENTS` en `src/lib/security/private-paths.ts`, en todos los idiomas; un test falla si una carpeta de `src/app/[locale]` queda sin clasificar. Las páginas públicas viven dentro de `src/app/[locale]/(public)/`.
 - **El proxy atiende todas las peticiones** salvo `/_next/`. Consecuencias: una ruta de API nueva se agrega a `API_ROUTES` en `src/proxy.ts` (si no, responde 404), y **no se usan archivos sueltos en `/public`**: las imágenes se importan desde el código o vienen de Supabase Storage. Los archivos de metadatos de la raíz (`robots.txt`, `sitemap.xml`…) están en `PASSTHROUGH_FILES`.
 - El proxy no es la barrera de acceso: cada página y cada acción privada comprueba la sesión y el rol.
 - `params` y `searchParams` son promesas. Los tipos `PageProps<"/ruta">` y `LayoutProps<"/ruta">` son globales y los genera `next typegen`.
-- **Una página pública que lee `searchParams` en el servidor deja de ser estática** (sin caché, más lenta en celular). Si el dato solo hace falta en el navegador, se lee ahí (ver el cotizador).
-- **Fichas con `[slug]`** (casas, terrenos, modelos): usan ISR y el proxy solo deja pasar slugs publicados (`src/features/catalog/data/known-slugs.ts`); el resto va a un 404 fijo para que URLs inventadas no llenen la caché. Una sección de fichas nueva se agrega a `DETAIL_ROUTE` en `src/proxy.ts`.
+- **Una página pública que lee `searchParams` en el servidor deja de ser estática** (sin caché, más lenta en celular). Si el dato solo hace falta en el navegador, se lee ahí (ver el onboarding de Construir).
+- **Fichas con `[slug]`** (casas y modelos): usan ISR y el proxy solo deja pasar slugs publicados (`src/features/catalog/data/known-slugs.ts`); el resto va a un 404 fijo para que URLs inventadas no llenen la caché. Una sección de fichas nueva se agrega a `DETAIL_ROUTE` en `src/proxy.ts`.
 
 ## Idiomas (next-intl)
 
@@ -94,7 +94,8 @@ Esta versión no es la que conoces. Antes de usar una API de Next, lee su guía 
 - Llave primaria `uuid`. `created_at` y `updated_at` con el trigger `private.set_updated_at()`.
 - Dinero: `*_usd_cents bigint`.
 - Textos traducibles: columnas pares `title_es` y `title_en`.
-- Tablas con historia (cotizaciones, pagos, pedidos) guardan copia del precio y del tipo de cambio del momento.
+- Tablas con historia (proyectos, pagos, pedidos) guardan copia del precio y del tipo de cambio del momento.
+- **Opciones de construcción**: una categoría nueva se agrega en `OPTION_CATEGORIES` (`src/features/projects/types.ts`), en `private.construction_category_stage` (nueva migración) y en `messages/*/projects.json`. Los precios y las opciones de cada categoría son datos.
 - Tras cambiar el esquema se actualiza `src/lib/supabase/database.types.ts`.
 
 ## Organización del código

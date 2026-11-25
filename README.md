@@ -7,7 +7,7 @@ Plataforma web para que migrantes hondureños en Estados Unidos compren o constr
 - **Decisiones tomadas:** [`docs/decisiones.md`](./docs/decisiones.md)
 - **Estado de seguridad:** [`docs/seguridad.md`](./docs/seguridad.md)
 
-**Estado:** Fase 1 terminada (sitio público, catálogo, cotizador, calculadora y captación de leads), a la espera de confirmación para empezar la Fase 2: portal del cliente.
+**Estado:** Fase 1 terminada y ajustada: dos secciones (Casa lista y Construir), proyectos de construcción con onboarding, materiales por etapa y panel privado. A la espera de confirmación para empezar la Fase 2 (cuentas y portal del cliente).
 
 ## Requisitos
 
@@ -56,7 +56,7 @@ Todas están documentadas en [`.env.example`](./.env.example). Dos reglas:
 
 `src/lib/env.ts` valida las públicas y `src/lib/env.server.ts` las secretas. Si falta o está mal una variable, el error dice cuál.
 
-Para producción: Supabase (URL, llave pública y service role), `RATE_LIMIT_SALT`, `RESEND_API_KEY`, `EMAIL_FROM` (dominio verificado en Resend), `LEADS_NOTIFICATION_EMAIL` y `NEXT_PUBLIC_SITE_URL` con https. En Resend, desactiva el seguimiento de clics: los correos llevan el enlace privado de la cotización.
+Para producción: Supabase (URL, llave pública y service role), `RATE_LIMIT_SALT`, `RESEND_API_KEY`, `EMAIL_FROM` (dominio verificado en Resend), `LEADS_NOTIFICATION_EMAIL` y `NEXT_PUBLIC_SITE_URL` con https. En Resend, desactiva el seguimiento de clics: los correos llevan el enlace privado del proyecto.
 
 ## Base de datos (Supabase)
 
@@ -123,7 +123,7 @@ supabase/tests/       Tests de RLS
 e2e/                  Playwright
 src/app/[locale]/     Páginas: (public), portal, admin
 src/components/       ui (shadcn), layout, shared
-src/features/         Un directorio por dominio: catalog, quote, leads,
+src/features/         Un directorio por dominio: catalog, projects, leads, funnel,
                       remittance-calculator, content, geo
 src/i18n/             Idiomas y rutas traducidas
 src/lib/              env, supabase, auth, security, money
