@@ -1,0 +1,43 @@
+{
+  "title": "De remesa a patrimonio",
+  "intro": "Pon lo que puedes apartar cada mes de tu remesa y mira cuándo podrías empezar y terminar tu casa, pagando por etapas, sin préstamos.",
+  "metaTitle": "Calculadora: de remesa a patrimonio",
+  "metaDescription": "Con lo que envías cada mes, ¿cuándo podrías tener tu casa o tu terreno en Honduras? Calcúlalo en segundos.",
+  "monthly": "¿Cuánto puedes apartar cada mes? (USD)",
+  "monthlyHint": "Lo que mandas para tu casa, no lo que tu familia necesita para vivir.",
+  "savings": "¿Ya tienes algo ahorrado? (USD, opcional)",
+  "goal": "¿Qué quieres lograr?",
+  "goals": {
+    "build": "Construir mi casa",
+    "land": "Comprar un terreno",
+    "home": "Comprar una casa lista"
+  },
+  "model": "Modelo de casa",
+  "modelOption": "{name}: {price}",
+  "referenceNote": "Con acabado estándar y precios de referencia en {department}.",
+  "landNote": "Con el precio de un terreno típico de nuestro catálogo: {price}.",
+  "homeNote": "Con el precio de una casa típica de nuestro catálogo: {price}.",
+  "result": {
+    "startNow": "Puedes empezar tu obra ya",
+    "startIn": "Empiezas tu obra en {time}",
+    "finishIn": "y tu casa estaría lista en {time}.",
+    "purchaseNow": "Ya tienes lo suficiente para comprarlo.",
+    "purchaseIn": "Juntarías el precio completo en {time}.",
+    "waiting": "La obra se detiene unos {time} en total mientras juntas el pago de la siguiente etapa. Con un poco más al mes, no se detiene.",
+    "noWaiting": "Con este ahorro la obra no se detiene: cada etapa está pagada cuando termina la anterior.",
+    "tooLong": "Con este monto tardarías más de 50 años. Prueba con un monto mayor o escríbenos: buscamos juntos otra opción.",
+    "timelineTitle": "Tu línea de tiempo",
+    "timelineMonth": "Mes {month}",
+    "timelineStage": "{stage}: del mes {start} al {end}",
+    "ctaBuild": "Cotizar esta casa",
+    "ctaLand": "Ver terrenos",
+    "ctaHome": "Ver casas listas",
+    "noPauseWith": "Con {amount} al mes, la obra no se detiene una vez que empieza."
+  },
+  "time": {
+    "months": "{count, plural, one {# mes} other {# meses}}",
+    "years": "{count, plural, one {# año} other {# años}}",
+    "yearsMonths": "{years, plural, one {# año} other {# años}} y {months, plural, one {# mes} other {# meses}}"
+  },
+  "disclaimer": "Es una estimación para planear, no una oferta ni un financiamiento. No incluye cambios de precio ni del tipo de cambio."
+}

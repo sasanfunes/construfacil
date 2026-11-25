@@ -4,7 +4,7 @@ import { pricingRulesFrom } from "@/features/catalog/catalog";
 import { SAMPLE_CATALOG } from "@/features/catalog/sample";
 import { calculateQuote } from "@/features/quote/engine";
 
-import { planBuild, planPurchase, splitMonths } from "./engine";
+import { monthlyToNeverPause, planBuild, planPurchase, splitMonths } from "./engine";
 
 const rules = pricingRulesFrom(SAMPLE_CATALOG);
 const covered = new Set(rules.stages.filter((s) => s.coveredByInitialPayment).map((s) => s.key));
@@ -106,5 +106,23 @@ describe("splitMonths", () => {
     expect(splitMonths(26)).toEqual({ years: 2, months: 2 });
     expect(splitMonths(11)).toEqual({ years: 0, months: 11 });
     expect(splitMonths(24)).toEqual({ years: 2, months: 0 });
+  });
+});
+
+describe("monthlyToNeverPause", () => {
+  it("con ese monto la obra no se detiene, y con $10 menos sí", () => {
+    const amount = monthlyToNeverPause(copan, covered, 0)!;
+    expect(amount % 1000).toBe(0);
+    expect(
+      planBuild(copan, covered, { monthlyUsdCents: amount, initialSavingsUsdCents: 0 })!.waitingMonths,
+    ).toBeLessThanOrEqual(0.01);
+    expect(
+      planBuild(copan, covered, { monthlyUsdCents: amount - 2_000, initialSavingsUsdCents: 0 })!
+        .waitingMonths,
+    ).toBeGreaterThan(0.01);
+  });
+
+  it("con ahorro suficiente no hace falta casi nada", () => {
+    expect(monthlyToNeverPause(copan, covered, usd(50_000))).toBe(1_000);
   });
 });

@@ -118,3 +118,28 @@ export function planBuild(
 export function splitMonths(totalMonths: number): { years: number; months: number } {
   return { years: Math.floor(totalMonths / 12), months: totalMonths % 12 };
 }
+
+/**
+ * Lo mínimo que hay que apartar al mes (redondeado a $10) para que la obra, una vez
+ * empezada, no se detenga nunca esperando el siguiente pago. `null` si ni con $20,000 al
+ * mes se logra.
+ */
+export function monthlyToNeverPause(
+  quote: Pick<QuoteResult, "payments" | "stages">,
+  coveredByInitial: ReadonlySet<string>,
+  initialSavingsUsdCents: number,
+): number | null {
+  const pauses = (dollars: number) =>
+    (planBuild(quote, coveredByInitial, { monthlyUsdCents: dollars * 100, initialSavingsUsdCents })
+      ?.waitingMonths ?? Infinity) > 0.01;
+  let low = 10;
+  let high = 20_000;
+  if (pauses(high)) return null;
+  if (!pauses(low)) return low * 100;
+  while (high - low > 10) {
+    const middle = Math.floor((low + high) / 2);
+    if (pauses(middle)) low = middle;
+    else high = middle;
+  }
+  return Math.ceil(high / 10) * 10 * 100;
+}
