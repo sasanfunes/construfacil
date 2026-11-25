@@ -1,0 +1,75 @@
+{
+  "brand": "ConstruFácil",
+  "footer": "Recibiste este correo porque escribiste a ConstruFácil. Si no fuiste tú, puedes ignorarlo.",
+  "exampleNotice": "Sitio en desarrollo: los precios y propiedades son de ejemplo.",
+  "greeting": "Hola, {name}:",
+  "signature": "El equipo de ConstruFácil",
+  "whatsappCta": "Escribirnos por WhatsApp",
+  "channel": {
+    "whatsapp": "WhatsApp",
+    "phone": "teléfono",
+    "email": "correo"
+  },
+  "slots": {
+    "morning": "en la mañana",
+    "afternoon": "en la tarde",
+    "evening": "en la noche"
+  },
+  "confirmation": {
+    "subject": "Recibimos tu mensaje",
+    "preview": "Te respondemos en menos de un día hábil.",
+    "intro": {
+      "contact": "Recibimos tu mensaje. Gracias por escribirnos.",
+      "video_call": "Recibimos tu solicitud de videollamada.",
+      "reservation": "Recibimos tu solicitud para apartar {listing}.",
+      "listing_inquiry": "Recibimos tu pregunta sobre {listing}."
+    },
+    "nextSteps": "Una persona de nuestro equipo te va a contactar por {channel} en menos de un día hábil.",
+    "callTitle": "Tu videollamada",
+    "callWhen": "{date}, {slot} (tu hora: {timezone})",
+    "callNote": "Te confirmamos la hora exacta por WhatsApp antes de la llamada.",
+    "reservationNote": "Todavía no se hizo ningún cobro. Antes de apartar te explicamos el proceso y los documentos de la propiedad."
+  },
+  "quote": {
+    "subject": "Tu cotización {code}",
+    "preview": "Total estimado: {total}. Aquí está tu enlace privado.",
+    "intro": "Guardamos tu cotización. Puedes verla cuando quieras con este enlace privado:",
+    "cta": "Ver mi cotización",
+    "total": "Total estimado de tu casa",
+    "lot": "Terreno (se paga aparte)",
+    "initial": "Pago inicial, al firmar",
+    "duration": "Tiempo aproximado de obra",
+    "weeks": "{weeks} semanas",
+    "validUntil": "Este precio se mantiene hasta el {date}.",
+    "privateLink": "El enlace es personal: quien lo tenga puede ver tu cotización.",
+    "estimateNote": "Es un estimado. El precio final se confirma en el contrato, después de revisar tu terreno."
+  },
+  "team": {
+    "subject": "Nuevo lead: {source}",
+    "subjectQuote": "Nuevo lead: cotización {code}",
+    "title": "Llegó un lead nuevo",
+    "source": {
+      "quote": "cotización guardada",
+      "contact": "formulario de contacto",
+      "video_call": "videollamada",
+      "reservation_request": "quiere apartar",
+      "listing_inquiry": "pregunta por una propiedad"
+    },
+    "fields": {
+      "name": "Nombre",
+      "email": "Correo",
+      "phone": "Teléfono",
+      "channel": "Prefiere",
+      "state": "Estado de EE. UU.",
+      "locale": "Idioma",
+      "message": "Mensaje",
+      "listing": "Propiedad",
+      "model": "Modelo",
+      "call": "Videollamada",
+      "quote": "Cotización",
+      "total": "Total estimado"
+    },
+    "none": "No indicó",
+    "replyHint": "Responde en menos de un día hábil. El lead ya está guardado con estado “nuevo”."
+  }
+}

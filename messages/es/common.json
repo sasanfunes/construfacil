@@ -1,0 +1,128 @@
+{
+  "brand": "ConstruFácil",
+  "skipToContent": "Saltar al contenido",
+  "example": "Ejemplo",
+  "loading": "Cargando…",
+  "stagePayments": "Pagas cada etapa cuando ves el avance",
+  "header": {
+    "homeLabel": "ConstruFácil, ir al inicio",
+    "mainNav": "Menú principal",
+    "menu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
+  },
+  "nav": {
+    "homes": "Casas listas",
+    "land": "Terrenos",
+    "build": "Construir",
+    "calculator": "Calculadora",
+    "materials": "Materiales",
+    "howItWorks": "Cómo funciona",
+    "whyTrust": "Por qué confiar",
+    "faq": "Preguntas frecuentes",
+    "contact": "Contacto",
+    "schedule": "Agendar videollamada"
+  },
+  "breadcrumb": {
+    "label": "Ruta de navegación",
+    "home": "Inicio"
+  },
+  "localeSwitcher": {
+    "label": "Idioma",
+    "es": "Español",
+    "en": "English",
+    "esShort": "ES",
+    "enShort": "EN"
+  },
+  "whatsapp": {
+    "label": "Escribirnos por WhatsApp",
+    "cta": "Preguntar por WhatsApp",
+    "defaultMessage": "Hola, quiero información para construir o comprar mi casa en Honduras."
+  },
+  "price": {
+    "approxHnl": "aprox. {amount}",
+    "from": "Desde",
+    "range": "De {min} a {max}",
+    "officialNote": "El precio oficial es en dólares. Los lempiras son una referencia con la tasa del {date}."
+  },
+  "units": {
+    "m2": "{value} m²",
+    "varas": "{value} varas²",
+    "weeks": "{count, plural, one {# semana} other {# semanas}}",
+    "months": "{count, plural, one {# mes} other {# meses}}",
+    "years": "{count, plural, one {# año} other {# años}}"
+  },
+  "footer": {
+    "tagline": "Tu casa en Honduras, construida desde Estados Unidos.",
+    "explore": "Explorar",
+    "company": "La empresa",
+    "legal": "Legal",
+    "hoursTitle": "Horario de atención (hora de Honduras)",
+    "hoursWeekdays": "Lunes a viernes: {open} a {close}",
+    "hoursSaturday": "Sábados: {open} a {close}",
+    "yourTime": "En tu hora ({zone}): de {start} a {end}, lunes a viernes",
+    "whatsapp": "WhatsApp: {number}",
+    "legalEntity": "Razón social y datos legales de la empresa: por definir antes del lanzamiento.",
+    "underConstruction": "Sitio en construcción. Los precios, propiedades y testimonios que veas son ejemplos.",
+    "rights": "© {year} ConstruFácil. Todos los derechos reservados."
+  },
+  "legalLinks": {
+    "terms": "Términos y condiciones",
+    "privacy": "Aviso de privacidad",
+    "refunds": "Política de reembolsos",
+    "payments": "Política de pagos"
+  },
+  "glossary": {
+    "whatIs": "¿Qué significa?",
+    "close": "Entendido",
+    "obraGris": {
+      "term": "obra gris",
+      "definition": "La casa ya tiene cimientos, paredes, columnas y techo, pero todavía sin acabados: sin repello fino, pintura, pisos ni muebles."
+    },
+    "escritura": {
+      "term": "escritura",
+      "definition": "El documento firmado ante notario que dice quién es el dueño de una propiedad. Para que valga frente a todos debe estar inscrita en el Instituto de la Propiedad."
+    },
+    "poderNotarial": {
+      "term": "poder notarial",
+      "definition": "Un documento con el que autorizas a una persona de confianza a firmar por ti en Honduras. Se puede hacer desde Estados Unidos en el consulado de Honduras."
+    },
+    "institutoPropiedad": {
+      "term": "Instituto de la Propiedad",
+      "definition": "La oficina del Estado de Honduras donde se registran las propiedades. Ahí se comprueba quién es el dueño y si la propiedad tiene deudas o gravámenes."
+    },
+    "libertadGravamen": {
+      "term": "constancia de libertad de gravamen",
+      "definition": "Un certificado del Instituto de la Propiedad que confirma que la propiedad no tiene hipotecas, embargos ni otras deudas."
+    },
+    "dominioUtil": {
+      "term": "dominio útil",
+      "definition": "Un título municipal que te da derecho a usar y construir en el terreno. Es común en zonas urbanas. Se puede convertir en dominio pleno con un trámite."
+    },
+    "apartado": {
+      "term": "apartado",
+      "definition": "Un pago pequeño para que nadie más compre la propiedad mientras revisas los documentos y firmas el contrato. Las condiciones de devolución están en la política de reembolsos."
+    },
+    "pagoInicial": {
+      "term": "pago inicial",
+      "definition": "El primer pago al firmar el contrato. Con él arrancan los trámites y el diseño de tu casa."
+    },
+    "cieloFalso": {
+      "term": "cielo falso",
+      "definition": "Un techo interior de tablayeso o PVC debajo del techo de la casa. Esconde cables y tuberías y ayuda a que la casa sea más fresca."
+    },
+    "varas": {
+      "term": "varas cuadradas",
+      "definition": "La medida con la que se anuncian muchos terrenos en Honduras. Una vara cuadrada son 0.70 m²; un metro cuadrado son 1.43 varas²."
+    }
+  },
+  "notFound": {
+    "title": "No encontramos esta página",
+    "description": "Puede que el enlace esté mal escrito o que la página ya no exista.",
+    "cta": "Volver al inicio"
+  },
+  "error": {
+    "title": "Algo salió mal",
+    "description": "No pudimos cargar esta página. Inténtalo de nuevo; si sigue fallando, escríbenos por WhatsApp.",
+    "retry": "Intentar de nuevo"
+  }
+}

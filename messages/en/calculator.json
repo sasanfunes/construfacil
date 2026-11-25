@@ -1,0 +1,43 @@
+{
+  "title": "From remittance to home",
+  "intro": "Enter what you can set aside each month from your remittance and see when you could start and finish your home, paying in stages, with no loans.",
+  "metaTitle": "Calculator: from remittance to home",
+  "metaDescription": "With what you send each month, when could you own your home or land in Honduras? Find out in seconds.",
+  "monthly": "How much can you set aside each month? (USD)",
+  "monthlyHint": "What you send for your home, not what your family needs to live on.",
+  "savings": "Do you already have some savings? (USD, optional)",
+  "goal": "What do you want to achieve?",
+  "goals": {
+    "build": "Build my home",
+    "land": "Buy land",
+    "home": "Buy a ready home"
+  },
+  "model": "Home model",
+  "modelOption": "{name}: {price}",
+  "referenceNote": "With standard finishes and reference prices in {department}.",
+  "landNote": "Using the price of a typical lot in our catalog: {price}.",
+  "homeNote": "Using the price of a typical home in our catalog: {price}.",
+  "result": {
+    "startNow": "You can start building now",
+    "startIn": "You start building in {time}",
+    "finishIn": "and your home would be ready in {time}.",
+    "purchaseNow": "You already have enough to buy it.",
+    "purchaseIn": "You'd save the full price in {time}.",
+    "waiting": "The build pauses for about {time} in total while you save for the next stage. With a little more each month, it doesn't pause.",
+    "noWaiting": "With these savings the build never pauses: each stage is paid for when the previous one ends.",
+    "tooLong": "With this amount it would take more than 50 years. Try a larger amount or message us: we'll look for another option together.",
+    "timelineTitle": "Your timeline",
+    "timelineMonth": "Month {month}",
+    "timelineStage": "{stage}: month {start} to {end}",
+    "ctaBuild": "Get a quote for this home",
+    "ctaLand": "See land",
+    "ctaHome": "See ready homes",
+    "noPauseWith": "With {amount} a month, the build never pauses once it starts."
+  },
+  "time": {
+    "months": "{count, plural, one {# month} other {# months}}",
+    "years": "{count, plural, one {# year} other {# years}}",
+    "yearsMonths": "{years, plural, one {# year} other {# years}} and {months, plural, one {# month} other {# months}}"
+  },
+  "disclaimer": "This is a planning estimate, not an offer or a loan. It doesn't include price or exchange rate changes."
+}

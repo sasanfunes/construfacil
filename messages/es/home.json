@@ -1,0 +1,117 @@
+{
+  "metaTitle": "ConstruFácil: tu casa en Honduras, construida desde Estados Unidos",
+  "metaDescription": "Compra o construye tu casa en Honduras desde Estados Unidos. Ves cada avance con fotos y pagas cada etapa cuando la ves terminada.",
+  "hero": {
+    "title": "Tu casa en Honduras, construida desde Estados Unidos",
+    "subtitle": "Ve cada avance con fotos. Paga cada etapa cuando la ves terminada.",
+    "cta": "Cotizar mi casa",
+    "secondary": "Ver casas listas",
+    "points": {
+      "stages": "Pagas cada etapa cuando ves el avance",
+      "photos": "Fotos y videos de tu obra cada semana",
+      "documents": "Documentos revisados antes de cualquier pago"
+    }
+  },
+  "paths": {
+    "title": "Cuatro caminos hacia tu casa",
+    "soon": "Pronto",
+    "readyHome": {
+      "title": "Casa lista",
+      "description": "Compra una casa terminada, en construcción o en preventa."
+    },
+    "build": {
+      "title": "Construir en mi terreno",
+      "description": "Diseño, permisos, materiales y obra sobre el terreno que ya tienes."
+    },
+    "land": {
+      "title": "Comprar terreno",
+      "description": "Terrenos con papeles revisados. Si quieres, construimos tu casa en él."
+    },
+    "materials": {
+      "title": "Materiales para mi obra",
+      "description": "Compra desde Estados Unidos y recibe en tu obra en Honduras."
+    }
+  },
+  "how": {
+    "title": "Cómo funciona",
+    "steps": {
+      "quote": {
+        "title": "Cotizas en línea",
+        "body": "En tres minutos sabes cuánto cuesta tu casa, cuánto pagas en cada etapa y cuánto tarda."
+      },
+      "call": {
+        "title": "Hablamos y firmas",
+        "body": "Por videollamada revisamos tu terreno y tus dudas. Firmas el contrato con el precio final."
+      },
+      "build": {
+        "title": "Construimos y te mostramos",
+        "body": "Cada semana recibes fotos y videos de tu obra. Tu familia en Honduras puede ir a verla."
+      },
+      "pay": {
+        "title": "Pagas lo que ves",
+        "body": "Cada pago se hace cuando ves terminada la etapa anterior. Al final, te entregamos las llaves."
+      }
+    },
+    "link": "Ver el proceso completo"
+  },
+  "calculator": {
+    "title": "¿Cuánto tardas con lo que envías cada mes?"
+  },
+  "trust": {
+    "title": "Tu dinero, siempre a la vista",
+    "intro": "Sabemos que mucha gente ha perdido dinero mandándolo para construir. Por eso trabajamos así:",
+    "points": {
+      "stages": {
+        "title": "Pagos por etapa",
+        "body": "Nunca pagas toda la obra por adelantado. Cada pago corresponde a una etapa que ya viste terminada."
+      },
+      "contract": {
+        "title": "Contrato antes de empezar",
+        "body": "Precio, etapas, tiempos y garantías por escrito, firmados antes del primer pago."
+      },
+      "documents": {
+        "title": "Papeles revisados",
+        "body": "Te mostramos la escritura y la constancia de libertad de gravamen antes de cualquier pago."
+      },
+      "accounts": {
+        "title": "Solo cuentas de la empresa",
+        "body": "Nunca te vamos a pedir que deposites a la cuenta de una persona. Cada pago tiene su recibo."
+      }
+    },
+    "showcaseTitle": "Obras entregadas",
+    "showcaseNote": "Aquí van fotos reales de antes y después de nuestras obras. Mientras tanto, mostramos ilustraciones de ejemplo.",
+    "before": "Antes: terreno",
+    "after": "Después: casa terminada"
+  },
+  "testimonials": {
+    "title": "Lo que dicen nuestros clientes",
+    "note": "Testimonios de ejemplo. Se reemplazan por testimonios reales con permiso de cada cliente.",
+    "items": {
+      "carlos": {
+        "quote": "Desde Houston veía las fotos cada semana. Cuando terminaron el techo, pagué la siguiente etapa sin miedo.",
+        "name": "Carlos M.",
+        "place": "Houston, Texas · casa en Choloma"
+      },
+      "wendy": {
+        "quote": "Mi mamá fue a la obra cada sábado y yo veía lo mismo en el portal. Por fin sentí que mi dinero estaba en algo mío.",
+        "name": "Wendy R.",
+        "place": "Charlotte, Carolina del Norte · casa en La Ceiba"
+      },
+      "jose": {
+        "quote": "Compramos el terreno y la casa en el mismo proceso. Nos explicaron cada papel antes de pagar.",
+        "name": "José y Marta A.",
+        "place": "Nueva York · terreno y casa en Comayagua"
+      }
+    }
+  },
+  "faq": {
+    "title": "Preguntas frecuentes",
+    "more": "Ver todas las preguntas"
+  },
+  "finalCta": {
+    "title": "¿Empezamos tu casa?",
+    "body": "Cotiza en tres minutos o escríbenos por WhatsApp. Te respondemos en menos de un día hábil.",
+    "quote": "Cotizar mi casa",
+    "schedule": "Agendar videollamada"
+  }
+}

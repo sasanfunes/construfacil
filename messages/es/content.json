@@ -1,0 +1,234 @@
+{
+  "faq": {
+    "metaTitle": "Preguntas frecuentes",
+    "metaDescription": "Respuestas sobre pagos por etapas, papeles del terreno, poder notarial y cómo ver el avance de tu casa desde Estados Unidos.",
+    "title": "Preguntas frecuentes",
+    "intro": "Si tu pregunta no está aquí, escríbenos por WhatsApp. Te respondemos en menos de un día hábil.",
+    "categories": {
+      "payments": "Pagos y confianza",
+      "build": "La construcción",
+      "legal": "Papeles y trámites"
+    },
+    "items": {
+      "secure": {
+        "q": "¿Cómo sé que mi dinero está seguro?",
+        "a": "Nunca pagas la obra completa por adelantado. Firmas un contrato antes del primer pago y después pagas cada etapa solo cuando ves terminada la anterior, con fotos y videos. Todos los pagos van a cuentas de la empresa y tienen recibo."
+      },
+      "stages": {
+        "q": "¿Cómo funcionan los pagos por etapas?",
+        "a": "Haces un pago inicial al firmar, que cubre trámites y diseño. La obra se divide en etapas: cimentación, paredes, techo, instalaciones, acabados y entrega. Antes de cada etapa te mostramos la anterior terminada y entonces haces ese pago."
+      },
+      "howToPay": {
+        "q": "¿Cómo pago desde Estados Unidos?",
+        "a": "Desde tu cuenta en Estados Unidos, a una cuenta a nombre de la empresa. Al firmar te explicamos las formas de pago disponibles. Nunca te vamos a pedir que deposites a la cuenta de una persona."
+      },
+      "finalPrice": {
+        "q": "¿El precio de la cotización es el final?",
+        "a": "Es un estimado con precios de referencia. El precio final queda en el contrato después de revisar tu terreno, y ya no cambia salvo que tú pidas cambios."
+      },
+      "duration": {
+        "q": "¿Cuánto tarda la construcción?",
+        "a": "Depende del tamaño de la casa: una casa de 2 cuartos tarda unas 18 semanas y una de dos plantas unas 30. El cotizador te da el tiempo aproximado de cada etapa."
+      },
+      "seeProgress": {
+        "q": "¿Cómo veo el avance desde Estados Unidos?",
+        "a": "Cada semana el gerente de tu proyecto sube fotos y videos fechados a tu portal privado. Además puedes pedir una videollamada desde la obra."
+      },
+      "changes": {
+        "q": "¿Puedo cambiar algo durante la obra?",
+        "a": "Sí. Los cambios se cotizan aparte y se agregan al contrato antes de hacerlos, para que siempre sepas cuánto cuestan."
+      },
+      "family": {
+        "q": "¿Mi familia en Honduras puede supervisar la obra?",
+        "a": "Sí. Puedes invitar a un familiar para que vea los avances en el portal y confirme las entregas de materiales. Tú decides si también puede ver pagos y documentos."
+      },
+      "travel": {
+        "q": "¿Tengo que viajar a Honduras para comprar o construir?",
+        "a": "No. Todo se puede hacer desde Estados Unidos. Para firmar escrituras puedes dar un poder notarial a una persona de confianza en Honduras."
+      },
+      "powerOfAttorney": {
+        "q": "¿Qué es un poder notarial y lo necesito?",
+        "a": "Es un documento con el que autorizas a una persona de confianza a firmar por ti en Honduras. Se hace en el consulado de Honduras más cercano. Lo necesitas para firmar una escritura sin viajar."
+      },
+      "verifyTitle": {
+        "q": "¿Cómo sé que el terreno tiene escritura en regla?",
+        "a": "Antes de cualquier pago te mostramos la escritura inscrita en el Instituto de la Propiedad y la constancia de libertad de gravamen, que confirma que no tiene deudas ni hipotecas."
+      },
+      "whereWork": {
+        "q": "¿En qué departamentos trabajan?",
+        "a": "Por ahora en Cortés, Francisco Morazán, Atlántida y Comayagua. Si tu terreno está en otro departamento, escríbenos: estamos creciendo."
+      }
+    }
+  },
+  "how": {
+    "metaTitle": "Cómo funciona",
+    "metaDescription": "El proceso completo para comprar o construir tu casa en Honduras desde Estados Unidos: contrato, pagos por etapas, avances con fotos y papeles en regla.",
+    "title": "Cómo funciona",
+    "intro": "Desde la primera cotización hasta la entrega de llaves. Sin sorpresas y con tu dinero siempre a la vista.",
+    "stepsTitle": "El proceso, paso a paso",
+    "steps": {
+      "quote": {
+        "title": "Cotizas en línea",
+        "body": "Eliges terreno, modelo, acabados y extras. Al instante ves el precio estimado, el plan de pagos y el tiempo."
+      },
+      "call": {
+        "title": "Videollamada",
+        "body": "Revisamos tu terreno, tus dudas y los papeles. Si no tienes terreno, te mostramos opciones."
+      },
+      "contract": {
+        "title": "Contrato y pago inicial",
+        "body": "Firmas el contrato con el precio final, las etapas, los tiempos y las garantías. Con el pago inicial arrancan los trámites."
+      },
+      "permits": {
+        "title": "Diseño y permisos",
+        "body": "Terminamos los planos y sacamos el permiso de construcción en la municipalidad."
+      },
+      "build": {
+        "title": "Obra por etapas",
+        "body": "Cada semana subimos fotos y videos a tu portal. Antes de cada etapa ves la anterior terminada y haces ese pago."
+      },
+      "delivery": {
+        "title": "Entrega",
+        "body": "Revisamos la casa contigo o con tu familiar, corregimos lo que haga falta y te entregamos las llaves."
+      }
+    },
+    "paymentsTitle": "Pagos por etapas",
+    "paymentsBody": "Nunca pagas la obra completa por adelantado. Haces un pago inicial al firmar y después un pago por cada etapa, solo cuando ves terminada la anterior.",
+    "paymentsExample": "Ejemplo con una casa de $45,000 y pago inicial del 20 %: pagas $9,000 al firmar. Cuando veas los trámites listos, pagas la cimentación. Cuando veas la cimentación terminada, pagas las paredes. Y así hasta la entrega.",
+    "contractTitle": "Todo por escrito",
+    "contractBody": "El contrato dice el precio final, qué incluye cada etapa, cuánto tarda, qué pasa si hay un retraso y qué garantías tienes. Te lo enviamos antes de firmar para que lo revises con calma.",
+    "guaranteesTitle": "Garantías",
+    "guaranteesBody": "Las garantías de construcción quedan escritas en el contrato. Los términos exactos se publican aquí antes del lanzamiento.",
+    "legalTitle": "Los papeles, explicados",
+    "legalIntro": "Comprar o construir en Honduras desde afuera tiene trámites. Te acompañamos en cada uno.",
+    "legal": {
+      "title": {
+        "title": "La escritura",
+        "body": "Es el documento que te hace dueño. Revisamos contigo que esté inscrita en el Instituto de la Propiedad y que el terreno no tenga deudas."
+      },
+      "power": {
+        "title": "El poder notarial",
+        "body": "Si no puedes viajar, das un poder notarial en el consulado a alguien de confianza para que firme por ti."
+      },
+      "registry": {
+        "title": "El registro",
+        "body": "Después de firmar, la escritura a tu nombre se inscribe en el Instituto de la Propiedad. Te enviamos la copia."
+      }
+    },
+    "familyTitle": "Tu familia, contigo en la obra",
+    "familyBody": "Puedes invitar a un familiar en Honduras a tu portal: ve los avances, puede ir a la obra y confirmar la entrega de materiales.",
+    "ctaTitle": "¿Listo para ver cuánto cuesta?",
+    "cta": "Cotizar mi casa"
+  },
+  "trust": {
+    "metaTitle": "Por qué confiar en nosotros",
+    "metaDescription": "Cómo cuidamos tu dinero: contrato antes de empezar, pagos por etapa, papeles revisados y cuentas solo de la empresa.",
+    "title": "Por qué confiar en nosotros",
+    "intro": "Sabemos lo que cuesta ganar cada dólar y lo difícil que es confiar desde lejos. Estas son nuestras reglas.",
+    "promisesTitle": "Lo que siempre hacemos",
+    "promises": {
+      "contract": "Firmamos contigo un contrato antes de recibir cualquier pago.",
+      "stages": "Te cobramos cada etapa solo cuando la ves terminada.",
+      "photos": "Te mandamos fotos y videos de tu obra cada semana.",
+      "documents": "Te mostramos los papeles de la propiedad antes de cualquier pago.",
+      "receipts": "Te damos un recibo por cada pago."
+    },
+    "neverTitle": "Lo que nunca hacemos",
+    "never": {
+      "personal": "Pedirte que deposites a la cuenta de una persona.",
+      "upfront": "Cobrarte la obra completa por adelantado.",
+      "permits": "Empezar a construir sin permiso de la municipalidad.",
+      "hidden": "Agregar costos que no estén en el contrato."
+    },
+    "companyTitle": "La empresa",
+    "companyBody": "Razón social, registro y dirección de la empresa: se publican aquí antes del lanzamiento.",
+    "teamTitle": "El equipo",
+    "teamNote": "Perfiles de ejemplo. Se reemplazan por el equipo real, con nombre y foto.",
+    "team": {
+      "ana": {
+        "name": "Ana Reyes",
+        "role": "Arquitecta",
+        "bio": "Diseña tu casa contigo y adapta los modelos a tu terreno."
+      },
+      "luis": {
+        "name": "Luis Castillo",
+        "role": "Gerente de proyectos",
+        "bio": "Visita tu obra cada semana y sube las fotos a tu portal."
+      },
+      "karla": {
+        "name": "Karla Mejía",
+        "role": "Atención al cliente",
+        "bio": "Te atiende por WhatsApp en tu horario de Estados Unidos."
+      },
+      "roberto": {
+        "name": "Roberto Pineda",
+        "role": "Ingeniero civil",
+        "bio": "Revisa la estructura en cada etapa antes de que pagues la siguiente."
+      }
+    },
+    "cta": "Hablar con el equipo"
+  },
+  "contact": {
+    "metaTitle": "Contacto",
+    "metaDescription": "Escríbenos por WhatsApp o déjanos un mensaje. Atendemos en hora de Honduras y te convertimos el horario a tu hora en Estados Unidos.",
+    "title": "Contacto",
+    "intro": "Te respondemos en menos de un día hábil. WhatsApp es lo más rápido.",
+    "whatsappTitle": "WhatsApp",
+    "whatsappBody": "Escríbenos con tus dudas, fotos de tu terreno o lo que necesites.",
+    "whatsappCta": "Abrir WhatsApp",
+    "noWhatsapp": "Pronto publicaremos nuestro número de WhatsApp. Mientras tanto, usa el formulario.",
+    "hoursTitle": "Horario",
+    "scheduleTitle": "¿Prefieres hablar cara a cara?",
+    "scheduleBody": "Agenda una videollamada en el horario que te quede bien.",
+    "scheduleCta": "Agendar videollamada",
+    "formTitle": "Envíanos un mensaje"
+  },
+  "schedule": {
+    "metaTitle": "Agendar videollamada",
+    "metaDescription": "Agenda una videollamada con nuestro equipo para revisar tu terreno, tu cotización o una propiedad.",
+    "title": "Agenda una videollamada",
+    "intro": "Elige el día y la hora que te queden mejor. Te confirmamos por WhatsApp.",
+    "pointsTitle": "En la llamada vemos",
+    "points": {
+      "land": "Tu terreno o las opciones de terreno que te interesan.",
+      "quote": "Tu cotización, el plan de pagos y los tiempos.",
+      "documents": "Los papeles de la propiedad y el contrato."
+    },
+    "context": {
+      "home": "Sobre la casa: {title}",
+      "lot": "Sobre el terreno: {title}",
+      "model": "Sobre el modelo: {title}"
+    },
+    "formTitle": "Tus datos"
+  },
+  "materials": {
+    "metaTitle": "Materiales para tu obra",
+    "metaDescription": "Muy pronto: compra materiales de construcción desde Estados Unidos y recíbelos en tu obra en Honduras, con evidencia de entrega.",
+    "title": "Materiales para tu obra",
+    "badge": "Pronto",
+    "intro": "Muy pronto vas a poder comprar materiales desde Estados Unidos y recibirlos en tu obra en Honduras, con foto y nombre de quien los recibió.",
+    "bundlesTitle": "Paquetes por etapa",
+    "bundles": {
+      "foundation": {
+        "title": "Paquete cimentación",
+        "body": "Cemento, arena, grava, varilla y alambre para los cimientos."
+      },
+      "walls": {
+        "title": "Paquete obra gris",
+        "body": "Bloque, cemento, varilla y lo necesario para paredes y columnas."
+      },
+      "roof": {
+        "title": "Paquete techo",
+        "body": "Estructura, lámina o losa e impermeabilización."
+      },
+      "finishes": {
+        "title": "Paquete acabados",
+        "body": "Pisos, pintura, cielo falso, sanitarios y grifería."
+      }
+    },
+    "now": "Mientras tanto, si necesitas materiales para tu obra, escríbenos por WhatsApp y te ayudamos.",
+    "whatsappMessage": "Hola, necesito materiales para mi obra en Honduras.",
+    "whatsappCta": "Pedir materiales por WhatsApp",
+    "quoteLink": "O cotiza la construcción completa de tu casa"
+  }
+}

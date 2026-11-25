@@ -1,0 +1,137 @@
+{
+  "draftBanner": "Plantilla pendiente de revisión legal. Este texto todavía no es vinculante: lo revisarán abogados de Estados Unidos y de Honduras antes del lanzamiento.",
+  "updated": "Última actualización: {date}",
+  "contactLine": "Preguntas sobre este documento: escríbenos desde la página de contacto.",
+  "terms": {
+    "metaTitle": "Términos y condiciones",
+    "title": "Términos y condiciones",
+    "intro": "Estas son las reglas para usar el sitio de ConstruFácil y sus herramientas, como el cotizador y la calculadora.",
+    "sections": {
+      "1": {
+        "title": "Qué ofrecemos",
+        "body": "ConstruFácil ayuda a personas que viven en Estados Unidos a comprar o construir su casa en Honduras: casas listas, terrenos, construcción en terreno propio y, próximamente, materiales. Los servicios se contratan por escrito, en un contrato aparte."
+      },
+      "2": {
+        "title": "Las cotizaciones son estimados",
+        "body": "Los precios del cotizador, la calculadora y el catálogo son estimados de referencia. No son una oferta ni obligan a ninguna de las partes. El precio final se fija en el contrato después de revisar el terreno y los documentos.\n\nUna cotización guardada mantiene su precio de referencia durante 30 días."
+      },
+      "3": {
+        "title": "Precios y monedas",
+        "body": "El precio oficial es en dólares de Estados Unidos. El equivalente en lempiras es solo una referencia calculada con un tipo de cambio que se actualiza periódicamente."
+      },
+      "4": {
+        "title": "Tu información",
+        "body": "Te comprometes a darnos datos verdaderos y a avisarnos si cambian. Cómo usamos tus datos se explica en el aviso de privacidad."
+      },
+      "5": {
+        "title": "Uso del sitio",
+        "body": "No puedes usar el sitio para fines ilegales, intentar acceder a datos de otras personas, enviar formularios en forma automatizada ni copiar el contenido para uso comercial sin permiso."
+      },
+      "6": {
+        "title": "Contenido de ejemplo",
+        "body": "Mientras el sitio esté en desarrollo, algunas propiedades, precios, imágenes y testimonios son ejemplos y están marcados como tales."
+      },
+      "7": {
+        "title": "Responsabilidad",
+        "body": "Hacemos lo posible para que la información sea correcta y esté disponible, pero el sitio se ofrece tal como está. Nuestras obligaciones sobre una obra o una compra son las del contrato firmado."
+      },
+      "8": {
+        "title": "Cambios a estos términos",
+        "body": "Podemos actualizar estos términos. Publicaremos la fecha de la última actualización y, si el cambio es importante, te avisaremos."
+      }
+    }
+  },
+  "privacy": {
+    "metaTitle": "Aviso de privacidad",
+    "title": "Aviso de privacidad",
+    "intro": "Qué datos tuyos guardamos, para qué, con quién los compartimos y cómo puedes pedir que los corrijamos o borremos.",
+    "sections": {
+      "1": {
+        "title": "Qué datos recogemos",
+        "body": "Cuando llenas un formulario o guardas una cotización: tu nombre, correo, teléfono, el estado de Estados Unidos donde vives (si nos lo dices), tu mensaje y lo que elegiste en el cotizador.\n\nTambién registramos eventos anónimos del cotizador (por ejemplo, en qué paso se queda la gente) que no se pueden relacionar contigo."
+      },
+      "2": {
+        "title": "Para qué los usamos",
+        "body": "Para responderte, preparar tu cotización, agendar llamadas y, si contratas, administrar tu proyecto. No vendemos tus datos ni los usamos para publicidad de terceros."
+      },
+      "3": {
+        "title": "Con quién los compartimos",
+        "body": "Solo con proveedores que necesitamos para operar el servicio: el alojamiento del sitio y de la base de datos, y el servicio de envío de correos. Ellos solo pueden usar tus datos para prestarnos ese servicio."
+      },
+      "4": {
+        "title": "Cuánto tiempo los guardamos",
+        "body": "Mientras haya una relación contigo y después por el tiempo que exija la ley. Si no llegamos a trabajar juntos, borramos tus datos de contacto a más tardar 24 meses después de tu último mensaje."
+      },
+      "5": {
+        "title": "Tus derechos",
+        "body": "Puedes pedirnos ver, corregir o borrar tus datos, y retirar tu permiso para contactarte. Escríbenos desde la página de contacto y te respondemos en un máximo de 30 días."
+      },
+      "6": {
+        "title": "Cómo los protegemos",
+        "body": "Tus datos viajan cifrados, se guardan en una base de datos con acceso restringido por persona y por función, y cada acceso sensible queda registrado."
+      },
+      "7": {
+        "title": "Menores de edad",
+        "body": "El sitio está dirigido a personas mayores de 18 años. No recogemos a propósito datos de menores."
+      }
+    }
+  },
+  "refunds": {
+    "metaTitle": "Política de reembolsos",
+    "title": "Política de reembolsos",
+    "intro": "Cuándo y cómo devolvemos un pago.",
+    "sections": {
+      "1": {
+        "title": "Apartado de una casa o terreno",
+        "body": "Si al revisar los documentos encontramos un problema legal con la propiedad, te devolvemos el apartado completo. Si decides no seguir por otra razón, se devuelve según las condiciones que firmaste al apartar."
+      },
+      "2": {
+        "title": "Pago inicial de una obra",
+        "body": "Cubre trámites y diseño. Si cancelas antes de que empiecen los trámites, te devolvemos el pago menos los gastos ya hechos, que te detallamos por escrito."
+      },
+      "3": {
+        "title": "Pagos de etapa",
+        "body": "Cada pago de etapa paga trabajo y materiales de esa etapa. Lo ya construido no se reembolsa; lo no ejecutado se liquida según el contrato."
+      },
+      "4": {
+        "title": "Materiales",
+        "body": "Cuando la tienda esté disponible: puedes cancelar un pedido sin costo antes de que salga a entrega. Después, se aplican las condiciones del pedido."
+      },
+      "5": {
+        "title": "Cómo se devuelve",
+        "body": "Por el mismo medio con el que pagaste y a la misma persona, en un máximo de 30 días desde que se aprueba la devolución."
+      }
+    }
+  },
+  "payments": {
+    "metaTitle": "Política de pagos",
+    "title": "Política de pagos",
+    "intro": "Cómo, cuándo y a quién se paga.",
+    "sections": {
+      "1": {
+        "title": "Pagos por etapas",
+        "body": "Haces un pago inicial al firmar el contrato y después un pago por cada etapa de la obra. Cada pago se solicita cuando la etapa anterior está terminada y documentada con fotos en tu portal."
+      },
+      "2": {
+        "title": "Solo cuentas de la empresa",
+        "body": "Todos los pagos van a cuentas a nombre de la empresa. Nunca te pediremos depositar a la cuenta de una persona. Si alguien te lo pide en nuestro nombre, no pagues y avísanos."
+      },
+      "3": {
+        "title": "Moneda",
+        "body": "Los montos son en dólares de Estados Unidos. Cualquier equivalente en lempiras es solo de referencia."
+      },
+      "4": {
+        "title": "Recibos",
+        "body": "Cada pago tiene su recibo, que queda guardado en tu portal junto con la etapa a la que corresponde."
+      },
+      "5": {
+        "title": "Pagos atrasados",
+        "body": "Si un pago de etapa se atrasa, la obra se pausa al terminar la etapa en curso y retoma cuando se recibe el pago. Los plazos de entrega se ajustan en la misma medida."
+      },
+      "6": {
+        "title": "Formas de pago",
+        "body": "Al firmar te explicamos las formas de pago disponibles desde Estados Unidos. No recibimos efectivo."
+      }
+    }
+  }
+}

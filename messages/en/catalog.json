@@ -1,0 +1,241 @@
+{
+  "place": "{municipality}, {department}",
+  "construction": {
+    "ready": "Move-in ready",
+    "under_construction": "Under construction",
+    "presale": "Presale"
+  },
+  "listing": {
+    "reserved": "Reserved",
+    "reservedLot": "Reserved"
+  },
+  "legal": {
+    "full_title": "Clear title",
+    "useful_domain": "Useful domain",
+    "title_in_process": "Title in process"
+  },
+  "services": {
+    "water": "Water",
+    "electricity": "Electricity",
+    "sewer": "Sewer"
+  },
+  "road": {
+    "paved": "Paved road",
+    "gravel": "Gravel road",
+    "dirt": "Dirt road"
+  },
+  "topography": {
+    "flat": "Flat",
+    "gentle_slope": "Gentle slope",
+    "steep": "Steep slope"
+  },
+  "yesNo": {
+    "yes": "Yes",
+    "no": "No"
+  },
+  "facts": {
+    "bedrooms": "{count, plural, one {# bedroom} other {# bedrooms}}",
+    "bathrooms": "{count, plural, one {# bathroom} other {# bathrooms}}",
+    "parking": "{count, plural, one {# parking space} other {# parking spaces}}",
+    "floors": "{count, plural, one {# floor} other {# floors}}",
+    "area": "{value} m²",
+    "lotArea": "{m2} m² ({varas} sq varas)"
+  },
+  "features": {
+    "carport": "Carport",
+    "covered_garage": "Covered garage",
+    "patio": "Yard",
+    "garden": "Garden",
+    "terrace": "Terrace",
+    "laundry_area": "Laundry sink and area",
+    "service_room": "Service room",
+    "water_cistern": "Water cistern",
+    "elevated_tank": "Elevated water tank",
+    "solar_panels": "Solar panels",
+    "water_heater": "Water heater",
+    "air_conditioning": "Air conditioning",
+    "perimeter_wall": "Perimeter wall",
+    "electric_gate": "Electric gate",
+    "gated_community": "Gated neighborhood",
+    "pool": "Pool",
+    "integrated_kitchen": "Kitchen with cabinets",
+    "ceramic_floors": "Ceramic tile floors",
+    "walk_in_closet": "Walk-in closet",
+    "study": "Study"
+  },
+  "rooms": {
+    "living_dining": "Living and dining",
+    "living": "Living room",
+    "dining": "Dining room",
+    "kitchen": "Kitchen",
+    "laundry": "Laundry",
+    "primary_bedroom": "Primary bedroom",
+    "bedroom": "Bedroom",
+    "bathroom": "Bathroom",
+    "half_bath": "Half bath",
+    "hallway": "Hallway",
+    "stairs": "Stairs",
+    "carport": "Carport",
+    "terrace": "Terrace",
+    "porch": "Porch",
+    "study": "Study",
+    "service_room": "Service room"
+  },
+  "plan": {
+    "floor": "Floor {floor}",
+    "floorAria": "Illustrative floor plan of {name}, floor {floor}",
+    "area": "{value} m²",
+    "caption": "Illustrative floor plan to give you an idea of the layout. It is not to scale: the final plan is made with you.",
+    "listToggle": "See rooms and sizes"
+  },
+  "filters": {
+    "title": "Filters",
+    "titleCount": "Filters ({count})",
+    "department": "Department",
+    "anyDepartment": "All departments",
+    "city": "Municipality",
+    "anyCity": "All municipalities",
+    "minPrice": "Price from (USD)",
+    "maxPrice": "Price up to (USD)",
+    "beds": "Bedrooms",
+    "baths": "Bathrooms",
+    "any": "Any",
+    "atLeast": "{count} or more",
+    "status": "Status",
+    "minAreaHome": "Built area from (m²)",
+    "minAreaLot": "Lot size from (m²)",
+    "services": "Utilities",
+    "water": "With water",
+    "electricity": "With electricity",
+    "sewer": "With sewer",
+    "paved": "With paved road",
+    "clearTitle": "Only with a clear title",
+    "apply": "Show results",
+    "clear": "Clear filters"
+  },
+  "view": {
+    "label": "View as",
+    "list": "List",
+    "map": "Map"
+  },
+  "map": {
+    "ariaHomes": "Map of homes",
+    "ariaLots": "Map of lots",
+    "ariaOne": "Map with the approximate location",
+    "link": "See details",
+    "approx": "The location is approximate. We give you the exact address when you book a visit."
+  },
+  "illustrationNote": "Illustration. Real photos are published once the property is confirmed.",
+  "paymentNote": "This is a guide. The final plan is written in the contract.",
+  "payments": {
+    "reservation": "Reservation deposit",
+    "reservationHint": "So no one else buys it while you review the documents.",
+    "initial": "Down payment",
+    "initialHint": "When you sign the purchase agreement.",
+    "construction": "During construction",
+    "constructionHint": "In stage payments, when you see each update with photos.",
+    "deed": "Balance",
+    "deedHint": "When you sign the deed and get the keys.",
+    "deedLotHint": "When you sign the deed in your name."
+  },
+  "homes": {
+    "metaTitle": "Ready homes in Honduras",
+    "metaDescription": "Finished, under-construction and presale homes in Cortés, Francisco Morazán, Atlántida and Comayagua. Prices in US dollars and payment in stages.",
+    "title": "Ready homes",
+    "intro": "Finished homes, homes under construction or in presale. You see every document before paying and, if it's being built, every update with photos.",
+    "count": "{count, plural, =0 {No homes} one {# home} other {# homes}}",
+    "empty": {
+      "title": "We didn't find homes with those filters",
+      "body": "Try fewer filters or tell us what you're looking for: we also build on your land.",
+      "whatsappMessage": "Hi, I'm looking for a home in Honduras and didn't find what I want in the catalog.",
+      "whatsappCta": "Tell us on WhatsApp what you need"
+    },
+    "detail": {
+      "code": "Code {code}",
+      "reserveCta": "Reserve this home",
+      "similarCta": "I want a similar one",
+      "scheduleCta": "Book a video call",
+      "whatsappMessage": "Hi, I'm interested in home {code}: {title}.",
+      "summaryTitle": "Key facts",
+      "bedrooms": "Bedrooms",
+      "bathrooms": "Bathrooms",
+      "constructionArea": "Built area",
+      "lotArea": "Lot",
+      "floors": "Floors",
+      "parking": "Parking",
+      "status": "Status",
+      "delivery": "Estimated handover",
+      "model": "Model",
+      "descriptionTitle": "About this home",
+      "featuresTitle": "What it has",
+      "videoCta": "Watch video",
+      "tourCta": "Take the tour",
+      "planTitle": "Floor plan",
+      "locationTitle": "Location",
+      "paymentTitle": "Suggested payment plan",
+      "documentsTitle": "Documents we show you before any payment",
+      "documents": [
+        "Title deed registered with the Property Institute",
+        "Lien-free certificate",
+        "Cadastral map with measurements and boundaries",
+        "Municipal tax clearance: property taxes paid up",
+        "Building permit, if the home is new"
+      ],
+      "formReserveTitle": "Reserve this home",
+      "formReserveIntro": "Leave your details and we'll call you to explain the reservation and show you the documents. Nothing is charged yet.",
+      "formInquiryTitle": "Interested in a home like this?",
+      "formInquiryIntro": "This home is already reserved. Message us and we'll show you similar options."
+    }
+  },
+  "lots": {
+    "metaTitle": "Land for sale in Honduras",
+    "metaDescription": "Lots with a reviewed title, utilities and prices in US dollars. Buy the land and build your home with us.",
+    "title": "Land",
+    "intro": "Lots to build your home on. Before any payment we review the title with you and confirm the land has no debts.",
+    "count": "{count, plural, =0 {No lots} one {# lot} other {# lots}}",
+    "empty": {
+      "title": "We didn't find lots with those filters",
+      "body": "Try fewer filters or tell us the area you're looking for.",
+      "whatsappMessage": "Hi, I'm looking for land in Honduras and didn't find what I want in the catalog.",
+      "whatsappCta": "Tell us on WhatsApp what you need"
+    },
+    "detail": {
+      "code": "Code {code}",
+      "buildCta": "Buy the land + build my home",
+      "reserveCta": "Reserve only the land",
+      "scheduleCta": "Book a video call",
+      "whatsappMessage": "Hi, I'm interested in lot {code}: {title}.",
+      "summaryTitle": "Key facts",
+      "area": "Size",
+      "dimensions": "Dimensions",
+      "dimensionsValue": "{front} m wide × {depth} m deep",
+      "legal": "Legal status",
+      "road": "Access",
+      "topography": "Terrain",
+      "water": "Water",
+      "electricity": "Electricity",
+      "sewer": "Sewer",
+      "descriptionTitle": "About this lot",
+      "modelsTitle": "Models that fit on this lot",
+      "modelsNone": "None of our base models fit on this lot, but we can design one to measure.",
+      "locationTitle": "Location",
+      "paymentTitle": "Suggested payment plan",
+      "documentsTitle": "Documents we show you before any payment",
+      "documents": [
+        "Public deed or municipal title",
+        "Lien-free certificate",
+        "Cadastral map with measurements and boundaries",
+        "Municipal tax clearance: taxes paid up",
+        "Water and electricity availability letter"
+      ],
+      "inProcessNote": "The title for this lot is in process. We explain what stage it's at, and nothing is signed until it's ready.",
+      "formReserveTitle": "Reserve this lot",
+      "formReserveIntro": "Leave your details and we'll call you to explain the reservation and the documents. Nothing is charged yet.",
+      "formInquiryTitle": "Interested in a lot like this?",
+      "formInquiryIntro": "This lot is already reserved. Message us and we'll show you similar options."
+    }
+  },
+  "models": {
+    "from": "From"
+  }
+}

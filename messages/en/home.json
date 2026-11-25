@@ -1,0 +1,117 @@
+{
+  "metaTitle": "ConstruFácil: your home in Honduras, built from the United States",
+  "metaDescription": "Buy or build your home in Honduras from the United States. You see every update in photos and pay for each stage when you see it finished.",
+  "hero": {
+    "title": "Your home in Honduras, built from the United States",
+    "subtitle": "See every update in photos. Pay for each stage when you see it finished.",
+    "cta": "Get a quote for my home",
+    "secondary": "See ready homes",
+    "points": {
+      "stages": "You pay for each stage when you see the progress",
+      "photos": "Photos and videos of your build every week",
+      "documents": "Documents reviewed before any payment"
+    }
+  },
+  "paths": {
+    "title": "Four ways to your home",
+    "soon": "Coming soon",
+    "readyHome": {
+      "title": "Ready home",
+      "description": "Buy a finished home, one under construction, or a presale."
+    },
+    "build": {
+      "title": "Build on my land",
+      "description": "Design, permits, materials and construction on the land you already own."
+    },
+    "land": {
+      "title": "Buy land",
+      "description": "Lots with reviewed paperwork. If you want, we build your home on it."
+    },
+    "materials": {
+      "title": "Materials for my build",
+      "description": "Buy from the United States and get delivery at your site in Honduras."
+    }
+  },
+  "how": {
+    "title": "How it works",
+    "steps": {
+      "quote": {
+        "title": "Get a quote online",
+        "body": "In three minutes you know what your home costs, what you pay at each stage and how long it takes."
+      },
+      "call": {
+        "title": "We talk and you sign",
+        "body": "On a video call we review your land and your questions. You sign the contract with the final price."
+      },
+      "build": {
+        "title": "We build and show you",
+        "body": "Every week you get photos and videos of your build. Your family in Honduras can go see it."
+      },
+      "pay": {
+        "title": "You pay for what you see",
+        "body": "Each payment is made when you see the previous stage finished. At the end, we hand you the keys."
+      }
+    },
+    "link": "See the full process"
+  },
+  "calculator": {
+    "title": "How long will it take with what you send each month?"
+  },
+  "trust": {
+    "title": "Your money, always in sight",
+    "intro": "We know many people have lost money sending it home to build. That's why we work like this:",
+    "points": {
+      "stages": {
+        "title": "Payment by stage",
+        "body": "You never prepay the whole build. Each payment matches a stage you already saw finished."
+      },
+      "contract": {
+        "title": "Contract before we start",
+        "body": "Price, stages, timelines and guarantees in writing, signed before the first payment."
+      },
+      "documents": {
+        "title": "Reviewed paperwork",
+        "body": "We show you the title deed and the lien-free certificate before any payment."
+      },
+      "accounts": {
+        "title": "Company accounts only",
+        "body": "We will never ask you to deposit into a person's account. Every payment has its receipt."
+      }
+    },
+    "showcaseTitle": "Finished builds",
+    "showcaseNote": "Real before-and-after photos of our builds go here. In the meantime, we show example illustrations.",
+    "before": "Before: the lot",
+    "after": "After: the finished home"
+  },
+  "testimonials": {
+    "title": "What our clients say",
+    "note": "Example testimonials. They will be replaced with real testimonials, with each client's permission.",
+    "items": {
+      "carlos": {
+        "quote": "From Houston I saw the photos every week. When they finished the roof, I paid for the next stage without fear.",
+        "name": "Carlos M.",
+        "place": "Houston, Texas · home in Choloma"
+      },
+      "wendy": {
+        "quote": "My mom went to the site every Saturday and I saw the same thing in the portal. I finally felt my money was going into something of mine.",
+        "name": "Wendy R.",
+        "place": "Charlotte, North Carolina · home in La Ceiba"
+      },
+      "jose": {
+        "quote": "We bought the land and the house in the same process. They explained every document before we paid.",
+        "name": "José and Marta A.",
+        "place": "New York · land and home in Comayagua"
+      }
+    }
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "more": "See all questions"
+  },
+  "finalCta": {
+    "title": "Shall we start your home?",
+    "body": "Get a quote in three minutes or message us on WhatsApp. We reply within one business day.",
+    "quote": "Get a quote for my home",
+    "schedule": "Book a video call"
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "brand": "ConstruFácil",
+  "footer": "You received this email because you contacted ConstruFácil. If it wasn't you, you can ignore it.",
+  "exampleNotice": "Site in development: prices and properties are examples.",
+  "greeting": "Hi {name},",
+  "signature": "The ConstruFácil team",
+  "whatsappCta": "Message us on WhatsApp",
+  "channel": {
+    "whatsapp": "WhatsApp",
+    "phone": "phone",
+    "email": "email"
+  },
+  "slots": {
+    "morning": "in the morning",
+    "afternoon": "in the afternoon",
+    "evening": "in the evening"
+  },
+  "confirmation": {
+    "subject": "We got your message",
+    "preview": "We'll reply within one business day.",
+    "intro": {
+      "contact": "We got your message. Thanks for reaching out.",
+      "video_call": "We got your video call request.",
+      "reservation": "We got your request to reserve {listing}.",
+      "listing_inquiry": "We got your question about {listing}."
+    },
+    "nextSteps": "Someone from our team will contact you by {channel} within one business day.",
+    "callTitle": "Your video call",
+    "callWhen": "{date}, {slot} (your time: {timezone})",
+    "callNote": "We'll confirm the exact time on WhatsApp before the call.",
+    "reservationNote": "Nothing has been charged. Before you reserve, we walk you through the process and the property documents."
+  },
+  "quote": {
+    "subject": "Your quote {code}",
+    "preview": "Estimated total: {total}. Here is your private link.",
+    "intro": "We saved your quote. You can see it anytime with this private link:",
+    "cta": "See my quote",
+    "total": "Estimated total for your home",
+    "lot": "Land (paid separately)",
+    "initial": "Down payment, at signing",
+    "duration": "Approximate build time",
+    "weeks": "{weeks} weeks",
+    "validUntil": "This price holds until {date}.",
+    "privateLink": "The link is personal: anyone who has it can see your quote.",
+    "estimateNote": "This is an estimate. The final price is confirmed in the contract, after we check your land."
+  },
+  "team": {
+    "subject": "New lead: {source}",
+    "subjectQuote": "New lead: quote {code}",
+    "title": "A new lead came in",
+    "source": {
+      "quote": "saved quote",
+      "contact": "contact form",
+      "video_call": "video call",
+      "reservation_request": "wants to reserve",
+      "listing_inquiry": "asked about a property"
+    },
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "channel": "Prefers",
+      "state": "US state",
+      "locale": "Language",
+      "message": "Message",
+      "listing": "Property",
+      "model": "Model",
+      "call": "Video call",
+      "quote": "Quote",
+      "total": "Estimated total"
+    },
+    "none": "Not given",
+    "replyHint": "Reply within one business day. The lead is already saved with status “new”."
+  }
+}
