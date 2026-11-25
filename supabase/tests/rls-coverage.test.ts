@@ -108,6 +108,7 @@ describe("cobertura de seguridad de la base", () => {
     // Escritura de tabla completa: solo en catálogo y reglas de precio, y las políticas la
     // limitan a admin. Lectura de tabla completa: datos públicos o protegidos por RLS.
     const catalogTables = [
+      "construction_options",
       "finish_levels",
       "homes",
       "house_models",
@@ -123,6 +124,8 @@ describe("cobertura de seguridad de la base", () => {
       "funnel_events:SELECT",
       "leads:SELECT",
       "municipalities:SELECT",
+      "project_requests:SELECT",
+      "project_selections:SELECT",
       "quote_items:SELECT",
       ...catalogTables.flatMap((table) =>
         ["DELETE", "INSERT", "SELECT", "UPDATE"].map((p) => `${table}:${p}`),
@@ -156,6 +159,8 @@ describe("cobertura de seguridad de la base", () => {
       order by 1
     `);
     expect(rows.map((row) => row.name)).toEqual([
+      // La usa un CHECK de construction_options; es pura y no lee datos.
+      "construction_category_stage",
       "current_user_role",
       "has_role",
       "is_admin",

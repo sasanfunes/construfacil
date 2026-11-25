@@ -26,6 +26,18 @@ const FUNCTIONS: Record<string, { Args: string; Returns: string }> = {
     Args: "{ p_lead: Json; p_quote: Json; p_items: Json; p_video_call?: Json | null }",
     Returns: "{ quote_id: string; quote_code: string }[]",
   },
+  submit_project: {
+    Args: "{ p_lead: Json; p_project: Json; p_selections: Json }",
+    Returns: "{ project_id: string; project_code: string }[]",
+  },
+  update_project_selections: {
+    Args: "{ p_token_hash: string; p_project: Json; p_selections: Json }",
+    Returns: "string",
+  },
+  submit_project_request: {
+    Args: "{ p_token_hash: string; p_kind: string; p_message: string }",
+    Returns: "string",
+  },
 };
 
 type Column = {

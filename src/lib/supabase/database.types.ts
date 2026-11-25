@@ -81,6 +81,69 @@ export type Database = {
         };
         Relationships: [];
       };
+      construction_options: {
+        Row: {
+          id: string;
+          stage: Database["public"]["Enums"]["build_option_stage"];
+          category: string;
+          key: string;
+          name_es: string;
+          name_en: string;
+          description_es: string;
+          description_en: string;
+          pricing_basis: Database["public"]["Enums"]["option_pricing_basis"];
+          unit_price_usd_cents: number;
+          materials_share_bp: number;
+          weeks_factor: number;
+          is_default: boolean;
+          is_active: boolean;
+          is_example: boolean;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          stage: Database["public"]["Enums"]["build_option_stage"];
+          category: string;
+          key: string;
+          name_es: string;
+          name_en: string;
+          description_es: string;
+          description_en: string;
+          pricing_basis: Database["public"]["Enums"]["option_pricing_basis"];
+          unit_price_usd_cents: number;
+          materials_share_bp: number;
+          weeks_factor: number;
+          is_default?: boolean;
+          is_active?: boolean;
+          is_example?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          stage?: Database["public"]["Enums"]["build_option_stage"];
+          category?: string;
+          key?: string;
+          name_es?: string;
+          name_en?: string;
+          description_es?: string;
+          description_en?: string;
+          pricing_basis?: Database["public"]["Enums"]["option_pricing_basis"];
+          unit_price_usd_cents?: number;
+          materials_share_bp?: number;
+          weeks_factor?: number;
+          is_default?: boolean;
+          is_active?: boolean;
+          is_example?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       departments: {
         Row: {
           id: number;
@@ -630,6 +693,159 @@ export type Database = {
         };
         Relationships: [];
       };
+      project_requests: {
+        Row: {
+          id: string;
+          project_id: string;
+          kind: Database["public"]["Enums"]["project_request_kind"];
+          message: string | null;
+          status: Database["public"]["Enums"]["project_request_status"];
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          project_id: string;
+          kind: Database["public"]["Enums"]["project_request_kind"];
+          message?: string | null;
+          status?: Database["public"]["Enums"]["project_request_status"];
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          project_id?: string;
+          kind?: Database["public"]["Enums"]["project_request_kind"];
+          message?: string | null;
+          status?: Database["public"]["Enums"]["project_request_status"];
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      project_selections: {
+        Row: {
+          project_id: string;
+          category: string;
+          option_id: string;
+          quantity: number;
+          unit_price_usd_cents: number;
+          total_usd_cents: number;
+          materials_usd_cents: number;
+        };
+        Insert: {
+          project_id: string;
+          category: string;
+          option_id: string;
+          quantity: number;
+          unit_price_usd_cents: number;
+          total_usd_cents: number;
+          materials_usd_cents: number;
+        };
+        Update: {
+          project_id?: string;
+          category?: string;
+          option_id?: string;
+          quantity?: number;
+          unit_price_usd_cents?: number;
+          total_usd_cents?: number;
+          materials_usd_cents?: number;
+        };
+        Relationships: [];
+      };
+      projects: {
+        Row: {
+          id: string;
+          code: string;
+          lead_id: string;
+          access_token_hash: string;
+          access_expires_at: string;
+          name: string;
+          locale: string;
+          status: Database["public"]["Enums"]["project_status"];
+          land_status: Database["public"]["Enums"]["project_land_status"];
+          lot_id: string | null;
+          department_id: number | null;
+          municipality_id: number | null;
+          land_area_m2: number | null;
+          design_source: Database["public"]["Enums"]["project_design_source"];
+          house_model_id: string | null;
+          area_m2: number;
+          floors: number;
+          bedrooms: number;
+          bathrooms: number;
+          preliminary_usd_cents: number;
+          construction_usd_cents: number;
+          total_usd_cents: number;
+          lot_price_usd_cents: number | null;
+          duration_weeks: number;
+          breakdown: Json;
+          usd_to_hnl: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          code?: string;
+          lead_id: string;
+          access_token_hash: string;
+          access_expires_at: string;
+          name: string;
+          locale: string;
+          status?: Database["public"]["Enums"]["project_status"];
+          land_status: Database["public"]["Enums"]["project_land_status"];
+          lot_id?: string | null;
+          department_id?: number | null;
+          municipality_id?: number | null;
+          land_area_m2?: number | null;
+          design_source: Database["public"]["Enums"]["project_design_source"];
+          house_model_id?: string | null;
+          area_m2: number;
+          floors: number;
+          bedrooms: number;
+          bathrooms: number;
+          preliminary_usd_cents: number;
+          construction_usd_cents: number;
+          total_usd_cents: number;
+          lot_price_usd_cents?: number | null;
+          duration_weeks: number;
+          breakdown: Json;
+          usd_to_hnl: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          code?: string;
+          lead_id?: string;
+          access_token_hash?: string;
+          access_expires_at?: string;
+          name?: string;
+          locale?: string;
+          status?: Database["public"]["Enums"]["project_status"];
+          land_status?: Database["public"]["Enums"]["project_land_status"];
+          lot_id?: string | null;
+          department_id?: number | null;
+          municipality_id?: number | null;
+          land_area_m2?: number | null;
+          design_source?: Database["public"]["Enums"]["project_design_source"];
+          house_model_id?: string | null;
+          area_m2?: number;
+          floors?: number;
+          bedrooms?: number;
+          bathrooms?: number;
+          preliminary_usd_cents?: number;
+          construction_usd_cents?: number;
+          total_usd_cents?: number;
+          lot_price_usd_cents?: number | null;
+          duration_weeks?: number;
+          breakdown?: Json;
+          usd_to_hnl?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       quote_extras: {
         Row: {
           id: string;
@@ -924,15 +1140,34 @@ export type Database = {
         Args: { p_lead: Json; p_quote: Json; p_items: Json; p_video_call?: Json | null };
         Returns: { quote_id: string; quote_code: string }[];
       };
+      submit_project: {
+        Args: { p_lead: Json; p_project: Json; p_selections: Json };
+        Returns: { project_id: string; project_code: string }[];
+      };
+      update_project_selections: {
+        Args: { p_token_hash: string; p_project: Json; p_selections: Json };
+        Returns: string;
+      };
+      submit_project_request: {
+        Args: { p_token_hash: string; p_kind: string; p_message: string };
+        Returns: string;
+      };
     };
     Enums: {
+      build_option_stage: "preliminary" | "foundation" | "grey_work" | "roof" | "finishes";
       construction_status: "ready" | "under_construction" | "presale";
       contact_channel: "whatsapp" | "phone" | "email";
-      lead_source: "quote" | "contact" | "video_call" | "reservation_request" | "listing_inquiry";
+      lead_source: "quote" | "contact" | "video_call" | "reservation_request" | "listing_inquiry" | "project";
       lead_status: "new" | "contacted" | "negotiating" | "won" | "lost";
       listing_status: "draft" | "published" | "reserved" | "sold";
       lot_legal_status: "full_title" | "useful_domain" | "title_in_process";
+      option_pricing_basis: "construction_m2" | "footprint_m2" | "upper_floor_m2" | "per_bathroom" | "fixed";
       pricing_unit: "fixed" | "per_m2" | "per_linear_m" | "per_unit";
+      project_design_source: "own_plans" | "custom" | "catalog";
+      project_land_status: "own" | "buying_from_us" | "skipped";
+      project_request_kind: "service" | "progress_proof" | "support";
+      project_request_status: "open" | "in_progress" | "done";
+      project_status: "draft" | "in_review" | "active" | "closed";
       quote_land_status: "own" | "buying_from_us" | "not_yet";
       road_access: "paved" | "gravel" | "dirt";
       time_slot: "morning" | "afternoon" | "evening";
