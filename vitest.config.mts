@@ -14,5 +14,7 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["src/**/*.test.ts", "messages/**/*.test.ts"],
+    // next-intl importa `next/navigation` sin extensión; procesarlo con Vite resuelve el módulo.
+    server: { deps: { inline: ["next-intl"] } },
   },
 });
