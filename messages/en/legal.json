@@ -1,0 +1,137 @@
+{
+  "draftBanner": "Template pending legal review. This text is not binding yet: lawyers in the United States and Honduras will review it before launch.",
+  "updated": "Last updated: {date}",
+  "contactLine": "Questions about this document: write to us from the contact page.",
+  "terms": {
+    "metaTitle": "Terms and conditions",
+    "title": "Terms and conditions",
+    "intro": "These are the rules for using the ConstruFácil site and its tools, such as the quote tool and the calculator.",
+    "sections": {
+      "1": {
+        "title": "What we offer",
+        "body": "ConstruFácil helps people living in the United States buy or build their home in Honduras: ready homes, land, construction on their own land and, soon, materials. Services are contracted in writing, in a separate contract."
+      },
+      "2": {
+        "title": "Quotes are estimates",
+        "body": "Prices in the quote tool, the calculator and the catalog are reference estimates. They are not an offer and do not bind either party. The final price is set in the contract after reviewing the land and documents.\n\nA saved quote keeps its reference price for 30 days."
+      },
+      "3": {
+        "title": "Prices and currencies",
+        "body": "The official price is in US dollars. The equivalent in lempiras is only a reference calculated with an exchange rate that is updated periodically."
+      },
+      "4": {
+        "title": "Your information",
+        "body": "You agree to give us truthful information and to tell us if it changes. How we use your data is explained in the privacy notice."
+      },
+      "5": {
+        "title": "Using the site",
+        "body": "You may not use the site for illegal purposes, try to access other people's data, submit forms automatically or copy the content for commercial use without permission."
+      },
+      "6": {
+        "title": "Example content",
+        "body": "While the site is in development, some properties, prices, images and testimonials are examples and are marked as such."
+      },
+      "7": {
+        "title": "Liability",
+        "body": "We do our best to keep the information correct and available, but the site is provided as is. Our obligations regarding a build or a purchase are those in the signed contract."
+      },
+      "8": {
+        "title": "Changes to these terms",
+        "body": "We may update these terms. We will publish the date of the last update and, if the change is important, we will let you know."
+      }
+    }
+  },
+  "privacy": {
+    "metaTitle": "Privacy notice",
+    "title": "Privacy notice",
+    "intro": "Which of your data we keep, what for, who we share it with and how you can ask us to correct or delete it.",
+    "sections": {
+      "1": {
+        "title": "What data we collect",
+        "body": "When you fill out a form or save a quote: your name, email, phone, the US state where you live (if you tell us), your message and what you chose in the quote tool.\n\nWe also record anonymous events from the quote tool (for example, which step people stop at) that cannot be linked to you."
+      },
+      "2": {
+        "title": "What we use it for",
+        "body": "To reply to you, prepare your quote, schedule calls and, if you hire us, manage your project. We don't sell your data or use it for third-party advertising."
+      },
+      "3": {
+        "title": "Who we share it with",
+        "body": "Only with providers we need to run the service: site and database hosting, and the email delivery service. They may only use your data to provide that service to us."
+      },
+      "4": {
+        "title": "How long we keep it",
+        "body": "While we have a relationship with you and afterwards for as long as the law requires. If we don't end up working together, we delete your contact data no later than 24 months after your last message."
+      },
+      "5": {
+        "title": "Your rights",
+        "body": "You can ask us to see, correct or delete your data, and withdraw your permission for us to contact you. Write to us from the contact page and we'll reply within 30 days."
+      },
+      "6": {
+        "title": "How we protect it",
+        "body": "Your data travels encrypted, is stored in a database with access restricted by person and role, and every sensitive access is logged."
+      },
+      "7": {
+        "title": "Minors",
+        "body": "The site is intended for people over 18. We don't knowingly collect data from minors."
+      }
+    }
+  },
+  "refunds": {
+    "metaTitle": "Refund policy",
+    "title": "Refund policy",
+    "intro": "When and how we refund a payment.",
+    "sections": {
+      "1": {
+        "title": "Home or lot reservation deposit",
+        "body": "If, when reviewing the documents, we find a legal problem with the property, we refund the full deposit. If you decide not to continue for another reason, it is refunded under the conditions you signed when reserving."
+      },
+      "2": {
+        "title": "Down payment for a build",
+        "body": "It covers permits and design. If you cancel before the permits start, we refund the payment minus expenses already incurred, which we detail in writing."
+      },
+      "3": {
+        "title": "Stage payments",
+        "body": "Each stage payment pays for the work and materials of that stage. What has already been built is not refunded; what hasn't been done is settled according to the contract."
+      },
+      "4": {
+        "title": "Materials",
+        "body": "When the store is available: you can cancel an order at no cost before it ships. After that, the order's conditions apply."
+      },
+      "5": {
+        "title": "How refunds are made",
+        "body": "Through the same method you paid with and to the same person, within 30 days of the refund being approved."
+      }
+    }
+  },
+  "payments": {
+    "metaTitle": "Payment policy",
+    "title": "Payment policy",
+    "intro": "How, when and to whom payments are made.",
+    "sections": {
+      "1": {
+        "title": "Stage payments",
+        "body": "You make a down payment when you sign the contract and then one payment for each stage of the build. Each payment is requested once the previous stage is finished and documented with photos in your portal."
+      },
+      "2": {
+        "title": "Company accounts only",
+        "body": "All payments go to accounts in the company's name. We will never ask you to deposit into a person's account. If someone asks you to do so on our behalf, don't pay and let us know."
+      },
+      "3": {
+        "title": "Currency",
+        "body": "Amounts are in US dollars. Any equivalent in lempiras is for reference only."
+      },
+      "4": {
+        "title": "Receipts",
+        "body": "Every payment has its receipt, which is kept in your portal together with the stage it belongs to."
+      },
+      "5": {
+        "title": "Late payments",
+        "body": "If a stage payment is late, the build pauses when the current stage ends and resumes once the payment is received. Delivery dates are adjusted by the same amount."
+      },
+      "6": {
+        "title": "Payment methods",
+        "body": "When you sign, we explain the payment methods available from the United States. We don't accept cash."
+      }
+    }
+  }
+}

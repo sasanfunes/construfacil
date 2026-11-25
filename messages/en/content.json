@@ -1,0 +1,234 @@
+{
+  "faq": {
+    "metaTitle": "Frequently asked questions",
+    "metaDescription": "Answers about stage payments, land paperwork, power of attorney and how to follow your home's progress from the United States.",
+    "title": "Frequently asked questions",
+    "intro": "If your question isn't here, message us on WhatsApp. We reply within one business day.",
+    "categories": {
+      "payments": "Payments and trust",
+      "build": "Construction",
+      "legal": "Paperwork and permits"
+    },
+    "items": {
+      "secure": {
+        "q": "How do I know my money is safe?",
+        "a": "You never prepay the whole build. You sign a contract before the first payment, then pay for each stage only once you see the previous one finished, with photos and videos. All payments go to company accounts and come with a receipt."
+      },
+      "stages": {
+        "q": "How do stage payments work?",
+        "a": "You make a down payment when you sign, which covers permits and design. The build is split into stages: foundation, walls, roof, utilities, finishes and handover. Before each stage we show you the previous one finished, and then you make that payment."
+      },
+      "howToPay": {
+        "q": "How do I pay from the United States?",
+        "a": "From your US bank account, to an account in the company's name. When you sign, we explain the payment methods available. We will never ask you to deposit into a person's account."
+      },
+      "finalPrice": {
+        "q": "Is the quote price final?",
+        "a": "It's an estimate based on reference prices. The final price is set in the contract after we check your land, and it doesn't change unless you ask for changes."
+      },
+      "duration": {
+        "q": "How long does construction take?",
+        "a": "It depends on the size of the home: a 2-bedroom home takes about 18 weeks and a two-story one about 30. The quote tool gives you the approximate time for each stage."
+      },
+      "seeProgress": {
+        "q": "How do I see the progress from the United States?",
+        "a": "Every week your project manager uploads dated photos and videos to your private portal. You can also ask for a video call from the site."
+      },
+      "changes": {
+        "q": "Can I change something during the build?",
+        "a": "Yes. Changes are quoted separately and added to the contract before they're made, so you always know what they cost."
+      },
+      "family": {
+        "q": "Can my family in Honduras supervise the build?",
+        "a": "Yes. You can invite a relative to see the updates in the portal and confirm material deliveries. You decide whether they can also see payments and documents."
+      },
+      "travel": {
+        "q": "Do I have to travel to Honduras to buy or build?",
+        "a": "No. Everything can be done from the United States. To sign deeds, you can give a power of attorney to someone you trust in Honduras."
+      },
+      "powerOfAttorney": {
+        "q": "What is a power of attorney and do I need one?",
+        "a": "It's a document that authorizes someone you trust to sign for you in Honduras. You get it at the nearest Honduran consulate. You need it to sign a deed without traveling."
+      },
+      "verifyTitle": {
+        "q": "How do I know the land has a clear title?",
+        "a": "Before any payment we show you the deed registered with the Property Institute and the lien-free certificate, which confirms the land has no debts or mortgages."
+      },
+      "whereWork": {
+        "q": "Which departments do you work in?",
+        "a": "For now, Cortés, Francisco Morazán, Atlántida and Comayagua. If your land is in another department, message us: we're growing."
+      }
+    }
+  },
+  "how": {
+    "metaTitle": "How it works",
+    "metaDescription": "The full process to buy or build your home in Honduras from the United States: contract, stage payments, photo updates and clear paperwork.",
+    "title": "How it works",
+    "intro": "From the first quote to the keys. No surprises, and your money always in sight.",
+    "stepsTitle": "The process, step by step",
+    "steps": {
+      "quote": {
+        "title": "Get a quote online",
+        "body": "Choose land, model, finishes and extras. You instantly see the estimated price, the payment plan and the timeline."
+      },
+      "call": {
+        "title": "Video call",
+        "body": "We review your land, your questions and the paperwork. If you don't have land, we show you options."
+      },
+      "contract": {
+        "title": "Contract and down payment",
+        "body": "You sign the contract with the final price, stages, timelines and guarantees. The down payment starts the permits."
+      },
+      "permits": {
+        "title": "Design and permits",
+        "body": "We finish the plans and get the building permit from the municipality."
+      },
+      "build": {
+        "title": "Construction in stages",
+        "body": "Every week we upload photos and videos to your portal. Before each stage you see the previous one finished and make that payment."
+      },
+      "delivery": {
+        "title": "Handover",
+        "body": "We walk through the house with you or your relative, fix anything needed and hand you the keys."
+      }
+    },
+    "paymentsTitle": "Stage payments",
+    "paymentsBody": "You never prepay the whole build. You make a down payment when you sign and then one payment per stage, only once you see the previous one finished.",
+    "paymentsExample": "Example with a $45,000 home and a 20% down payment: you pay $9,000 when you sign. When you see the permits done, you pay for the foundation. When you see the foundation finished, you pay for the walls. And so on until handover.",
+    "contractTitle": "Everything in writing",
+    "contractBody": "The contract states the final price, what each stage includes, how long it takes, what happens if there's a delay and which guarantees you have. We send it to you before signing so you can review it calmly.",
+    "guaranteesTitle": "Guarantees",
+    "guaranteesBody": "Construction guarantees are written into the contract. The exact terms will be published here before launch.",
+    "legalTitle": "The paperwork, explained",
+    "legalIntro": "Buying or building in Honduras from abroad involves paperwork. We guide you through each step.",
+    "legal": {
+      "title": {
+        "title": "The deed",
+        "body": "It's the document that makes you the owner. We check with you that it's registered with the Property Institute and that the land has no debts."
+      },
+      "power": {
+        "title": "The power of attorney",
+        "body": "If you can't travel, you give a power of attorney at the consulate to someone you trust so they can sign for you."
+      },
+      "registry": {
+        "title": "The registration",
+        "body": "After signing, the deed in your name is registered with the Property Institute. We send you a copy."
+      }
+    },
+    "familyTitle": "Your family, with you at the site",
+    "familyBody": "You can invite a relative in Honduras to your portal: they see the updates, can visit the site and confirm material deliveries.",
+    "ctaTitle": "Ready to see what it costs?",
+    "cta": "Get a quote for my home"
+  },
+  "trust": {
+    "metaTitle": "Why trust us",
+    "metaDescription": "How we protect your money: a contract before we start, stage payments, reviewed paperwork and company accounts only.",
+    "title": "Why trust us",
+    "intro": "We know how hard every dollar is to earn and how hard it is to trust from far away. These are our rules.",
+    "promisesTitle": "What we always do",
+    "promises": {
+      "contract": "We sign a contract with you before receiving any payment.",
+      "stages": "We charge for each stage only when you see it finished.",
+      "photos": "We send you photos and videos of your build every week.",
+      "documents": "We show you the property paperwork before any payment.",
+      "receipts": "We give you a receipt for every payment."
+    },
+    "neverTitle": "What we never do",
+    "never": {
+      "personal": "Ask you to deposit into a person's account.",
+      "upfront": "Charge you for the whole build up front.",
+      "permits": "Start building without a municipal permit.",
+      "hidden": "Add costs that aren't in the contract."
+    },
+    "companyTitle": "The company",
+    "companyBody": "Company legal name, registration and address: published here before launch.",
+    "teamTitle": "The team",
+    "teamNote": "Example profiles. They will be replaced with the real team, with names and photos.",
+    "team": {
+      "ana": {
+        "name": "Ana Reyes",
+        "role": "Architect",
+        "bio": "Designs your home with you and adapts the models to your land."
+      },
+      "luis": {
+        "name": "Luis Castillo",
+        "role": "Project manager",
+        "bio": "Visits your site every week and uploads the photos to your portal."
+      },
+      "karla": {
+        "name": "Karla Mejía",
+        "role": "Customer care",
+        "bio": "Helps you on WhatsApp during your US hours."
+      },
+      "roberto": {
+        "name": "Roberto Pineda",
+        "role": "Civil engineer",
+        "bio": "Checks the structure at each stage before you pay for the next one."
+      }
+    },
+    "cta": "Talk to the team"
+  },
+  "contact": {
+    "metaTitle": "Contact",
+    "metaDescription": "Message us on WhatsApp or leave us a note. We work on Honduras time and convert our hours to your US time.",
+    "title": "Contact",
+    "intro": "We reply within one business day. WhatsApp is the fastest.",
+    "whatsappTitle": "WhatsApp",
+    "whatsappBody": "Message us with your questions, photos of your land or anything you need.",
+    "whatsappCta": "Open WhatsApp",
+    "noWhatsapp": "We'll publish our WhatsApp number soon. In the meantime, use the form.",
+    "hoursTitle": "Hours",
+    "scheduleTitle": "Prefer to talk face to face?",
+    "scheduleBody": "Book a video call at a time that works for you.",
+    "scheduleCta": "Book a video call",
+    "formTitle": "Send us a message"
+  },
+  "schedule": {
+    "metaTitle": "Book a video call",
+    "metaDescription": "Book a video call with our team to review your land, your quote or a property.",
+    "title": "Book a video call",
+    "intro": "Choose the day and time that work best for you. We'll confirm on WhatsApp.",
+    "pointsTitle": "On the call we go over",
+    "points": {
+      "land": "Your land, or the land options you're interested in.",
+      "quote": "Your quote, the payment plan and the timeline.",
+      "documents": "The property paperwork and the contract."
+    },
+    "context": {
+      "home": "About the home: {title}",
+      "lot": "About the lot: {title}",
+      "model": "About the model: {title}"
+    },
+    "formTitle": "Your details"
+  },
+  "materials": {
+    "metaTitle": "Materials for your build",
+    "metaDescription": "Coming soon: buy building materials from the United States and get them delivered to your site in Honduras, with proof of delivery.",
+    "title": "Materials for your build",
+    "badge": "Coming soon",
+    "intro": "Soon you'll be able to buy materials from the United States and get them delivered to your site in Honduras, with a photo and the name of who received them.",
+    "bundlesTitle": "Bundles by stage",
+    "bundles": {
+      "foundation": {
+        "title": "Foundation bundle",
+        "body": "Cement, sand, gravel, rebar and wire for the foundation."
+      },
+      "walls": {
+        "title": "Shell bundle",
+        "body": "Blocks, cement, rebar and what you need for walls and columns."
+      },
+      "roof": {
+        "title": "Roof bundle",
+        "body": "Structure, metal sheets or slab, and waterproofing."
+      },
+      "finishes": {
+        "title": "Finishes bundle",
+        "body": "Floors, paint, drop ceilings, toilets and faucets."
+      }
+    },
+    "now": "In the meantime, if you need materials for your build, message us on WhatsApp and we'll help.",
+    "whatsappMessage": "Hi, I need materials for my build in Honduras.",
+    "whatsappCta": "Order materials on WhatsApp",
+    "quoteLink": "Or get a quote for building your whole home"
+  }
+}
