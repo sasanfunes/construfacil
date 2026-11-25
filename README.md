@@ -137,4 +137,6 @@ Español es el idioma por defecto y va sin prefijo (`/casas`); inglés va bajo `
 
 ## Despliegue
 
-Vercel. El checklist de producción se completa en la Fase 4. Hasta el lanzamiento, `NEXT_PUBLIC_ALLOW_INDEXING` queda en `false` para que los buscadores no indexen un sitio con datos de ejemplo.
+Vercel. `vercel.json` fija el framework en Next.js, para que no dependa de lo que Vercel detectó al crear el proyecto. El checklist de producción se completa en la Fase 4. Hasta el lanzamiento, `NEXT_PUBLIC_ALLOW_INDEXING` queda en `false` para que los buscadores no indexen un sitio con datos de ejemplo.
+
+Para una vista previa con datos de ejemplo (sin Supabase ni Resend), define `APP_ENV=preview` en ese entorno de Vercel y vuelve a desplegar. Sin esa variable, el build exige la configuración completa de producción.
