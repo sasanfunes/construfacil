@@ -2,6 +2,8 @@ import { z } from "@/lib/zod";
 
 import { routing } from "@/i18n/routing";
 
+import { addDays, CONTACT_CHANNELS, LEAD_INTENTS, TIME_SLOTS, US_STATES } from "./constants";
+
 /**
  * Esquemas de los formularios de captación. Los mismos validan en el navegador (para
  * avisar al instante) y en el servidor (la única validación que cuenta).
@@ -9,65 +11,7 @@ import { routing } from "@/i18n/routing";
  * Los mensajes de error son llaves de traducción de `forms.errors`.
  */
 
-export const CONTACT_CHANNELS = ["whatsapp", "phone", "email"] as const;
-export const TIME_SLOTS = ["morning", "afternoon", "evening"] as const;
-export const LEAD_INTENTS = ["contact", "video_call", "reservation", "listing_inquiry"] as const;
-export type LeadIntent = (typeof LEAD_INTENTS)[number];
-
-export const US_STATES = [
-  "AL",
-  "AK",
-  "AZ",
-  "AR",
-  "CA",
-  "CO",
-  "CT",
-  "DE",
-  "DC",
-  "FL",
-  "GA",
-  "HI",
-  "ID",
-  "IL",
-  "IN",
-  "IA",
-  "KS",
-  "KY",
-  "LA",
-  "ME",
-  "MD",
-  "MA",
-  "MI",
-  "MN",
-  "MS",
-  "MO",
-  "MT",
-  "NE",
-  "NV",
-  "NH",
-  "NJ",
-  "NM",
-  "NY",
-  "NC",
-  "ND",
-  "OH",
-  "OK",
-  "OR",
-  "PA",
-  "PR",
-  "RI",
-  "SC",
-  "SD",
-  "TN",
-  "TX",
-  "UT",
-  "VT",
-  "VA",
-  "WA",
-  "WV",
-  "WI",
-  "WY",
-] as const;
+export { addDays, CONTACT_CHANNELS, LEAD_INTENTS, TIME_SLOTS, US_STATES, type LeadIntent } from "./constants";
 
 /** Deja solo dígitos (y el + inicial). "+1 (305) 555-0123" → "+13055550123". */
 export function normalizePhone(raw: string): string {
@@ -84,13 +28,6 @@ export function isValidTimeZone(value: string): boolean {
   } catch {
     return false;
   }
-}
-
-/** Suma días a una fecha AAAA-MM-DD (en UTC, como `current_date` en la base). */
-export function addDays(isoDate: string, days: number): string {
-  const date = new Date(`${isoDate}T00:00:00Z`);
-  date.setUTCDate(date.getUTCDate() + days);
-  return date.toISOString().slice(0, 10);
 }
 
 const emptyToUndefined = (value: unknown) =>

@@ -210,3 +210,7 @@ export type ProjectEstimate = {
   durationWeeks: number;
   warnings: ProjectWarning[];
 };
+
+/** Lo que se puede pedir desde el panel del proyecto. */
+export const PROJECT_REQUEST_KINDS = ["service", "progress_proof", "support"] as const;
+export type ProjectRequestKind = (typeof PROJECT_REQUEST_KINDS)[number];

@@ -14,7 +14,7 @@ import { trackFunnelEvent } from "@/features/funnel/actions";
 import type { FunnelEventInput } from "@/features/funnel/schemas";
 import { HONEYPOT_FIELD, STARTED_AT_FIELD } from "@/features/leads/bot-check";
 import type { FormErrorKey } from "@/features/leads/components/lead-form";
-import { CONTACT_CHANNELS, US_STATES } from "@/features/leads/schemas";
+import { CONTACT_CHANNELS, US_STATES } from "@/features/leads/constants";
 import { Link, useRouter } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import { formatNumber } from "@/lib/format";
@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
 
 import { saveProject } from "../actions";
 import { normalizeOptionIds, safeEstimate } from "../engine";
-import { projectNameSchema } from "../schemas";
+import { projectNameError } from "../names";
 import {
   BUILD_STAGES,
   CUSTOM_AREA_MAX_M2,
@@ -282,10 +282,9 @@ export function ProjectWizard({
   function stepProblem(): string | null {
     switch (state.stepId) {
       case "name": {
-        const parsed = projectNameSchema.safeParse(state.name);
-        if (parsed.success) return null;
-        const code = parsed.error.issues[0]?.message;
-        return code === "projectNameInvalid" ? t("errors.projectNameInvalid") : t("errors.nameRequired");
+        const error = projectNameError(state.name);
+        if (!error) return null;
+        return error === "projectNameInvalid" ? t("errors.projectNameInvalid") : t("errors.nameRequired");
       }
       case "land":
         return state.landStatus ? null : t("errors.chooseLand");

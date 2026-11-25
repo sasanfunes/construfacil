@@ -14,8 +14,7 @@ import { canWriteToSupabase } from "@/lib/env.server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { Json } from "@/lib/supabase/database.types";
 
-import type { PROJECT_REQUEST_KINDS } from "./schemas";
-import type { ProjectEstimate, ProjectInput } from "./types";
+import type { ProjectEstimate, ProjectInput, ProjectRequestKind } from "./types";
 
 /**
  * Dónde se guardan los proyectos. Con Supabase, con submit_project(),
@@ -28,7 +27,7 @@ import type { ProjectEstimate, ProjectInput } from "./types";
 export const PROJECT_STATUSES = ["draft", "in_review", "active", "closed"] as const;
 export type ProjectStatus = (typeof PROJECT_STATUSES)[number];
 
-export type ProjectRequestKind = (typeof PROJECT_REQUEST_KINDS)[number];
+export type { ProjectRequestKind };
 
 export type NewProject = {
   tokenHash: string;

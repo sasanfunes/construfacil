@@ -11,7 +11,7 @@ import type { AppLocale } from "@/i18n/routing";
 import { formatUsd } from "@/lib/money";
 
 import { requestProjectHelp, updateProjectSelections } from "../actions";
-import { PROJECT_REQUEST_KINDS } from "../schemas";
+import { PROJECT_REQUEST_KINDS } from "../types";
 import { BUILD_STAGES, type ConstructionOption, type OptionCategory, type ProjectEstimate } from "../types";
 
 import { EstimateSummary } from "./estimate-summary";

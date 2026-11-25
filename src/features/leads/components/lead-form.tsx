@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 import { submitLeadRequest, type LeadFormState } from "../actions";
 import { HONEYPOT_FIELD, STARTED_AT_FIELD } from "../bot-check";
-import { addDays, CONTACT_CHANNELS, TIME_SLOTS, US_STATES, type LeadIntent } from "../schemas";
+import { addDays, CONTACT_CHANNELS, TIME_SLOTS, US_STATES, type LeadIntent } from "../constants";
 
 export const COMMON_TIMEZONES = [
   "America/New_York",

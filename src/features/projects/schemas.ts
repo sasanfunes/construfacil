@@ -3,6 +3,7 @@ import { z } from "@/lib/zod";
 import { HONEYPOT_FIELD, STARTED_AT_FIELD } from "@/features/leads/bot-check";
 import { contactInfoSchema, localeSchema } from "@/features/leads/schemas";
 
+import { normalizeProjectName, projectNameError } from "./names";
 import {
   CUSTOM_AREA_MAX_M2,
   CUSTOM_AREA_MIN_M2,
@@ -10,26 +11,17 @@ import {
   LAND_STATUSES,
   MAX_BATHROOMS,
   MAX_BEDROOMS,
+  PROJECT_REQUEST_KINDS,
 } from "./types";
 
-/**
- * Nombre del proyecto ("Casa de mamá en Choloma"). Va en el correo de confirmación, así que
- * no admite caracteres para armar enlaces (punto, barra, dos puntos, arroba): nadie puede
- * usar nuestros correos para mandar una URL a la dirección de otra persona.
- */
-const PROJECT_NAME_PATTERN = /^[\p{L}\p{M}\p{N}][\p{L}\p{M}\p{N} '’,#()-]*$/u;
-
+/** Nombre del proyecto: la regla vive en names.ts para que el onboarding la use sin Zod. */
 export const projectNameSchema = z
   .string({ error: "required" })
-  .trim()
-  .transform((value) => value.replace(/\s+/g, " "))
-  .pipe(
-    z
-      .string()
-      .min(2, { error: "nameTooShort" })
-      .max(80, { error: "nameTooLong" })
-      .regex(PROJECT_NAME_PATTERN, { error: "projectNameInvalid" }),
-  );
+  .transform(normalizeProjectName)
+  .superRefine((value, context) => {
+    const error = projectNameError(value);
+    if (error) context.addIssue({ code: "custom", message: error });
+  });
 
 const id = z.string().uuid();
 
@@ -68,8 +60,6 @@ export const updateSelectionsSchema = z.object({
   token: projectTokenSchema,
   optionIds: z.array(id).min(1).max(40),
 });
-
-export const PROJECT_REQUEST_KINDS = ["service", "progress_proof", "support"] as const;
 
 export const projectRequestSchema = z.object({
   locale: localeSchema,
